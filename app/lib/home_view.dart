@@ -44,7 +44,7 @@ class _HomeViewState extends State<HomeView> {
                       padding: const EdgeInsets.all(8.0),
                       child: GridView.count(
                         shrinkWrap: true,
-                        children: state.games
+                        children: state.games.reversed
                             .map((e) => GestureDetector(
                                   child: GameOverview(e),
                                   onTap: () => Navigator.of(context).push(
