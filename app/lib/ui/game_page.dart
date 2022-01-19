@@ -1,3 +1,4 @@
+import 'package:common/common.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -57,7 +58,7 @@ class _GamePageState extends State<GamePage> {
       backgroundColor: Theme.of(context).backgroundColor,
       body: Center(
         child: SafeArea(
-          child: BlocBuilder<GameController, GameState>(
+          child: BlocBuilder<GameController, Game>(
               bloc: game,
               builder: (context, state) {
                 return Column(
@@ -100,7 +101,7 @@ class _GamePageState extends State<GamePage> {
                                 .toList(),
                             if (!state.gameFinished)
                               FittedBox(
-                                child: WordRow(length: state.length, content: state.word, valid: state.valid),
+                                child: WordRow(length: state.length, content: state.word, valid: !state.invalid),
                               ),
                           ],
                         ),

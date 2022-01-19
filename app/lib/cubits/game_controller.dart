@@ -2,9 +2,10 @@ import 'package:bloc/bloc.dart';
 import 'package:common/common.dart';
 import 'package:word_game/mediator/mediator.dart';
 
-class GameController extends Cubit<GameState> {
+class GameController extends Cubit<Game> {
   final Mediator mediator;
-  GameController({required int length, required this.mediator}) : super(GameState.initial(length));
+  GameController({required String player, required int length, required this.mediator})
+      : super(Game.initial(player, length));
 
   void addLetter(String l) {
     if (state.word.length >= state.length) return;
@@ -19,7 +20,7 @@ class GameController extends Cubit<GameState> {
   void enter() async {
     final _result = await mediator.validateWord(state.word);
     if (!_result.valid) {
-      emit(state.withInvalid());
+      emit(state.copyWithInvalid());
     } else {
       emit(state.copyWith(current: WordData.blank(), guesses: List.from(state.guesses)..add(_result.word!)));
     }

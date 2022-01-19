@@ -1,3 +1,4 @@
+import 'package:common/common.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -44,7 +45,7 @@ class _GameOverviewState extends State<GameOverview> {
         border: Border.all(color: Colors.grey[500]!),
         // shape: BoxShape.circle,
       ),
-      child: BlocBuilder<GameController, GameState>(
+      child: BlocBuilder<GameController, Game>(
         bloc: widget.game,
         builder: (context, state) {
           return ListView(

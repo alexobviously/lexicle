@@ -23,6 +23,7 @@ dependencies:
   hive: ^2.0.5
   hive_flutter: ^1.1.0
   material_design_icons_flutter: ^5.0.6595
+  mongo_dart: ^0.7.4
   validators: ^3.0.0
 
 dev_dependencies:

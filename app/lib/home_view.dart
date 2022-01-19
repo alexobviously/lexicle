@@ -25,7 +25,7 @@ class _HomeViewState extends State<HomeView> {
   @override
   void initState() {
     mediator = OfflineMediator(answer: 'hours');
-    gc = GameController(length: 5, mediator: mediator);
+    gc = GameController(player: 'player', length: 5, mediator: mediator);
     super.initState();
   }
 
