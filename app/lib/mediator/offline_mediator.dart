@@ -1,5 +1,5 @@
+import 'package:common/common.dart';
 import 'package:word_game/mediator/mediator.dart';
-import 'package:word_game/model/word_data.dart';
 import 'package:word_game/services/service_locator.dart';
 
 class OfflineMediator implements Mediator {

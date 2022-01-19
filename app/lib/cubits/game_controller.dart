@@ -1,6 +1,6 @@
 import 'package:bloc/bloc.dart';
+import 'package:common/common.dart';
 import 'package:word_game/mediator/mediator.dart';
-import 'package:word_game/model/word_data.dart';
 
 class GameController extends Cubit<GameState> {
   final Mediator mediator;

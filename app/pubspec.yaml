@@ -12,6 +12,9 @@ dependencies:
   flutter:
     sdk: flutter
 
+  common:
+    path: ../common/
+  
   bloc: ^8.0.2
   cupertino_icons: ^1.0.2
   flutter_bloc: ^8.0.1

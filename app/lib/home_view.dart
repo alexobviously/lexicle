@@ -6,7 +6,6 @@ import 'package:word_game/cubits/game_manager.dart';
 import 'package:word_game/game_keyboard.dart';
 import 'package:word_game/mediator/mediator.dart';
 import 'package:word_game/mediator/offline_mediator.dart';
-import 'package:word_game/model/word_data.dart';
 import 'package:word_game/ui/game_creator.dart';
 import 'package:word_game/ui/game_overview.dart';
 import 'package:word_game/ui/game_page.dart';

@@ -1,8 +1,8 @@
+import 'package:common/common.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:word_game/cubits/game_manager.dart';
-import 'package:word_game/model/game_config.dart';
 import 'package:word_game/ui/length_control.dart';
 
 class GameCreator extends StatefulWidget {

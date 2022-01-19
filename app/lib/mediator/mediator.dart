@@ -1,4 +1,4 @@
-import 'package:word_game/model/word_data.dart';
+import 'package:common/common.dart';
 
 abstract class Mediator {
   Future<WordValidationResult> validateWord(String word);
