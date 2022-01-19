@@ -1,7 +1,10 @@
+// ignore_for_file: unnecessary_this
+
 import 'package:common/common.dart';
+import 'package:mongo_dart/mongo_dart.dart';
 
 class Game {
-  final String? id;
+  final String id;
   final String answer;
   final String player;
   final String creator;
@@ -22,15 +25,15 @@ class Game {
   bool get invalid => flags.contains(flagInvalid);
 
   Game({
-    this.id,
+    String? id,
     required this.answer,
     required this.player,
     String? creator,
     required this.guesses,
     required this.current,
     this.flags = const [],
-    // ignore: unnecessary_this
-  }) : this.creator = creator ?? player;
+  })  : this.id = id ?? ObjectId().id.hexString,
+        this.creator = creator ?? player;
 
   factory Game.initial(String player, int length) => Game(
         answer: '*' * length,
@@ -62,7 +65,7 @@ class Game {
 
   Map<String, dynamic> toMap({bool hideAnswer = false}) {
     return {
-      if (id != null) __id: id,
+      __id: id,
       __answer: hideAnswer ? ('*' * answer.length) : answer,
       __player: player,
       __creator: creator,

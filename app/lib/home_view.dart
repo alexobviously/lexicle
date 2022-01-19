@@ -46,7 +46,7 @@ class _HomeViewState extends State<HomeView> {
                         shrinkWrap: true,
                         children: state.games.reversed
                             .map((e) => GestureDetector(
-                                  child: GameOverview(e),
+                                  child: GameOverview(e, key: ValueKey('go_${e.state.id}')),
                                   onTap: () => Navigator.of(context).push(
                                     MaterialPageRoute(
                                       builder: (context) => GamePage(game: e),
