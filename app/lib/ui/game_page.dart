@@ -2,7 +2,6 @@ import 'package:common/common.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:word_game/cubits/game_controller.dart';
 import 'package:word_game/ui/game_keyboard.dart';
 import 'package:word_game/ui/standard_scaffold.dart';

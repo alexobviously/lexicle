@@ -1,7 +1,4 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
-import 'package:word_game/ui/app_bar.dart';
-import 'package:word_game/ui/neu_button.dart';
 import 'package:word_game/ui/standard_scaffold.dart';
 
 class HomeView extends StatefulWidget {

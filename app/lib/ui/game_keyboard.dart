@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:word_game/app/colours.dart';
-import 'package:word_game/cubits/game_controller.dart';
 
 class GameKeyboard extends StatelessWidget {
   static const rows = ['qwertyuiop', 'asdfghjkl', 'zxcvbnm'];
