@@ -2,6 +2,7 @@ import 'package:common/common.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:word_game/app/colours.dart';
 import 'package:word_game/cubits/game_controller.dart';
 import 'package:word_game/ui/word_row.dart';
 
@@ -39,9 +40,13 @@ class _GameOverviewState extends State<GameOverview> {
   Widget build(BuildContext context) {
     return Neumorphic(
       padding: const EdgeInsets.all(2.0),
-      style: const NeumorphicStyle(
+      style: NeumorphicStyle(
         depth: -10,
-        // border: NeumorphicBorder(color: Colors.black12, width: 1.0), // maybe?
+        color: widget.game.state.gameFinished ? Colours.correct.withAlpha(100) : null,
+        border: widget.game.state.gameFinished
+            ? NeumorphicBorder(color: Colours.correct, width: 2.0)
+            : const NeumorphicBorder.none(),
+        // NeumorphicBorder(color: Colors.black12, width: 0.5), // maybe?
       ),
       child: BlocBuilder<GameController, Game>(
         bloc: widget.game,

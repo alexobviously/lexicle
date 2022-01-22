@@ -2,6 +2,8 @@ import 'package:common/common.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:word_game/app/colours.dart';
 import 'package:word_game/cubits/game_controller.dart';
 import 'package:word_game/ui/game_keyboard.dart';
 import 'package:word_game/ui/standard_scaffold.dart';
@@ -82,29 +84,40 @@ class _GamePageState extends State<GamePage> {
                     //   ),
                     // ),
                     Expanded(
-                      child: SingleChildScrollView(
-                        controller: _controller,
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            ...state.guesses
-                                .map(
-                                  (e) => FittedBox(
-                                    child: WordRow(
-                                      length: state.length,
-                                      content: e.content,
-                                      correct: e.correct,
-                                      semiCorrect: e.semiCorrect,
-                                      finalised: e.finalised,
+                      child: Neumorphic(
+                        padding: const EdgeInsets.all(8.0),
+                        duration: const Duration(milliseconds: 2000),
+                        style: NeumorphicStyle(
+                          depth: -10,
+                          color: state.gameFinished ? Colours.correct.withAlpha(100) : null,
+                          border: state.gameFinished
+                              ? NeumorphicBorder(color: Colours.correct, width: 2.0)
+                              : const NeumorphicBorder.none(),
+                        ),
+                        child: SingleChildScrollView(
+                          controller: _controller,
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              ...state.guesses
+                                  .map(
+                                    (e) => FittedBox(
+                                      child: WordRow(
+                                        length: state.length,
+                                        content: e.content,
+                                        correct: e.correct,
+                                        semiCorrect: e.semiCorrect,
+                                        finalised: e.finalised,
+                                      ),
                                     ),
-                                  ),
-                                )
-                                .toList(),
-                            if (!state.gameFinished)
-                              FittedBox(
-                                child: WordRow(length: state.length, content: state.word, valid: !state.invalid),
-                              ),
-                          ],
+                                  )
+                                  .toList(),
+                              if (!state.gameFinished)
+                                FittedBox(
+                                  child: WordRow(length: state.length, content: state.word, valid: !state.invalid),
+                                ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
