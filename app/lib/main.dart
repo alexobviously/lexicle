@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:word_game/cubits/game_manager.dart';
-import 'package:word_game/home_view.dart';
+import 'package:word_game/views/home_view.dart';
+import 'package:word_game/views/solo_view.dart';
 import 'package:word_game/services/service_locator.dart';
 
 void main() async {
@@ -32,6 +33,11 @@ class MyApp extends StatelessWidget {
           dividerColor: Colors.grey.shade400,
         ),
         home: const HomeView(),
+        initialRoute: '/home',
+        routes: {
+          '/home': (ctx) => const HomeView(),
+          '/solo': (ctx) => const SoloView(),
+        },
         debugShowCheckedModeBanner: false,
       ),
     );

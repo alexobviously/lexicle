@@ -11,24 +11,14 @@ import 'package:word_game/ui/game_overview.dart';
 import 'package:word_game/ui/game_page.dart';
 import 'package:word_game/word_row.dart';
 
-class HomeView extends StatefulWidget {
-  const HomeView({Key? key}) : super(key: key);
+class SoloView extends StatefulWidget {
+  const SoloView({Key? key}) : super(key: key);
 
   @override
-  _HomeViewState createState() => _HomeViewState();
+  _SoloViewState createState() => _SoloViewState();
 }
 
-class _HomeViewState extends State<HomeView> {
-  late Mediator mediator;
-  late GameController gc;
-
-  @override
-  void initState() {
-    mediator = OfflineMediator(answer: 'hours');
-    gc = GameController(player: 'player', length: 5, mediator: mediator);
-    super.initState();
-  }
-
+class _SoloViewState extends State<SoloView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
