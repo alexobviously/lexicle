@@ -2,8 +2,9 @@ import 'package:common/common.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:word_game/cubits/game_controller.dart';
-import 'package:word_game/word_row.dart';
+import 'package:word_game/ui/word_row.dart';
 
 class GameOverview extends StatefulWidget {
   final GameController game;
@@ -37,13 +38,11 @@ class _GameOverviewState extends State<GameOverview> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return Neumorphic(
       padding: const EdgeInsets.all(2.0),
-      decoration: BoxDecoration(
-        color: Colors.grey[300],
-        borderRadius: BorderRadius.circular(6.0),
-        border: Border.all(color: Colors.grey[500]!),
-        // shape: BoxShape.circle,
+      style: const NeumorphicStyle(
+        depth: -10,
+        // border: NeumorphicBorder(color: Colors.black12, width: 1.0), // maybe?
       ),
       child: BlocBuilder<GameController, Game>(
         bloc: widget.game,

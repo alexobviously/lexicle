@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:word_game/app/colours.dart';
 
 class WordRow extends StatelessWidget {
@@ -47,35 +48,29 @@ class WordRow extends StatelessWidget {
   Widget _letter(BuildContext context, String letter, {Color? colour}) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: AnimatedContainer(
-        duration: Duration(milliseconds: valid ? 1000 : 250),
+      child: SizedBox(
         width: 60,
         height: 80,
-        padding: const EdgeInsets.all(12.0),
-        decoration: BoxDecoration(
-          color: colour ?? Colors.grey[300],
-          borderRadius: BorderRadius.circular(6.0),
-          border: (!valid || (!finalised && letter.isNotEmpty))
-              ? Border.all(color: valid ? Colors.grey.shade500 : Colours.invalid)
-              : null,
-          // shape: BoxShape.circle,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.shade500,
-              offset: const Offset(2, 2),
-              blurRadius: 12.0,
+        child: Neumorphic(
+          duration: Duration(milliseconds: valid ? 1000 : 250),
+          padding: const EdgeInsets.all(12.0),
+          style: NeumorphicStyle(
+            color: colour ?? Colors.grey[300],
+            border: (!valid || (!finalised && letter.isNotEmpty))
+                ? NeumorphicBorder(
+                    width: 1.0,
+                    color: valid ? Colors.grey.shade500 : Colours.invalid,
+                  )
+                : const NeumorphicBorder.none(),
+            boxShape: NeumorphicBoxShape.roundRect(BorderRadius.circular(6.0)),
+            depth: 4.0,
+            intensity: 0.6,
+          ),
+          child: Center(
+            child: Text(
+              letter,
+              style: Theme.of(context).textTheme.headline4,
             ),
-            const BoxShadow(
-              color: Colors.white,
-              offset: Offset(-2, -2),
-              blurRadius: 12.0,
-            ),
-          ],
-        ),
-        child: Center(
-          child: Text(
-            letter,
-            style: Theme.of(context).textTheme.headline4,
           ),
         ),
       ),

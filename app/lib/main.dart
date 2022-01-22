@@ -4,6 +4,7 @@ import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:word_game/cubits/game_manager.dart';
 import 'package:word_game/views/home_view.dart';
+import 'package:word_game/views/settings_view.dart';
 import 'package:word_game/views/solo_view.dart';
 import 'package:word_game/services/service_locator.dart';
 
@@ -28,25 +29,28 @@ class MyApp extends StatelessWidget {
       child: NeumorphicApp(
         title: 'CS:WO',
         debugShowCheckedModeBanner: false,
-        themeMode: ThemeMode.system,
+        themeMode: ThemeMode.light, // dark is so ugly
         theme: NeumorphicThemeData(
           baseColor: const Color(0xFFEEEEEE),
           lightSource: LightSource.topLeft,
           depth: 10,
           textTheme: GoogleFonts.dmSansTextTheme(),
           appBarTheme: appBarTheme,
+          boxShape: NeumorphicBoxShape.roundRect(BorderRadius.circular(25.0)),
         ),
-        darkTheme: NeumorphicThemeData(
-          baseColor: const Color(0xFF3E3E3E),
-          lightSource: LightSource.topLeft,
-          depth: 6,
-          textTheme: GoogleFonts.dmSansTextTheme(),
-          appBarTheme: appBarTheme,
-        ),
+        // darkTheme: NeumorphicThemeData(
+        //   baseColor: const Color(0xFF3E3E3E),
+        //   lightSource: LightSource.topLeft,
+        //   depth: 6,
+        //   textTheme: GoogleFonts.dmSansTextTheme(),
+        //   appBarTheme: appBarTheme,
+        //   boxShape: NeumorphicBoxShape.roundRect(BorderRadius.circular(25.0)),
+        // ),
         initialRoute: '/home',
         routes: {
           '/home': (ctx) => const HomeView(),
           '/solo': (ctx) => const SoloView(),
+          '/settings': (ctx) => const SettingsView(),
         },
       ),
       // child: MaterialApp(

@@ -4,7 +4,7 @@ import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:word_game/app/colours.dart';
 import 'package:word_game/cubits/game_controller.dart';
 import 'package:word_game/cubits/game_manager.dart';
-import 'package:word_game/game_keyboard.dart';
+import 'package:word_game/ui/game_keyboard.dart';
 import 'package:word_game/main.dart';
 import 'package:word_game/mediator/mediator.dart';
 import 'package:word_game/mediator/offline_mediator.dart';
@@ -13,7 +13,7 @@ import 'package:word_game/ui/game_creator.dart';
 import 'package:word_game/ui/game_overview.dart';
 import 'package:word_game/ui/game_page.dart';
 import 'package:word_game/ui/standard_scaffold.dart';
-import 'package:word_game/word_row.dart';
+import 'package:word_game/ui/word_row.dart';
 
 class SoloView extends StatefulWidget {
   const SoloView({Key? key}) : super(key: key);
@@ -26,6 +26,7 @@ class _SoloViewState extends State<SoloView> {
   @override
   Widget build(BuildContext context) {
     return StandardScaffold(
+      title: 'Solo Play',
       body: Center(
         child: SafeArea(
           child: BlocBuilder<GameManager, GameManagerState>(
@@ -42,7 +43,7 @@ class _SoloViewState extends State<SoloView> {
                                   child: GameOverview(e, key: ValueKey('go_${e.state.id}')),
                                   onTap: () => Navigator.of(context).push(
                                     MaterialPageRoute(
-                                      builder: (context) => GamePage(game: e),
+                                      builder: (context) => GamePage(game: e, title: '${e.state.length} letter game'),
                                     ),
                                   ),
                                 ))

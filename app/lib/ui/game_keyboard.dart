@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:word_game/app/colours.dart';
 import 'package:word_game/cubits/game_controller.dart';
@@ -80,6 +81,30 @@ class GameKeyboard extends StatelessWidget {
   }
 
   Widget _key(BuildContext context, String letter, {Color? colour}) {
+    // return Padding(
+    //   padding: const EdgeInsets.all(6.0),
+    //   child: Container(
+    //     width: 50,
+    //     height: 75,
+    //     // padding: const EdgeInsets.all(12.0),
+    //     child: NeumorphicButton(
+    //       onPressed: () => _onTap(letter),
+    //       // duration: const Duration(milliseconds: 1000),
+    //       style: NeumorphicStyle(
+    //         color: colour ?? Colors.grey[300],
+    //         boxShape: NeumorphicBoxShape.roundRect(BorderRadius.circular(6.0)),
+    //         depth: 4.0,
+    //         intensity: 0.6,
+    //       ),
+    //       child: Center(
+    //         child: Text(
+    //           letter,
+    //           style: Theme.of(context).textTheme.headline4,
+    //         ),
+    //       ),
+    //     ),
+    //   ),
+    // );
     return Padding(
       padding: const EdgeInsets.all(6.0),
       child: GestureDetector(

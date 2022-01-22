@@ -4,12 +4,14 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:word_game/cubits/game_controller.dart';
-import 'package:word_game/game_keyboard.dart';
-import 'package:word_game/word_row.dart';
+import 'package:word_game/ui/game_keyboard.dart';
+import 'package:word_game/ui/standard_scaffold.dart';
+import 'package:word_game/ui/word_row.dart';
 
 class GamePage extends StatefulWidget {
   final GameController game;
-  const GamePage({Key? key, required this.game}) : super(key: key);
+  final String? title;
+  const GamePage({Key? key, required this.game, this.title}) : super(key: key);
 
   @override
   _GamePageState createState() => _GamePageState();
@@ -54,8 +56,8 @@ class _GamePageState extends State<GamePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Theme.of(context).backgroundColor,
+    return StandardScaffold(
+      title: widget.title,
       body: Center(
         child: SafeArea(
           child: BlocBuilder<GameController, Game>(
@@ -64,22 +66,22 @@ class _GamePageState extends State<GamePage> {
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Container(
-                      padding: const EdgeInsets.all(10.0),
-                      child: Row(
-                        children: [
-                          IconButton(
-                            onPressed: () => Navigator.pop(context),
-                            icon: const Icon(MdiIcons.arrowLeft),
-                          ),
-                          Spacer(),
-                          Text(
-                            'Game: ${state.length} letters',
-                            style: Theme.of(context).textTheme.headline4,
-                          ),
-                        ],
-                      ),
-                    ),
+                    // Container(
+                    //   padding: const EdgeInsets.all(10.0),
+                    //   child: Row(
+                    //     children: [
+                    //       IconButton(
+                    //         onPressed: () => Navigator.pop(context),
+                    //         icon: const Icon(MdiIcons.arrowLeft),
+                    //       ),
+                    //       Spacer(),
+                    //       Text(
+                    //         'Game: ${state.length} letters',
+                    //         style: Theme.of(context).textTheme.headline4,
+                    //       ),
+                    //     ],
+                    //   ),
+                    // ),
                     Expanded(
                       child: SingleChildScrollView(
                         controller: _controller,
