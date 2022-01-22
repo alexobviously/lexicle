@@ -43,9 +43,9 @@ class _GameOverviewState extends State<GameOverview> {
       style: NeumorphicStyle(
         depth: -10,
         color: widget.game.state.gameFinished ? Colours.correct.withAlpha(100) : null,
-        border: widget.game.state.gameFinished
-            ? NeumorphicBorder(color: Colours.correct, width: 2.0)
-            : const NeumorphicBorder.none(),
+        // border: widget.game.state.gameFinished
+        //     ? NeumorphicBorder(color: Colours.correct, width: 2.0)
+        //     : const NeumorphicBorder.none(),
         // NeumorphicBorder(color: Colors.black12, width: 0.5), // maybe?
       ),
       child: BlocBuilder<GameController, Game>(
