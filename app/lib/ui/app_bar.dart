@@ -1,5 +1,6 @@
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:word_game/app/routes.dart';
 
 class MyAppBar extends NeumorphicAppBar {
   MyAppBar(BuildContext context, {String? title, bool showBackButton = true, Key? key})
@@ -18,7 +19,7 @@ class MyAppBar extends NeumorphicAppBar {
               : null,
           actions: [
             NeumorphicButton(
-              onPressed: () => Navigator.of(context).pushNamed('/settings'),
+              onPressed: () => Navigator.of(context).pushNamed(Routes.settings),
               child: const Icon(MdiIcons.cog),
             ),
           ],

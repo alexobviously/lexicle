@@ -60,6 +60,17 @@ class Dictionary with ReadyManager {
     return getDict(dict)[length]![i];
   }
 
+  Iterable<String> getSuggestions(
+    String start,
+    int length, {
+    int limit = 30,
+    DictionaryType dict = DictionaryType.expanded,
+  }) {
+    assert(length >= minimumLength && length <= maximumLength, 'Invalid length');
+    final _all = getDict(dict)[length]!;
+    return _all.where((e) => e.startsWith(start)).take(limit);
+  }
+
   Map<int, List<String>> getDict(DictionaryType dict) {
     switch (dict) {
       case DictionaryType.common:

@@ -9,6 +9,8 @@ class WordRow extends StatelessWidget {
   final List<int> wrong;
   final bool finalised;
   final bool valid;
+  final Color? borderColour;
+  final double? borderWidth;
   const WordRow({
     Key? key,
     required this.length,
@@ -18,6 +20,8 @@ class WordRow extends StatelessWidget {
     this.wrong = const [],
     this.finalised = false,
     this.valid = true,
+    this.borderColour,
+    this.borderWidth,
   })  : assert(content.length <= length),
         super(key: key);
 
@@ -57,8 +61,8 @@ class WordRow extends StatelessWidget {
             color: colour ?? Colors.grey[300],
             border: (!valid || (!finalised && letter.isNotEmpty))
                 ? NeumorphicBorder(
-                    width: 1.0,
-                    color: valid ? Colors.grey.shade500 : Colours.invalid,
+                    width: borderWidth ?? 1.0,
+                    color: borderColour ?? (valid ? Colors.grey.shade500 : Colours.invalid),
                   )
                 : const NeumorphicBorder.none(),
             boxShape: NeumorphicBoxShape.roundRect(BorderRadius.circular(6.0)),

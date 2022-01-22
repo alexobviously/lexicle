@@ -1,7 +1,9 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:word_game/app/routes.dart';
 import 'package:word_game/cubits/game_manager.dart';
+import 'package:word_game/views/dict_search_view.dart';
 import 'package:word_game/views/home_view.dart';
 import 'package:word_game/views/settings_view.dart';
 import 'package:word_game/views/solo_view.dart';
@@ -45,11 +47,12 @@ class MyApp extends StatelessWidget {
         //   appBarTheme: appBarTheme,
         //   boxShape: NeumorphicBoxShape.roundRect(BorderRadius.circular(25.0)),
         // ),
-        initialRoute: '/home',
+        initialRoute: Routes.home,
         routes: {
-          '/home': (ctx) => const HomeView(),
-          '/solo': (ctx) => const SoloView(),
-          '/settings': (ctx) => const SettingsView(),
+          Routes.home: (ctx) => const HomeView(),
+          Routes.solo: (ctx) => const SoloView(),
+          Routes.settings: (ctx) => const SettingsView(),
+          Routes.dict: (ctx) => const DictSearchView(),
         },
       ),
       // child: MaterialApp(

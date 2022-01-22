@@ -1,4 +1,5 @@
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:word_game/app/routes.dart';
 import 'package:word_game/ui/standard_scaffold.dart';
 
 class HomeView extends StatefulWidget {
@@ -26,12 +27,21 @@ class _HomeViewState extends State<HomeView> {
               ),
               Container(height: 150),
               NeumorphicButton(
-                onPressed: () => Navigator.of(context).pushNamed('/solo'),
+                onPressed: () => Navigator.of(context).pushNamed(Routes.solo),
                 style: NeumorphicStyle(
                   shape: NeumorphicShape.flat,
                   boxShape: NeumorphicBoxShape.roundRect(BorderRadius.circular(16)),
                 ),
                 child: Text('Play Offline', style: textTheme.headline6),
+              ),
+              Container(height: 20),
+              NeumorphicButton(
+                onPressed: () => Navigator.of(context).pushNamed(Routes.dict),
+                style: NeumorphicStyle(
+                  shape: NeumorphicShape.flat,
+                  boxShape: NeumorphicBoxShape.roundRect(BorderRadius.circular(16)),
+                ),
+                child: Text('Dictionary', style: textTheme.headline6),
               ),
             ],
           ),
