@@ -8,16 +8,17 @@ class GameController extends Cubit<Game> {
       : super(Game.initial(player, length));
 
   void addLetter(String l) {
-    if (state.word.length >= state.length) return;
+    if (state.word.length >= state.length || state.gameFinished) return;
     emit(state.copyWith(current: WordData.current('${state.word}$l')));
   }
 
   void backspace() {
-    if (state.word.isEmpty) return;
+    if (state.word.isEmpty || state.gameFinished) return;
     emit(state.copyWith(current: WordData.current(state.word.substring(0, state.word.length - 1))));
   }
 
   void enter() async {
+    if (state.gameFinished) return;
     final _result = await mediator.validateWord(state.word);
     if (!_result.valid) {
       emit(state.copyWithInvalid());
