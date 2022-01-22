@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:word_game/cubits/game_manager.dart';
 import 'package:word_game/views/home_view.dart';
@@ -24,22 +25,55 @@ class MyApp extends StatelessWidget {
           create: (_) => GameManager(),
         ),
       ],
-      child: MaterialApp(
-        title: 'Word Game',
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
-          backgroundColor: Colors.grey.shade300,
-          fontFamily: GoogleFonts.dmSans().fontFamily,
-          dividerColor: Colors.grey.shade400,
+      child: NeumorphicApp(
+        title: 'CS:WO',
+        debugShowCheckedModeBanner: false,
+        themeMode: ThemeMode.system,
+        theme: NeumorphicThemeData(
+          baseColor: const Color(0xFFEEEEEE),
+          lightSource: LightSource.topLeft,
+          depth: 10,
+          textTheme: GoogleFonts.dmSansTextTheme(),
+          appBarTheme: appBarTheme,
         ),
-        home: const HomeView(),
+        darkTheme: NeumorphicThemeData(
+          baseColor: const Color(0xFF3E3E3E),
+          lightSource: LightSource.topLeft,
+          depth: 6,
+          textTheme: GoogleFonts.dmSansTextTheme(),
+          appBarTheme: appBarTheme,
+        ),
         initialRoute: '/home',
         routes: {
           '/home': (ctx) => const HomeView(),
           '/solo': (ctx) => const SoloView(),
         },
-        debugShowCheckedModeBanner: false,
       ),
+      // child: MaterialApp(
+      //   title: 'Word Game',
+      //   theme: ThemeData(
+      //     primarySwatch: Colors.blue,
+      //     backgroundColor: Colors.grey.shade300,
+      // fontFamily: GoogleFonts.dmSans().fontFamily,
+      //     dividerColor: Colors.grey.shade400,
+      //   ),
+      //   home: const HomeView(),
+      // initialRoute: '/home',
+      // routes: {
+      //   '/home': (ctx) => const HomeView(),
+      //   '/solo': (ctx) => const SoloView(),
+      // },
+      //   debugShowCheckedModeBanner: false,
+      // ),
     );
   }
 }
+
+const appBarTheme = NeumorphicAppBarThemeData(
+  buttonStyle: NeumorphicStyle(
+    boxShape: NeumorphicBoxShape.circle(),
+    depth: 2.0,
+  ),
+  textStyle: TextStyle(color: Colors.black54),
+  iconTheme: IconThemeData(color: Colors.black54, size: 30),
+);

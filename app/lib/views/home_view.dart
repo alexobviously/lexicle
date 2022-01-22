@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:word_game/ui/app_bar.dart';
 import 'package:word_game/ui/neu_button.dart';
+import 'package:word_game/ui/standard_scaffold.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({Key? key}) : super(key: key);
@@ -13,8 +16,8 @@ class _HomeViewState extends State<HomeView> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final textTheme = theme.textTheme;
-    return Scaffold(
-      backgroundColor: theme.backgroundColor,
+    return StandardScaffold(
+      showBackButton: false,
       body: Center(
         child: SafeArea(
           child: Column(
@@ -25,12 +28,13 @@ class _HomeViewState extends State<HomeView> {
                 textAlign: TextAlign.center,
               ),
               Container(height: 150),
-              NeuButton(
+              NeumorphicButton(
                 onPressed: () => Navigator.of(context).pushNamed('/solo'),
-                child: Text('Play Offline', style: textTheme.headline5),
-                elevation: 2.0,
-                rounding: 25.0,
-                padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
+                style: NeumorphicStyle(
+                  shape: NeumorphicShape.flat,
+                  boxShape: NeumorphicBoxShape.roundRect(BorderRadius.circular(16)),
+                ),
+                child: Text('Play Offline', style: textTheme.headline6),
               ),
             ],
           ),
