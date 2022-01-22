@@ -48,70 +48,11 @@ class _SoloViewState extends State<SoloView> {
                       ),
                     ),
                   ),
-                  // ListView.builder(
-                  //   shrinkWrap: true,
-                  //   itemCount: state.games.length,
-                  //   itemBuilder: (context, i) {
-                  //     return Padding(
-                  //       padding: const EdgeInsets.all(24.0),
-                  //       child: _gameTile(context, state.games[i], 'Game ${i + 1}'),
-                  //     );
-                  //     return Center(
-                  //       child: GestureDetector(
-                  //         child: Text('Game ${i + 1}'),
-                  //         onTap: () => Navigator.of(context).push(
-                  //           MaterialPageRoute(
-                  //             builder: (context) => GamePage(game: state.games[i]),
-                  //           ),
-                  //         ),
-                  //       ),
-                  //     );
-                  //   },
-                  // ),
-                  GameCreator(),
+                  const GameCreator(),
                 ],
               );
             },
           ),
-        ),
-      ),
-    );
-  }
-
-  Widget _gameTile(BuildContext context, GameController gc, String title) {
-    final theme = Theme.of(context);
-    final textTheme = theme.textTheme;
-    return GestureDetector(
-      onTap: () => Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (context) => GamePage(game: gc),
-        ),
-      ),
-      child: Container(
-        width: MediaQuery.of(context).size.width * 0.8,
-        padding: const EdgeInsets.all(12.0),
-        decoration: BoxDecoration(
-          color: Colors.grey[300],
-          borderRadius: BorderRadius.circular(6.0),
-          // shape: BoxShape.circle,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.shade500,
-              offset: const Offset(2, 2),
-              blurRadius: 12.0,
-            ),
-            // ignore: prefer_const_constructors
-            BoxShadow(
-              color: Colors.white,
-              offset: const Offset(-2, -2),
-              blurRadius: 12.0,
-            ),
-          ],
-        ),
-        child: Column(
-          children: [
-            Text(title, style: textTheme.headline5),
-          ],
         ),
       ),
     );
