@@ -39,7 +39,7 @@ class _GameOverviewState extends State<GameOverview> {
   @override
   Widget build(BuildContext context) {
     return Neumorphic(
-      padding: const EdgeInsets.all(2.0),
+      padding: const EdgeInsets.symmetric(horizontal: 6.0),
       style: NeumorphicStyle(
         depth: -10,
         color: widget.game.state.gameFinished ? Colours.correct.withAlpha(100) : null,
@@ -54,6 +54,7 @@ class _GameOverviewState extends State<GameOverview> {
           return ListView(
             controller: _controller,
             children: [
+              Container(height: 10),
               ...state.guesses
                   .map(
                     (e) => FittedBox(
@@ -70,7 +71,8 @@ class _GameOverviewState extends State<GameOverview> {
               if (!state.gameFinished)
                 FittedBox(
                   child: WordRow(length: state.length, content: state.word),
-                )
+                ),
+              Container(height: 10),
             ],
           );
         },
