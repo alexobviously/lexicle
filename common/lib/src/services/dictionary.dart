@@ -1,8 +1,6 @@
 import 'dart:math';
-
-import 'package:flutter/services.dart';
+import 'package:common/common.dart';
 import 'package:validators/validators.dart';
-import 'package:word_game/extensions/ready_mixin.dart';
 
 class Dictionary with ReadyManager {
   static const int minimumLength = 4;
@@ -19,21 +17,20 @@ class Dictionary with ReadyManager {
 
   @override
   Future<bool> initialise() async {
-    for (int i = minimumLength; i <= maximumLength; i++) {
-      words[i] = [];
-      commonWords[i] = [];
-    }
-    await loadDictionary('assets/words_alpha.txt', DictionaryType.expanded);
-    await loadDictionary('assets/words_common.txt', DictionaryType.common);
+    clear();
     setReady();
     return true;
   }
 
-  Future<void> loadDictionary(String path, DictionaryType dict) async {
-    print('%% [${elapsed}ms] loading dictionary ${dict.name}');
-    String everything = await rootBundle.loadString(path);
-    print('%% [${elapsed}ms] dict file loaded: ${everything.substring(0, 50)}...');
-    List<String> allWords = everything.split('\n');
+  void clear() {
+    for (int i = minimumLength; i <= maximumLength; i++) {
+      words[i] = [];
+      commonWords[i] = [];
+    }
+  }
+
+  Future<void> parseDictionary(String data, DictionaryType dict) async {
+    List<String> allWords = data.split('\n');
     print('%% [${elapsed}ms] words split: ${allWords.length}');
     final _words = getDict(dict);
     for (String w in allWords) {

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
-import 'package:word_game/cubits/game_controller.dart';
 import 'package:word_game/cubits/game_manager.dart';
 import 'package:word_game/ui/game_creator.dart';
 import 'package:word_game/ui/game_overview.dart';

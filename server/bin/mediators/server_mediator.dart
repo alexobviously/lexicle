@@ -1,9 +1,9 @@
 import 'package:common/common.dart';
-import 'package:word_game/services/service_locator.dart';
+import '../services/service_locator.dart';
 
-class OfflineMediator implements Mediator {
+class ServerMediator implements Mediator {
   final String answer;
-  OfflineMediator({required this.answer});
+  ServerMediator({required this.answer});
 
   @override
   Future<WordValidationResult> validateWord(String word) async {

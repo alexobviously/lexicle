@@ -7,6 +7,7 @@ environment:
   sdk: '>=2.15.1 <3.0.0'
 
 dependencies:
+  bloc: ^8.0.2
   copy_with_extension: ^2.0.2
   mongo_dart: ^0.7.4
   validators: ^3.0.0

@@ -3,8 +3,8 @@ import 'dictionary.dart';
 
 GetIt getIt = GetIt.I;
 
-Dictionary dictionary() => getIt.get<Dictionary>();
+ServerDictionary dictionary() => getIt.get<ServerDictionary>();
 
 Future<void> setUpServiceLocator() async {
-  getIt.registerSingleton<Dictionary>(Dictionary());
+  getIt.registerSingleton<ServerDictionary>(ServerDictionary());
 }

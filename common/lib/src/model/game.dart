@@ -35,11 +35,13 @@ class Game {
   })  : this.id = id ?? ObjectId().id.hexString,
         this.creator = creator ?? player;
 
-  factory Game.initial(String player, int length) => Game(
+  factory Game.initial(String player, int length, {String? creator, String? id}) => Game(
         answer: '*' * length,
         guesses: [],
         current: WordData.blank(),
         player: player,
+        creator: creator,
+        id: id,
       );
 
   static const __id = 'id';

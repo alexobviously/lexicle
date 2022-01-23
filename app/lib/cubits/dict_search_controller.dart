@@ -1,5 +1,5 @@
 import 'package:bloc/bloc.dart';
-import 'package:word_game/services/dictionary.dart';
+import 'package:common/common.dart';
 import 'package:word_game/services/service_locator.dart';
 
 class DictSearchController extends Cubit<DictSearchState> {
