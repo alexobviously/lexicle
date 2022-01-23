@@ -8,6 +8,8 @@ import 'package:word_game/ui/game_keyboard.dart';
 import 'package:word_game/ui/standard_scaffold.dart';
 import 'package:word_game/ui/word_row.dart';
 
+import '../game_end.dart';
+
 class GamePage extends StatefulWidget {
   final GameController game;
   final String? title;
@@ -122,17 +124,28 @@ class _GamePageState extends State<GamePage> {
                       width: MediaQuery.of(context).size.width,
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: FittedBox(
+                        child: AnimatedCrossFade(
+                          duration: Duration(milliseconds: 1000),
+                          firstChild: FittedBox(
                             child: GameKeyboard(
-                          onTap: _addLetter,
-                          onBackspace: _onBackspace,
-                          onEnter: _onEnter,
-                          correct: state.correctLetters,
-                          semiCorrect: state.semiCorrectLetters,
-                          wrong: state.wrongLetters,
-                          wordReady: state.wordReady,
-                          wordEmpty: state.wordEmpty,
-                        )),
+                              onTap: _addLetter,
+                              onBackspace: _onBackspace,
+                              onEnter: _onEnter,
+                              correct: state.correctLetters,
+                              semiCorrect: state.semiCorrectLetters,
+                              wrong: state.wrongLetters,
+                              wordReady: state.wordReady,
+                              wordEmpty: state.wordEmpty,
+                            ),
+                          ),
+                          secondChild: SizedBox(
+                            width: MediaQuery.of(context).size.width - 16.0,
+                            child: GameEnd(
+                              guesses: state.guesses.length,
+                            ),
+                          ),
+                          crossFadeState: !state.gameFinished ? CrossFadeState.showFirst : CrossFadeState.showSecond,
+                        ),
                       ),
                     ),
                   ],
