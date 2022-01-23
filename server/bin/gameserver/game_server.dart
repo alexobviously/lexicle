@@ -48,11 +48,7 @@ class GameServer with ReadyManager {
           guesses: [],
           current: WordData.blank(),
         );
-        games[gid] = GameController(
-          player: p,
-          length: _group.words[c]!.length,
-          mediator: ServerMediator(answer: _group.words[c]!),
-        );
+        games[gid] = GameController(g, ServerMediator(answer: _group.words[c]!));
         playerGames.add(gid);
       }
       _games[p] = playerGames;

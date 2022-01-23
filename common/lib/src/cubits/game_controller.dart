@@ -3,8 +3,9 @@ import 'package:common/common.dart';
 
 class GameController extends Cubit<Game> {
   final Mediator mediator;
-  GameController({required String player, required int length, required this.mediator})
-      : super(Game.initial(player, length));
+  GameController(Game game, this.mediator) : super(game);
+  factory GameController.initial({required String player, required int length, required Mediator mediator}) =>
+      GameController(Game.initial(player, length), mediator);
 
   void addLetter(String l) {
     if (state.word.length >= state.length || state.gameFinished) return;

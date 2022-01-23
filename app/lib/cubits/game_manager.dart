@@ -9,7 +9,7 @@ class GameManager extends Cubit<GameManagerState> {
   void createLocalGame(GameConfig config) {
     String _answer = dictionary().randomWord(config.wordLength);
     Mediator _mediator = OfflineMediator(answer: _answer);
-    GameController _gc = GameController(player: 'player', length: config.wordLength, mediator: _mediator);
+    GameController _gc = GameController.initial(player: 'player', length: config.wordLength, mediator: _mediator);
     List<GameController> _games = List.from(state.games);
     _games.add(_gc);
     emit(state.copyWith(games: _games));
