@@ -23,13 +23,13 @@ class _GamePageState extends State<GamePage> {
 
   final ScrollController _controller = ScrollController();
 
-  void _scrollDown() {
+  void _scrollDown([Duration duration = const Duration(milliseconds: 250)]) {
     SchedulerBinding.instance!.addPostFrameCallback(
       (_) {
         if (_controller.positions.isEmpty) return; // ???
         _controller.animateTo(
           _controller.position.maxScrollExtent,
-          duration: const Duration(milliseconds: 250),
+          duration: duration,
           curve: Curves.fastOutSlowIn,
         );
       },
@@ -39,6 +39,7 @@ class _GamePageState extends State<GamePage> {
   @override
   void initState() {
     widget.game.numRowsStream.listen((_) => _scrollDown());
+    WidgetsBinding.instance!.addPostFrameCallback((_) => _scrollDown(Duration(milliseconds: 750)));
     super.initState();
   }
 
@@ -67,56 +68,45 @@ class _GamePageState extends State<GamePage> {
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    // Container(
-                    //   padding: const EdgeInsets.all(10.0),
-                    //   child: Row(
-                    //     children: [
-                    //       IconButton(
-                    //         onPressed: () => Navigator.pop(context),
-                    //         icon: const Icon(MdiIcons.arrowLeft),
-                    //       ),
-                    //       Spacer(),
-                    //       Text(
-                    //         'Game: ${state.length} letters',
-                    //         style: Theme.of(context).textTheme.headline4,
-                    //       ),
-                    //     ],
-                    //   ),
-                    // ),
                     Expanded(
-                      child: Neumorphic(
-                        padding: const EdgeInsets.all(8.0),
-                        duration: const Duration(milliseconds: 2000),
-                        style: NeumorphicStyle(
-                          depth: -10,
-                          color: state.gameFinished ? Colours.correct.withAlpha(100) : null,
-                          border: state.gameFinished
-                              ? NeumorphicBorder(color: Colours.correct, width: 2.0)
-                              : const NeumorphicBorder.none(),
-                        ),
-                        child: SingleChildScrollView(
-                          controller: _controller,
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              ...state.guesses
-                                  .map(
-                                    (e) => FittedBox(
-                                      child: WordRow(
-                                        length: state.length,
-                                        content: e.content,
-                                        correct: e.correct,
-                                        semiCorrect: e.semiCorrect,
-                                        finalised: e.finalised,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                        child: Neumorphic(
+                          padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                          duration: const Duration(milliseconds: 2000),
+                          style: NeumorphicStyle(
+                            depth: -10,
+                            color: state.gameFinished ? Colours.correct.withAlpha(100) : null,
+                            border: state.gameFinished
+                                ? NeumorphicBorder(color: Colours.correct, width: 2.0)
+                                : const NeumorphicBorder.none(),
+                          ),
+                          child: SingleChildScrollView(
+                            controller: _controller,
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Container(height: 16),
+                                ...state.guesses
+                                    .map(
+                                      (e) => FittedBox(
+                                        child: WordRow(
+                                          length: state.length,
+                                          content: e.content,
+                                          correct: e.correct,
+                                          semiCorrect: e.semiCorrect,
+                                          finalised: e.finalised,
+                                        ),
                                       ),
-                                    ),
-                                  )
-                                  .toList(),
-                              if (!state.gameFinished)
-                                FittedBox(
-                                  child: WordRow(length: state.length, content: state.word, valid: !state.invalid),
-                                ),
-                            ],
+                                    )
+                                    .toList(),
+                                if (!state.gameFinished)
+                                  FittedBox(
+                                    child: WordRow(length: state.length, content: state.word, valid: !state.invalid),
+                                  ),
+                                Container(height: 16),
+                              ],
+                            ),
                           ),
                         ),
                       ),
