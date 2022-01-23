@@ -64,6 +64,8 @@ class _GameOverviewState extends State<GameOverview> {
                         correct: e.correct,
                         semiCorrect: e.semiCorrect,
                         finalised: e.finalised,
+                        shape: NeumorphicShape.convex,
+                        surfaceIntensity: 0.15,
                       ),
                     ),
                   )

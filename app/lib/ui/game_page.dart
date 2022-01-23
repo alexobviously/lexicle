@@ -96,13 +96,21 @@ class _GamePageState extends State<GamePage> {
                                           correct: e.correct,
                                           semiCorrect: e.semiCorrect,
                                           finalised: e.finalised,
+                                          shape: NeumorphicShape.convex,
+                                          surfaceIntensity: e.isCorrect ? 0.4 : 0.25,
                                         ),
                                       ),
                                     )
                                     .toList(),
                                 if (!state.gameFinished)
                                   FittedBox(
-                                    child: WordRow(length: state.length, content: state.word, valid: !state.invalid),
+                                    child: WordRow(
+                                      length: state.length,
+                                      content: state.word,
+                                      valid: !state.invalid,
+                                      surfaceIntensity: 0,
+                                      shape: NeumorphicShape.convex,
+                                    ),
                                   ),
                                 Container(height: 16),
                               ],

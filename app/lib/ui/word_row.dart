@@ -11,6 +11,8 @@ class WordRow extends StatelessWidget {
   final bool valid;
   final Color? borderColour;
   final double? borderWidth;
+  final NeumorphicShape shape;
+  final double surfaceIntensity;
   const WordRow({
     Key? key,
     required this.length,
@@ -22,6 +24,8 @@ class WordRow extends StatelessWidget {
     this.valid = true,
     this.borderColour,
     this.borderWidth,
+    this.shape = NeumorphicShape.flat,
+    this.surfaceIntensity = 0.25,
   })  : assert(content.length <= length),
         super(key: key);
 
@@ -58,6 +62,8 @@ class WordRow extends StatelessWidget {
           duration: Duration(milliseconds: valid ? 1000 : 250),
           padding: const EdgeInsets.all(12.0),
           style: NeumorphicStyle(
+            surfaceIntensity: surfaceIntensity,
+            shape: shape,
             color: colour ?? Colors.grey[300],
             border: (!valid || (!finalised && letter.isNotEmpty))
                 ? NeumorphicBorder(
