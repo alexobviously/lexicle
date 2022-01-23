@@ -5,5 +5,6 @@ part 'game_config.g.dart';
 @CopyWith()
 class GameConfig {
   final int wordLength;
-  GameConfig({required this.wordLength});
+  const GameConfig({required this.wordLength});
+  GameConfig.initial() : this(wordLength: 5);
 }
