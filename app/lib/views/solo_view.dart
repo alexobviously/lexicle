@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:word_game/cubits/game_controller.dart';
@@ -16,6 +17,27 @@ class SoloView extends StatefulWidget {
 }
 
 class _SoloViewState extends State<SoloView> {
+  final ScrollController _controller = ScrollController();
+
+  void _scrollUp([Duration duration = const Duration(milliseconds: 500)]) {
+    SchedulerBinding.instance!.addPostFrameCallback(
+      (_) {
+        if (_controller.positions.isEmpty) return; // ???
+        _controller.animateTo(
+          _controller.position.minScrollExtent,
+          duration: duration,
+          curve: Curves.fastOutSlowIn,
+        );
+      },
+    );
+  }
+
+  @override
+  void initState() {
+    BlocProvider.of<GameManager>(context).numGamesStream.listen((_) => _scrollUp());
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return StandardScaffold(
@@ -30,6 +52,7 @@ class _SoloViewState extends State<SoloView> {
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: GridView.count(
+                        controller: _controller,
                         shrinkWrap: true,
                         children: state.games.reversed
                             .map((e) => GestureDetector(

@@ -16,6 +16,8 @@ class GameManager extends Cubit<GameManagerState> {
     _games.add(_gc);
     emit(state.copyWith(games: _games));
   }
+
+  Stream<int> get numGamesStream => stream.map((e) => e.games.length).distinct();
 }
 
 class GameManagerState {
