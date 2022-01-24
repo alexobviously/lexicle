@@ -22,6 +22,7 @@ class GameGroup {
   final Map<String, List<String>> games;
 
   bool get canBegin => state == MatchState.lobby && words.length == players.length && players.length > 1;
+  Map<String, String> get hiddenWords => words.map((k, v) => MapEntry(k, '*' * v.length));
 
   GameGroup({
     required this.id,
@@ -61,7 +62,7 @@ class GameGroup {
     );
   }
 
-  Map<String, dynamic> toMap() {
+  Map<String, dynamic> toMap({bool hideAnswers = false}) {
     return {
       __id: parseObjectId(id),
       __title: title,
@@ -70,7 +71,7 @@ class GameGroup {
       if (code != null) __code: code,
       __state: state,
       __players: players,
-      __words: words,
+      __words: hideAnswers ? hiddenWords : words,
       __games: games,
     };
   }
