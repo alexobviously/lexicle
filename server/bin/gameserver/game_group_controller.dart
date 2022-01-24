@@ -9,6 +9,7 @@ class GameGroupController extends Cubit<GameGroup> {
 
   String get id => state.id;
   Map<String, dynamic> toMap() => state.toMap();
+  List<String> get unreadyPlayers => state.players.where((e) => !state.words.containsKey(e)).toList();
 
   Result<bool> addPlayer(String id) {
     if (state.players.contains(id)) return Result.error('already_in_group');
@@ -42,6 +43,9 @@ class GameGroupController extends Cubit<GameGroup> {
   Result<bool> get canStart {
     if (state.state > MatchState.lobby) return Result.error('group_started');
     if (state.players.length < 2) return Result.error('not_enough_players');
+    if (unreadyPlayers.isNotEmpty) {
+      return Result.error('players_not_ready', unreadyPlayers);
+    }
     return Result.ok(true);
   }
 
@@ -55,6 +59,7 @@ class GameGroupController extends Cubit<GameGroup> {
   Result<bool> setWord(String player, String word) {
     if (state.state > MatchState.lobby) return Result.error('group_started');
     if (!state.players.contains(player)) return Result.error('not_in_group');
+    if (word.length != state.config.wordLength) return Result.error('invalid_word');
     if (!dictionary().isValidWord(word)) return Result.error('invalid_word');
     emit(state.copyWith(words: Map.from(state.words)..[player] = word));
     return Result.ok(true);

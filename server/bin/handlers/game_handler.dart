@@ -112,7 +112,7 @@ class GameHandler {
       // TODO: authenticate this
       final _result = gameServer().startGroup(id);
       if (!_result.ok) {
-        return HttpUtils.buildErrorResponse(_result.error!);
+        return HttpUtils.buildErrorResponse(_result.error!, _result.warnings);
       } else {
         return HttpUtils.buildResponse(data: {
           'group': _result.object!.toMap(),

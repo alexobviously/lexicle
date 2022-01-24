@@ -93,7 +93,7 @@ class GameServer with ReadyManager {
     GameGroupController ggc = gameGroups[id]!;
     final _result = ggc.canStart;
     if (!_result.ok) {
-      return Result.error(_result.error!);
+      return Result.error(_result.error!, _result.warnings);
     }
     ggc.start(createGamesForGroup(ggc));
     return Result.ok(ggc);
