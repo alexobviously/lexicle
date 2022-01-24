@@ -114,6 +114,7 @@ class GameServer with ReadyManager {
           creator: c,
           guesses: [],
           current: WordData.blank(),
+          group: controller.id,
         );
         games[gid] = GameController(g, ServerMediator(answer: _group.words[c]!));
         playerGames.add(gid);
@@ -131,4 +132,37 @@ class GameServer with ReadyManager {
   }
 
   List<String> getAllGroupIds() => gameGroups.entries.map((e) => e.value.id).toList();
+
+  void updateGroupStatus(String id) {
+    if (!gameGroups.containsKey(id)) return;
+    GameGroupController ggc = gameGroups[id]!;
+    if (ggc.state.state == MatchState.playing) {
+      bool finished = true;
+      for (final playerGames in ggc.state.games.entries) {
+        if (!finished) break;
+        for (String g in playerGames.value) {
+          final _result = getGameController(g);
+          if (_result.ok) {
+            if (!_result.object!.state.gameFinished) {
+              finished = false;
+              break;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  Future<Result<Game>> makeGuess(String gameId, String word) async {
+    if (!games.containsKey(gameId)) return Result.error('not_found');
+    GameController gc = games[gameId]!;
+    final _result = await gc.submitWord(word);
+    // note: invalid words count as ok
+    if (!_result.ok) {
+      return Result.error(_result.error!);
+    }
+    Game g = _result.object!;
+    if (g.group != null && g.gameFinished) updateGroupStatus(g.group!);
+    return Result.ok(_result.object!);
+  }
 }

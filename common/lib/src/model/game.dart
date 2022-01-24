@@ -11,6 +11,7 @@ class Game {
   final List<WordData> guesses;
   final WordData current;
   final List<String> flags;
+  final String? group;
 
   int get length => answer.length;
   String get word => current.content;
@@ -32,6 +33,7 @@ class Game {
     required this.guesses,
     required this.current,
     this.flags = const [],
+    this.group,
   })  : this.id = id ?? ObjectId().id.hexString,
         this.creator = creator ?? player;
 
@@ -51,6 +53,7 @@ class Game {
   static const __guesses = 'g';
   static const __current = 'u';
   static const __flags = 'f';
+  static const __group = 'h';
   static const flagInvalid = 'i';
 
   factory Game.fromJson(Map<String, dynamic> doc) {
@@ -74,6 +77,7 @@ class Game {
       __guesses: guesses.map((e) => e.toMap()).toList(),
       __current: current.toMap(),
       __flags: flags,
+      if (group != null) __group: group,
     };
   }
 
@@ -85,6 +89,7 @@ class Game {
     List<WordData>? guesses,
     WordData? current,
     List<String> flags = const [],
+    String? group,
   }) {
     return Game(
       id: id ?? this.id,
@@ -94,6 +99,7 @@ class Game {
       guesses: guesses ?? this.guesses,
       current: current ?? this.current,
       flags: flags,
+      group: group ?? this.group,
     );
   }
 
