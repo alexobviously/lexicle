@@ -132,6 +132,22 @@ class GameHandler {
     });
   }
 
+  static Future<Response> allGameIds(Request request) async {
+    List<String> allIds = gameServer().getAllGameIds();
+    return HttpUtils.buildResponse(data: {
+      'count': allIds.length,
+      'games': allIds,
+    });
+  }
+
+  static Future<Response> allActiveGameIds(Request request) async {
+    List<String> allIds = gameServer().getAllActiveGameIds();
+    return HttpUtils.buildResponse(data: {
+      'count': allIds.length,
+      'games': allIds,
+    });
+  }
+
   static Future<Response> getGame(Request request, String id) async {
     try {
       final _result = gameServer().getGameController(id);

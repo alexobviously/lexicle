@@ -6,7 +6,7 @@ import 'game_group_controller.dart';
 class GameServer with ReadyManager {
   Map<String, GameGroupController> gameGroups = {};
   Map<String, String> privateGroups = {};
-  Map<String, GameController> games = {}; // gamecontroller when it's made
+  Map<String, GameController> games = {};
 
   @override
   void initialise() {
@@ -132,6 +132,9 @@ class GameServer with ReadyManager {
   }
 
   List<String> getAllGroupIds() => gameGroups.entries.map((e) => e.value.id).toList();
+  List<String> getAllGameIds() => games.entries.map((e) => e.value.state.id).toList();
+  List<String> getAllActiveGameIds() =>
+      games.entries.where((e) => !e.value.state.gameFinished).map((e) => e.value.state.id).toList();
 
   void updateGroupStatus(String id) {
     if (!gameGroups.containsKey(id)) return;

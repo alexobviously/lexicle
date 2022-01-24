@@ -24,6 +24,8 @@ Future main() async {
     ..post('/groups/<id>/leave', GameHandler.leaveGameGroup)
     ..post('/groups/<id>/setword', GameHandler.setWord)
     ..post('/groups/<id>/start', GameHandler.startGroup)
+    ..get('/games/all', GameHandler.allGameIds)
+    ..get('/games/active', GameHandler.allActiveGameIds)
     ..get('/games/<id>', GameHandler.getGame)
     ..post('/games/<id>/guess', GameHandler.makeGuess);
 
