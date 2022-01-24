@@ -139,7 +139,7 @@ class GameHandler {
         return HttpUtils.buildErrorResponse(_result.error!);
       } else {
         return HttpUtils.buildResponse(data: {
-          'game': _result.object!.toMap(),
+          'game': _result.object!.toMap(hideAnswer: true),
         });
       }
     } catch (e, s) {
@@ -157,7 +157,7 @@ class GameHandler {
         return HttpUtils.buildErrorResponse(_result.error!);
       } else {
         return HttpUtils.buildResponse(data: {
-          'game': _result.object!.toMap(),
+          'game': _result.object!.toMap(hideAnswer: true),
         });
       }
     } catch (e, s) {
