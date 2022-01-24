@@ -153,6 +153,9 @@ class GameServer with ReadyManager {
           }
         }
       }
+      if (finished) {
+        ggc.setState(MatchState.finished);
+      }
     }
   }
 

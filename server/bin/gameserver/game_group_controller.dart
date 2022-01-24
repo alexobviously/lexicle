@@ -64,4 +64,6 @@ class GameGroupController extends Cubit<GameGroup> {
     emit(state.copyWith(words: Map.from(state.words)..[player] = word));
     return Result.ok(true);
   }
+
+  void setState(int _state) => emit(state.copyWith(state: _state));
 }
