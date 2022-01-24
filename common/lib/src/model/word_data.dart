@@ -25,8 +25,8 @@ class WordData {
   factory WordData.current(String content) => WordData(content: content);
   factory WordData.blank() => const WordData();
 
-  static const __content = 'c';
-  static const __correct = 'x';
+  static const __content = 'w';
+  static const __correct = 'c';
   static const __semiCorrect = 's';
   static const __finalised = 'f';
 

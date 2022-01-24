@@ -21,6 +21,24 @@ class GameServer with ReadyManager {
     return id;
   }
 
+  void deleteGroup(String id) {
+    if (!gameGroups.containsKey(id)) return;
+    // todo: dispose?
+    GameGroupController ggc = gameGroups[id]!;
+    if (ggc.state.state > MatchState.lobby) return;
+    if (ggc.state.code != null) {
+      privateGroups.remove(ggc.state.code);
+    }
+    gameGroups.remove(id);
+  }
+
+  void leaveGroup(String id, String player) {
+    if (!gameGroups.containsKey(id)) return;
+    GameGroupController ggc = gameGroups[id]!;
+    bool shouldDelete = ggc.removePlayer(player);
+    if (shouldDelete) deleteGroup(id);
+  }
+
   String getRandomCode([int maxAttempts = 300]) {
     int attempts = 0;
     while (attempts < maxAttempts) {
@@ -54,5 +72,12 @@ class GameServer with ReadyManager {
       _games[p] = playerGames;
     }
     return Result.ok(_games);
+  }
+
+  Future<Result<Game>> submitWord(String gameId, String word) async {
+    if (!games.containsKey(gameId)) return Result.error('not_found');
+    GameController gc = games[gameId]!;
+    final _result = await gc.submitWord(word);
+    return _result;
   }
 }
