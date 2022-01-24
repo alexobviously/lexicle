@@ -129,4 +129,6 @@ class GameServer with ReadyManager {
     final _result = await gc.submitWord(word);
     return _result;
   }
+
+  List<String> getAllGroupIds() => gameGroups.entries.map((e) => e.value.id).toList();
 }

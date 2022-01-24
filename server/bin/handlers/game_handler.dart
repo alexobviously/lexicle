@@ -123,4 +123,12 @@ class GameHandler {
       return HttpUtils.invalidRequestResponse();
     }
   }
+
+  static Future<Response> allGroupIds(Request request) async {
+    List<String> allIds = gameServer().getAllGroupIds();
+    return HttpUtils.buildResponse(data: {
+      'count': allIds.length,
+      'groups': allIds,
+    });
+  }
 }

@@ -17,6 +17,7 @@ Future main() async {
     ..get('/hello', _echoRequest)
     ..get('/dict/<w>', DictionaryHandler.validateWord)
     ..get('/ws', gameServerHandler())
+    ..get('/groups/all', GameHandler.allGroupIds)
     ..get('/groups/<id>', GameHandler.getGameGroup)
     ..post('/groups/create', GameHandler.createGameGroup)
     ..post('/groups/<id>/join', GameHandler.joinGameGroup)

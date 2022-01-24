@@ -8,7 +8,7 @@ class GameGroupController extends Cubit<GameGroup> {
   GameGroupController(GameGroup initial) : super(initial);
 
   String get id => state.id;
-  Map<String, dynamic> toMap() => state.toMap();
+  Map<String, dynamic> toMap({bool hideAnswers = true}) => state.toMap(hideAnswers: hideAnswers);
   List<String> get unreadyPlayers => state.players.where((e) => !state.words.containsKey(e)).toList();
 
   Result<bool> addPlayer(String id) {
