@@ -19,7 +19,8 @@ Future main() async {
     ..get('/ws', gameServerHandler())
     ..get('/groups/<id>', GameHandler.getGameGroup)
     ..post('/groups/create', GameHandler.createGameGroup)
-    ..post('/groups/<id>/join', GameHandler.joinGameGroup);
+    ..post('/groups/<id>/join', GameHandler.joinGameGroup)
+    ..post('/groups/<id>/leave', GameHandler.leaveGameGroup);
   final cascade = Cascade().add(_router);
 
   final pipeline = Pipeline().addMiddleware(logRequests()).addMiddleware(corsHeaders()).addHandler(cascade.handler);

@@ -70,4 +70,22 @@ class GameHandler {
       return HttpUtils.invalidRequestResponse();
     }
   }
+
+  static Future<Response> leaveGameGroup(Request request, String id) async {
+    try {
+      final String payload = await request.readAsString();
+      Map<String, dynamic> data = json.decode(payload);
+      final _result = gameServer().leaveGroup(id, data['player']);
+      if (!_result.ok) {
+        return HttpUtils.buildErrorResponse(_result.error!);
+      } else {
+        return HttpUtils.buildResponse(data: {
+          'group': _result.object!.toMap(),
+        });
+      }
+    } catch (e, s) {
+      print('exception in leaveGameGroup: $e\n$s');
+      return HttpUtils.invalidRequestResponse();
+    }
+  }
 }

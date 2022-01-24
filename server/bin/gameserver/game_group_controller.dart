@@ -18,22 +18,22 @@ class GameGroupController extends Cubit<GameGroup> {
 
   /// Removes a player with [id] from the group.
   /// Returns true if the group is to be deleted.
-  bool removePlayer(String id) {
-    if (state.state > MatchState.lobby) return false;
-    if (!state.players.contains(id)) return false;
+  Result<bool> removePlayer(String id) {
+    if (state.state > MatchState.lobby) return Result.error('group_started');
+    if (!state.players.contains(id)) return Result.error('not_in_group');
     if (id == state.creator) {
       if (state.players.length > 1) {
-        return false;
+        return Result.error('cant_leave');
       } else {
         emit(state.copyWith(players: [], words: {}));
-        return true;
+        return Result.ok(true);
       }
     }
     emit(state.copyWith(
       players: List.from(state.players)..remove(id),
       words: Map.from(state.words)..remove(id),
     ));
-    return false;
+    return Result.ok(false);
   }
 
   bool start(Map<String, List<String>> games) {

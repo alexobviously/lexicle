@@ -42,6 +42,18 @@ class GameServer with ReadyManager {
     return Result.ok(ggc);
   }
 
+  Result<GameGroupController> leaveGroup(String id, String player) {
+    if (!gameGroups.containsKey(id)) return Result.error('not_found');
+    GameGroupController ggc = gameGroups[id]!;
+    Result _result = ggc.removePlayer(player);
+    if (!_result.ok) {
+      return Result.error(_result.error!);
+    }
+    bool shouldDelete = _result.object!;
+    if (shouldDelete) deleteGroup(id);
+    return Result.ok(ggc);
+  }
+
   void deleteGroup(String id) {
     if (!gameGroups.containsKey(id)) return;
     // todo: dispose?
@@ -51,13 +63,6 @@ class GameServer with ReadyManager {
       privateGroups.remove(ggc.state.code);
     }
     gameGroups.remove(id);
-  }
-
-  void leaveGroup(String id, String player) {
-    if (!gameGroups.containsKey(id)) return;
-    GameGroupController ggc = gameGroups[id]!;
-    bool shouldDelete = ggc.removePlayer(player);
-    if (shouldDelete) deleteGroup(id);
   }
 
   String getRandomCode([int maxAttempts = 300]) {
