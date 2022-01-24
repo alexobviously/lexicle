@@ -7,6 +7,8 @@ class GameController extends Cubit<Game> {
   factory GameController.initial({required String player, required int length, required Mediator mediator}) =>
       GameController(Game.initial(player, length), mediator);
 
+  Map<String, dynamic> toMap({bool hideAnswer = false}) => state.toMap(hideAnswer: hideAnswer);
+
   void addLetter(String l) {
     if (state.word.length >= state.length || state.gameFinished) return;
     emit(state.copyWith(current: WordData.current('${state.word}$l')));

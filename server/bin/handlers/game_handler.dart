@@ -131,4 +131,38 @@ class GameHandler {
       'groups': allIds,
     });
   }
+
+  static Future<Response> getGame(Request request, String id) async {
+    try {
+      final _result = gameServer().getGameController(id);
+      if (!_result.ok) {
+        return HttpUtils.buildErrorResponse(_result.error!);
+      } else {
+        return HttpUtils.buildResponse(data: {
+          'game': _result.object!.toMap(),
+        });
+      }
+    } catch (e, s) {
+      print('exception in getGame: $e\n$s');
+      return HttpUtils.invalidRequestResponse();
+    }
+  }
+
+  static Future<Response> makeGuess(Request request, String id) async {
+    try {
+      final String payload = await request.readAsString();
+      Map<String, dynamic> data = json.decode(payload);
+      final _result = await gameServer().makeGuess(id, data['guess']);
+      if (!_result.ok) {
+        return HttpUtils.buildErrorResponse(_result.error!);
+      } else {
+        return HttpUtils.buildResponse(data: {
+          'game': _result.object!.toMap(),
+        });
+      }
+    } catch (e, s) {
+      print('exception in makeGuess: $e\n$s');
+      return HttpUtils.invalidRequestResponse();
+    }
+  }
 }

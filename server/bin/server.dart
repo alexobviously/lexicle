@@ -23,7 +23,10 @@ Future main() async {
     ..post('/groups/<id>/join', GameHandler.joinGameGroup)
     ..post('/groups/<id>/leave', GameHandler.leaveGameGroup)
     ..post('/groups/<id>/setword', GameHandler.setWord)
-    ..post('/groups/<id>/start', GameHandler.startGroup);
+    ..post('/groups/<id>/start', GameHandler.startGroup)
+    ..get('/games/<id>', GameHandler.getGame)
+    ..post('/games/<id>/guess', GameHandler.makeGuess);
+
   final cascade = Cascade().add(_router);
 
   final pipeline = Pipeline().addMiddleware(logRequests()).addMiddleware(corsHeaders()).addHandler(cascade.handler);
