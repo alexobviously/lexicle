@@ -54,6 +54,25 @@ class _GameOverviewState extends State<GameOverview> {
             controller: _controller,
             children: [
               Container(height: 10),
+
+              // Steve: IconButton needed but uncertain of onTap action,
+              // there's also padding above row that is maybe pushing things
+              // down too much? Finally, unsure of how to display the target
+              // word where I attempted state.word lol
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Text(state.word),
+                  Padding(
+                    padding: const EdgeInsets.only(right: 8.0),
+                    child: Icon(
+                      Icons.clear,
+                      size: 14.0,
+                    ),
+                  ),
+                ],
+              ),
+
               ...state.guesses
                   .map(
                     (e) => FittedBox(
