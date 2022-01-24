@@ -13,12 +13,33 @@ class GameServer with ReadyManager {
     setReady();
   }
 
-  String createGame({required String creator, required GameConfig config, bool private = false}) {
+  Result<GameGroupController> createGameGroup(
+      {required String creator, required GameConfig config, bool private = false}) {
     String id = newId();
-    GameGroup gg = GameGroup(id: id, title: '$creator\'s game', config: config, creator: creator);
+    GameGroup gg = GameGroup(id: id, title: '$creator\'s game', config: config, creator: creator, players: [creator]);
     GameGroupController ggc = GameGroupController(gg);
     gameGroups[id] = ggc;
-    return id;
+    return Result.ok(ggc);
+  }
+
+  Result<GameGroupController> getGroupController(String id) {
+    if (!gameGroups.containsKey(id)) return Result.error('not_found');
+    return Result.ok(gameGroups[id]!);
+  }
+
+  Result<GameController> getGameController(String id) {
+    if (!games.containsKey(id)) return Result.error('not_found');
+    return Result.ok(games[id]!);
+  }
+
+  Result<GameGroupController> joinGroup(String id, String player) {
+    if (!gameGroups.containsKey(id)) return Result.error('not_found');
+    GameGroupController ggc = gameGroups[id]!;
+    final _res = ggc.addPlayer(player);
+    if (!_res.ok) {
+      return Result.error(_res.error!);
+    }
+    return Result.ok(ggc);
   }
 
   void deleteGroup(String id) {

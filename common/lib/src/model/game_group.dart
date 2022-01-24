@@ -33,7 +33,7 @@ class GameGroup {
     this.players = const [],
     this.words = const {},
     this.games = const {},
-  });
+  }) : assert(players.contains(creator));
 
   static const String __id = 'id';
   static const String __title = 't';

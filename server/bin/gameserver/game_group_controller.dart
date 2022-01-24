@@ -1,18 +1,19 @@
 import 'package:bloc/bloc.dart';
 import 'package:common/common.dart';
 
-import '../utils/string_utils.dart';
-
 class GameGroupController extends Cubit<GameGroup> {
   GameGroupController(GameGroup initial) : super(initial);
 
-  bool addPlayer(String id) {
-    if (state.players.contains(id)) return false;
-    if (state.state > MatchState.lobby) return false;
+  String get id => state.id;
+  Map<String, dynamic> toMap() => state.toMap();
+
+  Result<bool> addPlayer(String id) {
+    if (state.players.contains(id)) return Result.error('already_in_group');
+    if (state.state > MatchState.lobby) return Result.error('group_started');
     emit(state.copyWith(
       players: List.from(state.players)..add(id),
     ));
-    return true;
+    return Result.ok(true);
   }
 
   /// Removes a player with [id] from the group.
