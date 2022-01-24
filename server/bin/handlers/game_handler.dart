@@ -88,4 +88,39 @@ class GameHandler {
       return HttpUtils.invalidRequestResponse();
     }
   }
+
+  static Future<Response> setWord(Request request, String id) async {
+    try {
+      final String payload = await request.readAsString();
+      Map<String, dynamic> data = json.decode(payload);
+      final _result = gameServer().setWord(id, data['player'], data['word']);
+      if (!_result.ok) {
+        return HttpUtils.buildErrorResponse(_result.error!);
+      } else {
+        return HttpUtils.buildResponse(data: {
+          'group': _result.object!.toMap(),
+        });
+      }
+    } catch (e, s) {
+      print('exception in setWord: $e\n$s');
+      return HttpUtils.invalidRequestResponse();
+    }
+  }
+
+  static Future<Response> startGroup(Request request, String id) async {
+    try {
+      // TODO: authenticate this
+      final _result = gameServer().startGroup(id);
+      if (!_result.ok) {
+        return HttpUtils.buildErrorResponse(_result.error!);
+      } else {
+        return HttpUtils.buildResponse(data: {
+          'group': _result.object!.toMap(),
+        });
+      }
+    } catch (e, s) {
+      print('exception in startGroup: $e\n$s');
+      return HttpUtils.invalidRequestResponse();
+    }
+  }
 }

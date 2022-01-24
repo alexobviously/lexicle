@@ -1,6 +1,9 @@
 import 'package:bloc/bloc.dart';
 import 'package:common/common.dart';
 
+import '../mediators/server_mediator.dart';
+import '../services/service_locator.dart';
+
 class GameGroupController extends Cubit<GameGroup> {
   GameGroupController(GameGroup initial) : super(initial);
 
@@ -36,12 +39,24 @@ class GameGroupController extends Cubit<GameGroup> {
     return Result.ok(false);
   }
 
-  bool start(Map<String, List<String>> games) {
-    if (state.state > MatchState.lobby) return false;
+  Result<bool> get canStart {
+    if (state.state > MatchState.lobby) return Result.error('group_started');
+    if (state.players.length < 2) return Result.error('not_enough_players');
+    return Result.ok(true);
+  }
+
+  void start(Map<String, List<String>> games) {
     emit(state.copyWith(
       state: MatchState.playing,
       games: games,
     ));
-    return true;
+  }
+
+  Result<bool> setWord(String player, String word) {
+    if (state.state > MatchState.lobby) return Result.error('group_started');
+    if (!state.players.contains(player)) return Result.error('not_in_group');
+    if (!dictionary().isValidWord(word)) return Result.error('invalid_word');
+    emit(state.copyWith(words: Map.from(state.words)..[player] = word));
+    return Result.ok(true);
   }
 }

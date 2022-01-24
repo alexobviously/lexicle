@@ -13,8 +13,11 @@ class GameServer with ReadyManager {
     setReady();
   }
 
-  Result<GameGroupController> createGameGroup(
-      {required String creator, required GameConfig config, bool private = false}) {
+  Result<GameGroupController> createGameGroup({
+    required String creator,
+    required GameConfig config,
+    bool private = false,
+  }) {
     String id = newId();
     GameGroup gg = GameGroup(id: id, title: '$creator\'s game', config: config, creator: creator, players: [creator]);
     GameGroupController ggc = GameGroupController(gg);
@@ -65,6 +68,16 @@ class GameServer with ReadyManager {
     gameGroups.remove(id);
   }
 
+  Result<GameGroupController> setWord(String id, String player, String word) {
+    if (!gameGroups.containsKey(id)) return Result.error('not_found');
+    GameGroupController ggc = gameGroups[id]!;
+    final _result = ggc.setWord(player, word);
+    if (!_result.ok) {
+      return Result.error(_result.error!);
+    }
+    return Result.ok(ggc);
+  }
+
   String getRandomCode([int maxAttempts = 300]) {
     int attempts = 0;
     while (attempts < maxAttempts) {
@@ -75,9 +88,19 @@ class GameServer with ReadyManager {
     throw ("Couldn't generate a code in $maxAttempts attempts");
   }
 
-  Result<Map<String, List<String>>> createGamesForGroup(String id) {
+  Result<GameGroupController> startGroup(String id) {
     if (!gameGroups.containsKey(id)) return Result.error('not_found');
-    GameGroup _group = gameGroups[id]!.state;
+    GameGroupController ggc = gameGroups[id]!;
+    final _result = ggc.canStart;
+    if (!_result.ok) {
+      return Result.error(_result.error!);
+    }
+    ggc.start(createGamesForGroup(ggc));
+    return Result.ok(ggc);
+  }
+
+  Map<String, List<String>> createGamesForGroup(GameGroupController controller) {
+    GameGroup _group = controller.state;
     Map<String, List<String>> _games = {};
     for (String p in _group.players) {
       List<String> playerGames = [];
@@ -97,7 +120,7 @@ class GameServer with ReadyManager {
       }
       _games[p] = playerGames;
     }
-    return Result.ok(_games);
+    return _games;
   }
 
   Future<Result<Game>> submitWord(String gameId, String word) async {
