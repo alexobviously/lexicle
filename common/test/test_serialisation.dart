@@ -1,13 +1,12 @@
 import 'dart:convert';
-import 'dart:math';
 
 import 'package:common/common.dart';
 import 'package:test/test.dart';
 
 void main() {
-  group('From JSON', () {
+  group('Game.fromJson', () {
     for (final t in gameTests) {
-      test('FromJson: ${t.json}', () {
+      test('Game.fromJson: ${t.json}', () {
         Game g = Game.fromJson(jsonDecode(t.json));
         expect(g.gameFinished, t.gameFinished);
         if (t.numGuesses != null) {
@@ -25,6 +24,24 @@ void main() {
         }
         if (t.numWrong != null) {
           expect(g.wrongLetters.length, t.numWrong);
+        }
+      });
+    }
+  });
+
+  group('GameGroup.fromJson', () {
+    for (final t in groupTests) {
+      test('GameGroup.fromJson: ${t.json}', () {
+        GameGroup g = GameGroup.fromJson(jsonDecode(t.json));
+        expect(g.canBegin, t.canBegin);
+        if (t.numPlayers != null) {
+          expect(g.players.length, t.numPlayers);
+        }
+        if (g.state > MatchState.lobby && t.numPlayers != null) {
+          int nGames = g.games[g.players.first]!.length;
+          if (nGames != t.numPlayers! - 1) {
+            fail('Player ${g.players.first} has wrong number of games');
+          }
         }
       });
     }
@@ -61,6 +78,29 @@ List<GameSerialisationTest> gameTests = [
   ),
 ];
 
+List<GroupSerialisationTest> groupTests = [
+  GroupSerialisationTest(
+    json: '{"id":"61ee485d4ea6bbe821865954","t":"testgroup","c":{"l":5},"x":"alex","s":0,"p":["alex"],"w":{},"g":{}}',
+    numPlayers: 1,
+  ),
+  GroupSerialisationTest(
+    json:
+        '{"id":"61ee4a69079a6ec4b341b396","t":"testgroup2","c":{"l":5},"x":"alex","s":0,"p":["alex","steve"],"w":{},"g":{}}',
+    numPlayers: 2,
+  ),
+  GroupSerialisationTest(
+    json:
+        '{"id":"61ee4a9a751a6abc165754a0","t":"testgroup2","c":{"l":5},"x":"alex","s":0,"p":["alex","steve"],"w":{"alex":"proxy","steve":"about"},"g":{}}',
+    numPlayers: 2,
+    canBegin: true,
+  ),
+  GroupSerialisationTest(
+    json:
+        '{"id":"61ee4c3a0b375909f3d702d6","t":"ubfbfccswo","c":{"l":5},"x":"alex","s":1,"p":["alex","steve","gary"],"w":{"alex":"proxy","steve":"about","gary":"adieu"},"g":{"alex":["123123","123124"],"steve":["444444","444445"],"gary":["666666","666667"]}}',
+    numPlayers: 3,
+  ),
+];
+
 // note: if Game serialisation works, then WordData is also fine
 class GameSerialisationTest {
   final String json;
@@ -82,4 +122,12 @@ class GameSerialisationTest {
     this.numSemiCorrect,
     this.numWrong,
   });
+}
+
+class GroupSerialisationTest {
+  final String json;
+  final bool canBegin;
+  final int? numPlayers;
+
+  GroupSerialisationTest({required this.json, this.canBegin = false, this.numPlayers});
 }

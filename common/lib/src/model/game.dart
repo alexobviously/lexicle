@@ -67,7 +67,7 @@ class Game {
 
   Map<String, dynamic> toMap({bool hideAnswer = false}) {
     return {
-      __id: id,
+      __id: parseObjectId(id),
       __answer: hideAnswer ? ('*' * answer.length) : answer,
       __player: player,
       __creator: creator,
