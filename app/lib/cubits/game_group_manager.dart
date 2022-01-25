@@ -39,11 +39,12 @@ class GameGroupManager extends Cubit<GroupManagerState> {
     emit(state.copyWith(groups: Map.from(state.groups)..[g.id] = g, joined: joined));
   }
 
-  void getGroup(String id) async {
+  Future<Result<GameGroup>> getGroup(String id) async {
     final _result = await ApiClient.getGroup(id);
-    if (!_result.ok) return;
+    if (!_result.ok) return Result.error(_result.error!);
     GameGroup g = _result.object!;
     updateGroup(g);
+    return Result.ok(g);
   }
 
   void joinGroup(String id) async {

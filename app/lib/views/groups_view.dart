@@ -7,6 +7,7 @@ import 'package:word_game/app/colours.dart';
 import 'package:word_game/cubits/game_group_manager.dart';
 import 'package:word_game/services/service_locator.dart';
 import 'package:word_game/ui/standard_scaffold.dart';
+import 'package:word_game/views/group_view.dart';
 
 class GroupsView extends StatefulWidget {
   const GroupsView({Key? key}) : super(key: key);
@@ -52,12 +53,13 @@ class _GroupsViewState extends State<GroupsView> {
                             ),
                             padding: EdgeInsets.symmetric(horizontal: 16.0),
                             child: TextField(
+                              enabled: state.joined.isEmpty,
                               controller: nameController,
                             ),
                           ),
                         ),
                         NeumorphicButton(
-                          onPressed: () => auth().setName(nameController.text),
+                          onPressed: state.joined.isEmpty ? () => auth().setName(nameController.text) : null,
                           child: const Icon(MdiIcons.keyboardReturn),
                         ),
                         Container(width: 10),
@@ -80,6 +82,13 @@ class _GroupsViewState extends State<GroupsView> {
                       return ListTile(
                         title: Text(g.title),
                         tileColor: tileColour,
+                        onTap: joined
+                            ? () => Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (context) => GroupView(g.id),
+                                  ),
+                                )
+                            : null,
                         leading: Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Text('${g.players.length}', style: textTheme.headline5, textAlign: TextAlign.center),

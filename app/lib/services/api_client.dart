@@ -52,6 +52,9 @@ class ApiClient {
         unwrapper: unwrapGame,
       );
 
+  static Future<Result<bool>> validateWord(String word) =>
+      getAndUnwrap('/dict/$word', unwrapper: (data) => data['valid']);
+
   static Future<ApiResponse> get(String path) async {
     try {
       final req = rc.Request(
