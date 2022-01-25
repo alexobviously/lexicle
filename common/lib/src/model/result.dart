@@ -13,4 +13,11 @@ class Result<T> {
 
   factory Result.error(String error, [List<String> warnings = const []]) => Result(error: error, warnings: warnings);
   factory Result.ok(T object, [List<String> warnings = const []]) => Result(object: object, warnings: warnings);
+
+  @override
+  String toString() {
+    String str = ok ? 'ok, $object' : 'error, $error';
+    if (warnings.isNotEmpty) str = '$str, $warnings';
+    return 'Result($str)';
+  }
 }

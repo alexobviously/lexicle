@@ -37,9 +37,9 @@ class ApiClient {
       );
 
   static Future<Result<List<String>>> allGames() =>
-      getAndUnwrap('/games/all', unwrapper: (data) => coerceList(data['groups']));
+      getAndUnwrap('/games/all', unwrapper: (data) => coerceList(data['games']));
   static Future<Result<List<String>>> activeGames() =>
-      getAndUnwrap('/games/active', unwrapper: (data) => coerceList(data['groups']));
+      getAndUnwrap('/games/active', unwrapper: (data) => coerceList(data['games']));
   static Future<Result<Game>> getGame(String id) => getAndUnwrap('/games/$id', unwrapper: unwrapGame);
   static Future<Result<Game>> makeGuess(String game, String guess) => postAndUnwrap(
         '/games/$game/guess',
@@ -54,7 +54,7 @@ class ApiClient {
         method: rc.RequestMethod.get,
       );
       final resp = await rc.Client().execute(request: req);
-      if (resp.statusCode != 204) return ApiResponse.error('http_${resp.statusCode}');
+      if (resp.statusCode != 200) return ApiResponse.error('http_${resp.statusCode}');
       return parseBody(resp.body);
     } catch (e, _) {
       return ApiResponse.unknownError();

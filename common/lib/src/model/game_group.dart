@@ -75,6 +75,9 @@ class GameGroup {
       __games: games,
     };
   }
+
+  @override
+  String toString() => 'GameGroup($id, title: $title, state: $state)';
 }
 
 class MatchState {
