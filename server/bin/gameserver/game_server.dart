@@ -7,6 +7,7 @@ class GameServer with ReadyManager {
   Map<String, GameGroupController> gameGroups = {};
   Map<String, String> privateGroups = {};
   Map<String, GameController> games = {};
+  Map<String, String> playerGroups = {};
 
   @override
   void initialise() {
@@ -48,24 +49,25 @@ class GameServer with ReadyManager {
   Result<GameGroupController> leaveGroup(String id, String player) {
     if (!gameGroups.containsKey(id)) return Result.error('not_found');
     GameGroupController ggc = gameGroups[id]!;
+    if (ggc.state.creator == player) return Result.error('own_group', ['must_delete']);
     Result _result = ggc.removePlayer(player);
     if (!_result.ok) {
       return Result.error(_result.error!);
     }
-    bool shouldDelete = _result.object!;
-    if (shouldDelete) deleteGroup(id);
     return Result.ok(ggc);
   }
 
-  void deleteGroup(String id) {
-    if (!gameGroups.containsKey(id)) return;
+  Result<bool> deleteGroup(String id, String player) {
+    if (!gameGroups.containsKey(id)) return Result.error('not_found');
     // todo: dispose?
     GameGroupController ggc = gameGroups[id]!;
-    if (ggc.state.state > MatchState.lobby) return;
+    if (ggc.state.creator != player) return Result.error(('unauthorised'));
+    if (ggc.state.state > MatchState.lobby) return Result.error('group_started');
     if (ggc.state.code != null) {
       privateGroups.remove(ggc.state.code);
     }
     gameGroups.remove(id);
+    return Result.ok(true);
   }
 
   Result<GameGroupController> setWord(String id, String player, String word) {

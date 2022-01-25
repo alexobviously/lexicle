@@ -89,6 +89,22 @@ class GameHandler {
     }
   }
 
+  static Future<Response> deleteGameGroup(Request request, String id) async {
+    try {
+      final String payload = await request.readAsString();
+      Map<String, dynamic> data = json.decode(payload);
+      final _result = gameServer().deleteGroup(id, data['player']);
+      if (!_result.ok) {
+        return HttpUtils.buildErrorResponse(_result.error!);
+      } else {
+        return HttpUtils.buildResponse();
+      }
+    } catch (e, s) {
+      print('exception in deleteGameGroup: $e\n$s');
+      return HttpUtils.invalidRequestResponse();
+    }
+  }
+
   static Future<Response> setWord(Request request, String id) async {
     try {
       final String payload = await request.readAsString();

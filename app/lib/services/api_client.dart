@@ -28,6 +28,11 @@ class ApiClient {
         body: {'player': player},
         unwrapper: unwrapGameGroup,
       );
+  static Future<Result<bool>> deleteGroup(String id, String player) => postAndUnwrap(
+        '/groups/$id/delete',
+        body: {'player': player},
+        unwrapper: (_) => true,
+      );
   static Future<Result<GameGroup>> startGroup(String id) =>
       postAndUnwrap('/groups/$id/start', unwrapper: unwrapGameGroup);
   static Future<Result<GameGroup>> setWord(String group, String player, String word) => postAndUnwrap(
@@ -69,7 +74,7 @@ class ApiClient {
         body: jsonEncode(body),
       );
       final resp = await rc.Client().execute(request: req);
-      if (resp.statusCode != 204) return ApiResponse.error('http_${resp.statusCode}');
+      if (resp.statusCode != 200) return ApiResponse.error('http_${resp.statusCode}');
       return parseBody(resp.body);
     } catch (e, _) {
       return ApiResponse.unknownError();

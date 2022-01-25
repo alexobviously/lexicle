@@ -2,8 +2,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:word_game/app/routes.dart';
+import 'package:word_game/cubits/game_group_manager.dart';
 import 'package:word_game/cubits/game_manager.dart';
 import 'package:word_game/views/dict_search_view.dart';
+import 'package:word_game/views/groups_view.dart';
 import 'package:word_game/views/home_view.dart';
 import 'package:word_game/views/settings_view.dart';
 import 'package:word_game/views/solo_view.dart';
@@ -25,6 +27,9 @@ class MyApp extends StatelessWidget {
       providers: [
         BlocProvider<GameManager>(
           create: (_) => GameManager(),
+        ),
+        BlocProvider<GameGroupManager>(
+          create: (_) => GameGroupManager(),
         ),
       ],
       child: NeumorphicApp(
@@ -51,6 +56,7 @@ class MyApp extends StatelessWidget {
         routes: {
           Routes.home: (ctx) => const HomeView(),
           Routes.solo: (ctx) => const SoloView(),
+          Routes.groups: (ctx) => const GroupsView(),
           Routes.settings: (ctx) => const SettingsView(),
           Routes.dict: (ctx) => const DictSearchView(),
         },

@@ -37,6 +37,15 @@ class _HomeViewState extends State<HomeView> {
               ),
               Container(height: 20),
               NeumorphicButton(
+                onPressed: () => Navigator.of(context).pushNamed(Routes.groups),
+                style: NeumorphicStyle(
+                  shape: NeumorphicShape.flat,
+                  boxShape: NeumorphicBoxShape.roundRect(BorderRadius.circular(16)),
+                ),
+                child: Text('Play Online', style: textTheme.headline6),
+              ),
+              Container(height: 20),
+              NeumorphicButton(
                 onPressed: () => Navigator.of(context).pushNamed(Routes.dict),
                 style: NeumorphicStyle(
                   shape: NeumorphicShape.flat,
