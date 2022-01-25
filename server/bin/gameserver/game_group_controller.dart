@@ -1,46 +1,69 @@
 import 'package:bloc/bloc.dart';
 import 'package:common/common.dart';
 
-import '../utils/string_utils.dart';
+import '../mediators/server_mediator.dart';
+import '../services/service_locator.dart';
 
 class GameGroupController extends Cubit<GameGroup> {
   GameGroupController(GameGroup initial) : super(initial);
 
-  bool addPlayer(String id) {
-    if (state.players.contains(id)) return false;
-    if (state.state > MatchState.lobby) return false;
+  String get id => state.id;
+  Map<String, dynamic> toMap({bool hideAnswers = true}) => state.toMap(hideAnswers: hideAnswers);
+  List<String> get unreadyPlayers => state.players.where((e) => !state.words.containsKey(e)).toList();
+
+  Result<bool> addPlayer(String id) {
+    if (state.players.contains(id)) return Result.error('already_in_group');
+    if (state.state > MatchState.lobby) return Result.error('group_started');
     emit(state.copyWith(
       players: List.from(state.players)..add(id),
     ));
-    return true;
+    return Result.ok(true);
   }
 
   /// Removes a player with [id] from the group.
   /// Returns true if the group is to be deleted.
-  bool removePlayer(String id) {
-    if (state.state > MatchState.lobby) return false;
-    if (!state.players.contains(id)) return false;
+  Result<bool> removePlayer(String id) {
+    if (state.state > MatchState.lobby) return Result.error('group_started');
+    if (!state.players.contains(id)) return Result.error('not_in_group');
     if (id == state.creator) {
       if (state.players.length > 1) {
-        return false;
+        return Result.error('cant_leave');
       } else {
         emit(state.copyWith(players: [], words: {}));
-        return true;
+        return Result.ok(true);
       }
     }
     emit(state.copyWith(
       players: List.from(state.players)..remove(id),
       words: Map.from(state.words)..remove(id),
     ));
-    return false;
+    return Result.ok(false);
   }
 
-  bool start(Map<String, List<String>> games) {
-    if (state.state > MatchState.lobby) return false;
+  Result<bool> get canStart {
+    if (state.state > MatchState.lobby) return Result.error('group_started');
+    if (state.players.length < 2) return Result.error('not_enough_players');
+    if (unreadyPlayers.isNotEmpty) {
+      return Result.error('players_not_ready', unreadyPlayers);
+    }
+    return Result.ok(true);
+  }
+
+  void start(Map<String, List<String>> games) {
     emit(state.copyWith(
       state: MatchState.playing,
       games: games,
     ));
-    return true;
   }
+
+  Result<bool> setWord(String player, String word) {
+    if (state.state > MatchState.lobby) return Result.error('group_started');
+    if (!state.players.contains(player)) return Result.error('not_in_group');
+    if (word.length != state.config.wordLength) return Result.error('invalid_word');
+    if (!dictionary().isValidWord(word)) return Result.error('invalid_word');
+    emit(state.copyWith(words: Map.from(state.words)..[player] = word));
+    return Result.ok(true);
+  }
+
+  void setState(int _state) => emit(state.copyWith(state: _state));
 }
