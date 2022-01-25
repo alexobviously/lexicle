@@ -2,6 +2,7 @@ import 'package:common/common.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:word_game/app/colours.dart';
 import 'package:word_game/ui/word_row.dart';
 
@@ -55,19 +56,18 @@ class _GameOverviewState extends State<GameOverview> {
             children: [
               Container(height: 10),
 
-              // Steve: IconButton needed but uncertain of onTap action,
-              // there's also padding above row that is maybe pushing things
-              // down too much? Finally, unsure of how to display the target
-              // word where I attempted state.word lol
+              // Steve: Uncertain of onPressed action
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  Text(state.word),
                   Padding(
-                    padding: const EdgeInsets.only(right: 8.0),
-                    child: Icon(
-                      Icons.clear,
-                      size: 14.0,
+                    padding: const EdgeInsets.only(right: 7.0),
+                    child: IconButton(
+                      icon: Icon(MdiIcons.closeThick),
+                      iconSize: 14.0,
+                      onPressed: () {},
+                      padding: EdgeInsets.zero,
+                      constraints: BoxConstraints(),
                     ),
                   ),
                 ],
