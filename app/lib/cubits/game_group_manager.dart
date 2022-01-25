@@ -2,14 +2,19 @@ import 'dart:math';
 import 'package:bloc/bloc.dart';
 import 'package:common/common.dart';
 import 'package:mongo_dart/mongo_dart.dart';
+import 'package:word_game/cubits/auth_controller.dart';
 import 'package:word_game/services/api_client.dart';
+import 'package:word_game/services/service_locator.dart';
 
 class GameGroupManager extends Cubit<GroupManagerState> {
-  String player = 'player${Random().nextInt(1000)}'; // shouldn't rly be here
+  String get player => auth().state.name;
   GameGroupManager() : super(GroupManagerState.initial());
 
-  void setPlayer(String p) {
-    player = p;
+  void init() {
+    auth().stream.listen(_handleAuthState);
+  }
+
+  void _handleAuthState(AuthState authState) {
     refresh();
   }
 

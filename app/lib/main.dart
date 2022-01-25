@@ -2,6 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:word_game/app/routes.dart';
+import 'package:word_game/cubits/auth_controller.dart';
 import 'package:word_game/cubits/game_group_manager.dart';
 import 'package:word_game/cubits/game_manager.dart';
 import 'package:word_game/views/dict_search_view.dart';
@@ -25,6 +26,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
+        BlocProvider<AuthController>(
+          create: (_) => auth(),
+        ),
         BlocProvider<GameManager>(
           create: (_) => GameManager(),
         ),
@@ -61,22 +65,6 @@ class MyApp extends StatelessWidget {
           Routes.dict: (ctx) => const DictSearchView(),
         },
       ),
-      // child: MaterialApp(
-      //   title: 'Word Game',
-      //   theme: ThemeData(
-      //     primarySwatch: Colors.blue,
-      //     backgroundColor: Colors.grey.shade300,
-      // fontFamily: GoogleFonts.dmSans().fontFamily,
-      //     dividerColor: Colors.grey.shade400,
-      //   ),
-      //   home: const HomeView(),
-      // initialRoute: '/home',
-      // routes: {
-      //   '/home': (ctx) => const HomeView(),
-      //   '/solo': (ctx) => const SoloView(),
-      // },
-      //   debugShowCheckedModeBanner: false,
-      // ),
     );
   }
 }

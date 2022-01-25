@@ -5,6 +5,7 @@ import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:word_game/app/colours.dart';
 import 'package:word_game/cubits/game_group_manager.dart';
+import 'package:word_game/services/service_locator.dart';
 import 'package:word_game/ui/standard_scaffold.dart';
 
 class GroupsView extends StatefulWidget {
@@ -19,9 +20,11 @@ class _GroupsViewState extends State<GroupsView> {
 
   @override
   void initState() {
+    final cubit = BlocProvider.of<GameGroupManager>(context);
     setState(() {
-      nameController.text = BlocProvider.of<GameGroupManager>(context).player;
+      nameController.text = cubit.player;
     });
+    cubit.refresh();
     super.initState();
   }
 
@@ -43,12 +46,18 @@ class _GroupsViewState extends State<GroupsView> {
                     child: Row(
                       children: [
                         Expanded(
-                          child: TextField(
-                            controller: nameController,
+                          child: Neumorphic(
+                            style: NeumorphicStyle(
+                              depth: -2,
+                            ),
+                            padding: EdgeInsets.symmetric(horizontal: 16.0),
+                            child: TextField(
+                              controller: nameController,
+                            ),
                           ),
                         ),
                         NeumorphicButton(
-                          onPressed: () => cubit.setPlayer(nameController.text),
+                          onPressed: () => auth().setName(nameController.text),
                           child: const Icon(MdiIcons.keyboardReturn),
                         ),
                         Container(width: 10),
