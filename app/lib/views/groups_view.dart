@@ -77,6 +77,7 @@ class _GroupsViewState extends State<GroupsView> {
                     itemCount: state.groups.length,
                     itemBuilder: (context, i) {
                       GameGroup g = state.groups.entries.toList()[i].value;
+                      bool isCreator = g.creator == auth().state.name;
                       Color? tileColour = i % 2 == 0 ? Colours.wrong : null;
                       bool joined = state.joined.contains(g.id);
                       if (joined) tileColour = Colours.semiCorrect;
@@ -99,11 +100,23 @@ class _GroupsViewState extends State<GroupsView> {
                             color: tileColour,
                             depth: 2,
                           ),
-                          onPressed: () => joined ? cubit.leaveGroup(g.id) : cubit.joinGroup(g.id),
+                          onPressed: () {
+                            if (isCreator) {
+                              cubit.deleteGroup(g.id);
+                            } else if (joined) {
+                              cubit.leaveGroup(g.id);
+                            } else {
+                              cubit.joinGroup(g.id);
+                            }
+                          },
                           child: SizedBox(
                             width: 50,
                             child: Text(
-                              joined ? 'Leave' : 'Join',
+                              isCreator
+                                  ? 'Delete'
+                                  : joined
+                                      ? 'Leave'
+                                      : 'Join',
                               textAlign: TextAlign.center,
                             ),
                           ),

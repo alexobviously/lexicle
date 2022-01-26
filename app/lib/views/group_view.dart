@@ -88,8 +88,9 @@ class _GroupViewState extends State<GroupView> {
     final textTheme = theme.textTheme;
     bool isValid = !invalidWord && isAlpha(wordController.text);
     bool canSubmit = wordController.text.length == state.config.wordLength && isValid;
-    InputBorder? wordFieldBorder =
-        isValid ? null : UnderlineInputBorder(borderSide: BorderSide(color: Colours.invalid));
+    InputBorder? wordFieldBorder = (isValid || wordController.text.isEmpty)
+        ? null
+        : UnderlineInputBorder(borderSide: BorderSide(color: Colours.invalid));
     return Column(
       children: [
         SizedBox(
