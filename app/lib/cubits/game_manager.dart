@@ -2,6 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:common/common.dart';
 import 'package:word_game/mediator/offline_mediator.dart';
 import 'package:word_game/services/service_locator.dart';
+import 'package:word_game/ui/game_overview.dart';
 
 class GameManager extends Cubit<GameManagerState> {
   GameManager() : super(GameManagerState.initial());
@@ -13,6 +14,11 @@ class GameManager extends Cubit<GameManagerState> {
     List<GameController> _games = List.from(state.games);
     _games.add(_gc);
     emit(state.copyWith(games: _games));
+  }
+
+  void removeLocalGame() {
+    // Steve: need to remove a game based on id, below is not correct
+    state.games.remove(state);
   }
 
   Stream<int> get numGamesStream => stream.map((e) => e.games.length).distinct();

@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:word_game/app/colours.dart';
+import 'package:word_game/cubits/game_manager.dart';
 import 'package:word_game/ui/word_row.dart';
 
 class GameOverview extends StatefulWidget {
@@ -38,6 +39,9 @@ class _GameOverviewState extends State<GameOverview> {
 
   @override
   Widget build(BuildContext context) {
+    // steve: added to callback (?) method from game_manager
+    final GameManager _gm = GameManager();
+
     return Neumorphic(
       padding: const EdgeInsets.symmetric(horizontal: 6.0),
       style: NeumorphicStyle(
@@ -56,7 +60,7 @@ class _GameOverviewState extends State<GameOverview> {
             children: [
               Container(height: 10),
 
-              // Steve: Uncertain of onPressed action
+              // Steve: creates delete game IconButton
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
@@ -65,7 +69,11 @@ class _GameOverviewState extends State<GameOverview> {
                     child: IconButton(
                       icon: Icon(MdiIcons.closeThick),
                       iconSize: 14.0,
-                      onPressed: () {},
+                      onPressed: () {
+                        // Steve: currently an empty method, working on it
+                        // in game_manager.dart atm
+                        _gm.removeLocalGame();
+                      },
                       padding: EdgeInsets.zero,
                       constraints: BoxConstraints(),
                     ),
