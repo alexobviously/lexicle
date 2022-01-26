@@ -70,6 +70,12 @@ class GameGroupManager extends Cubit<GroupManagerState> {
       joined: List.from(state.joined)..remove(id),
     ));
   }
+
+  void createGroup(GameConfig config) async {
+    final _result = await ApiClient.createGroup(player, config);
+    if (!_result.ok) return;
+    updateGroup(_result.object!);
+  }
 }
 
 class GroupManagerState {

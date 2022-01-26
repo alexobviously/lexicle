@@ -6,6 +6,7 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:word_game/app/colours.dart';
 import 'package:word_game/cubits/game_group_manager.dart';
 import 'package:word_game/services/service_locator.dart';
+import 'package:word_game/ui/game_creator.dart';
 import 'package:word_game/ui/standard_scaffold.dart';
 import 'package:word_game/views/group_view.dart';
 
@@ -110,6 +111,10 @@ class _GroupsViewState extends State<GroupsView> {
                       );
                     },
                   ),
+                  Spacer(),
+                  GameCreator(
+                    onCreate: (cfg) => cubit.createGroup(cfg),
+                  )
                 ],
               );
             },

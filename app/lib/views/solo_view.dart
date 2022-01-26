@@ -39,6 +39,7 @@ class _SoloViewState extends State<SoloView> {
 
   @override
   Widget build(BuildContext context) {
+    final gameManager = BlocProvider.of<GameManager>(context);
     return StandardScaffold(
       title: 'Solo Play',
       body: Center(
@@ -70,7 +71,9 @@ class _SoloViewState extends State<SoloView> {
                       ),
                     ),
                   ),
-                  const GameCreator(),
+                  GameCreator(
+                    onCreate: (cfg) => gameManager.createLocalGame(cfg),
+                  ),
                 ],
               );
             },
