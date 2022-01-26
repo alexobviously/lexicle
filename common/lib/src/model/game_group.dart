@@ -23,6 +23,7 @@ class GameGroup {
 
   bool get canBegin => state == MatchState.lobby && words.length == players.length && players.length > 1;
   Map<String, String> get hiddenWords => words.map((k, v) => MapEntry(k, '*' * v.length));
+  bool playerReady(String id) => words.containsKey(id);
 
   GameGroup({
     required this.id,
@@ -75,9 +76,13 @@ class GameGroup {
       __games: games,
     };
   }
+
+  @override
+  String toString() => 'GameGroup($id, title: $title, state: $state)';
 }
 
 class MatchState {
+  static const int loading = -1; // used in the app when waiting for server
   static const int lobby = 0;
   static const int playing = 1;
   static const int finished = 2;

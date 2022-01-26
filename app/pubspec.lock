@@ -160,11 +160,25 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.2.0"
+  flutter_spinkit:
+    dependency: "direct main"
+    description:
+      name: flutter_spinkit
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "5.1.0"
   flutter_test:
     dependency: "direct dev"
     description: flutter
     source: sdk
     version: "0.0.0"
+  fluttering_phrases:
+    dependency: "direct main"
+    description:
+      name: fluttering_phrases
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.3.2"
   get_it:
     dependency: "direct main"
     description:
@@ -207,6 +221,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "4.0.0"
+  intl:
+    dependency: transitive
+    description:
+      name: intl
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.17.0"
   js:
     dependency: transitive
     description:
@@ -221,6 +242,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "4.4.0"
+  json_class:
+    dependency: transitive
+    description:
+      name: json_class
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.1.2+3"
   lints:
     dependency: transitive
     description:
@@ -389,6 +417,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.2.1"
+  rest_client:
+    dependency: "direct main"
+    description:
+      name: rest_client
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.1+6"
   sasl_scram:
     dependency: transitive
     description:

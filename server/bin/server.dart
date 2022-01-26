@@ -22,6 +22,7 @@ Future main() async {
     ..post('/groups/create', GameHandler.createGameGroup)
     ..post('/groups/<id>/join', GameHandler.joinGameGroup)
     ..post('/groups/<id>/leave', GameHandler.leaveGameGroup)
+    ..post('/groups/<id>/delete', GameHandler.deleteGameGroup)
     ..post('/groups/<id>/setword', GameHandler.setWord)
     ..post('/groups/<id>/start', GameHandler.startGroup)
     ..get('/games/all', GameHandler.allGameIds)
