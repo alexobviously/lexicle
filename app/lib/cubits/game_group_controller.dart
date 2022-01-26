@@ -40,12 +40,12 @@ class GameGroupController extends Cubit<GameGroup> {
 
   void refresh() async {
     final _result = await ApiClient.getGroup(id);
-    if (_result.ok) {
+    if (_result.ok && !isClosed) {
       emit(_result.object!);
     }
   }
 
-  void start(Map<String, List<String>> games) async {
+  void start() async {
     final _result = await ApiClient.startGroup(id);
     if (_result.ok) {
       emit(_result.object!);

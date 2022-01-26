@@ -39,7 +39,7 @@ class GameGroupManager extends Cubit<GroupManagerState> {
     print('refreshing groups');
     final _result = await ApiClient.allGroups();
     print('groups: $_result');
-    if (!_result.ok) return;
+    if (!_result.ok || isClosed) return;
     final groupList = _result.object!;
     for (final g in groupList) {
       getGroup(g);
@@ -54,6 +54,7 @@ class GameGroupManager extends Cubit<GroupManagerState> {
     } else if (!g.players.contains(player) && joined.contains(g.id)) {
       joined.remove(g.id);
     }
+    if (isClosed) return;
     emit(state.copyWith(groups: Map.from(state.groups)..[g.id] = g, joined: joined));
   }
 

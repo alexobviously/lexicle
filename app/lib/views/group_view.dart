@@ -165,7 +165,7 @@ class _GroupViewState extends State<GroupView> {
         Spacer(),
         if (isCreator && state.canBegin)
           NeumorphicButton(
-            onPressed: () {},
+            onPressed: controller!.start,
             child: Text(
               'Start Group',
               style: textTheme.headline5,
