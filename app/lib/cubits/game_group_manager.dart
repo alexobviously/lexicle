@@ -2,17 +2,33 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:common/common.dart';
+import 'package:validators/validators.dart';
 import 'package:word_game/cubits/auth_controller.dart';
+import 'package:word_game/cubits/game_group_controller.dart';
 import 'package:word_game/services/api_client.dart';
 import 'package:word_game/services/service_locator.dart';
 
 class GameGroupManager extends Cubit<GroupManagerState> {
+  Map<String, GameGroupController> groupControllers = {};
+  Map<String, StreamSubscription> streams = {};
   String get player => auth().state.name;
   GameGroupManager() : super(GroupManagerState.initial()) {
     init();
   }
 
   late Timer timer;
+
+  bool hasController(String id) => groupControllers.containsKey(id);
+  GameGroupController? getControllerForId(String id) => groupControllers[id];
+  GameGroupController getControllerForGroup(GameGroup g) {
+    if (groupControllers.containsKey(g.id)) {
+      return groupControllers[g.id]!;
+    }
+    final ggc = GameGroupController(GameGroupState(group: g));
+    groupControllers[g.id] = ggc;
+    _listenToGroupController(ggc);
+    return ggc;
+  }
 
   void init() {
     auth().stream.listen(_handleAuthState);
@@ -27,11 +43,18 @@ class GameGroupManager extends Cubit<GroupManagerState> {
   @override
   Future<void> close() {
     timer.cancel();
+    state.groups.forEach((_, v) => hasController(v.id) ? getControllerForGroup(v).close() : null);
     return super.close();
   }
 
   void _handleAuthState(AuthState authState) {
     refresh();
+  }
+
+  void _listenToGroupController(GameGroupController ggc) {
+    _updateGroup(ggc.state.group);
+    streams[ggc.id] = ggc.stream.map((e) => e.group).listen(_updateGroup);
+    groupControllers[ggc.id] = ggc;
   }
 
   void refresh() async {
@@ -42,12 +65,16 @@ class GameGroupManager extends Cubit<GroupManagerState> {
     if (!_result.ok || isClosed) return;
     final groupList = _result.object!;
     for (final g in groupList) {
-      getGroup(g);
+      if (hasController(g)) {
+        getControllerForGroup(state.groups[g]!).refresh();
+      } else {
+        getGroup(g);
+      }
     }
     emit(state.copyWith(working: false));
   }
 
-  void updateGroup(GameGroup g) {
+  void _updateGroup(GameGroup g) {
     List<String> joined = List.from(state.joined);
     if (g.players.contains(player) && !joined.contains(g.id)) {
       joined.add(g.id);
@@ -62,7 +89,7 @@ class GameGroupManager extends Cubit<GroupManagerState> {
     final _result = await ApiClient.getGroup(id);
     if (!_result.ok) return Result.error(_result.error!);
     GameGroup g = _result.object!;
-    updateGroup(g);
+    _updateGroup(g);
     return Result.ok(g);
   }
 
@@ -70,7 +97,7 @@ class GameGroupManager extends Cubit<GroupManagerState> {
     final _result = await ApiClient.joinGroup(id, player);
     if (!_result.ok) return;
     GameGroup g = _result.object!;
-    updateGroup(g);
+    _updateGroup(g);
   }
 
   void leaveGroup(String id) async {
@@ -78,7 +105,7 @@ class GameGroupManager extends Cubit<GroupManagerState> {
     if (!_result.ok) return;
     GameGroup g = _result.object!;
     print(g.players);
-    updateGroup(g);
+    _updateGroup(g);
   }
 
   void deleteGroup(String id) async {
@@ -93,7 +120,7 @@ class GameGroupManager extends Cubit<GroupManagerState> {
   void createGroup(GameConfig config) async {
     final _result = await ApiClient.createGroup(player, config);
     if (!_result.ok) return;
-    updateGroup(_result.object!);
+    _updateGroup(_result.object!);
   }
 }
 

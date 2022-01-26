@@ -126,13 +126,6 @@ class GameServer with ReadyManager {
     return _games;
   }
 
-  Future<Result<Game>> submitWord(String gameId, String word) async {
-    if (!games.containsKey(gameId)) return Result.error('not_found');
-    GameController gc = games[gameId]!;
-    final _result = await gc.submitWord(word);
-    return _result;
-  }
-
   List<String> getAllGroupIds() => gameGroups.entries.map((e) => e.value.id).toList();
   List<String> getAllGameIds() => games.entries.map((e) => e.value.state.id).toList();
   List<String> getAllActiveGameIds() =>
@@ -161,7 +154,7 @@ class GameServer with ReadyManager {
     }
   }
 
-  Future<Result<Game>> makeGuess(String gameId, String word) async {
+  Future<Result<WordValidationResult>> makeGuess(String gameId, String word) async {
     if (!games.containsKey(gameId)) return Result.error('not_found');
     GameController gc = games[gameId]!;
     final _result = await gc.submitWord(word);
@@ -169,8 +162,8 @@ class GameServer with ReadyManager {
     if (!_result.ok) {
       return Result.error(_result.error!);
     }
-    Game g = _result.object!;
-    if (g.group != null && g.gameFinished) updateGroupStatus(g.group!);
+    Game g = gc.state;
+    if (g.group != null && g.gameFinished) updateGroupStatus(gc.state.group!);
     return Result.ok(_result.object!);
   }
 }

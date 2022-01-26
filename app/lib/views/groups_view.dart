@@ -1,5 +1,4 @@
 import 'package:common/common.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -90,7 +89,7 @@ class _GroupsViewState extends State<GroupsView> {
                         onTap: joined
                             ? () => Navigator.of(context).push(
                                   MaterialPageRoute(
-                                    builder: (context) => GroupView(g.id),
+                                    builder: (context) => GroupView(cubit.getControllerForGroup(g)),
                                   ),
                                 )
                             : null,

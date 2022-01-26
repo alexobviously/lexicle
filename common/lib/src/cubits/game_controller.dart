@@ -29,7 +29,7 @@ class GameController extends Cubit<Game> {
     }
   }
 
-  Future<Result<Game>> submitWord(String word) async {
+  Future<Result<WordValidationResult>> submitWord(String word) async {
     if (state.gameFinished) return Result.error('game_finished');
     final _result = await mediator.validateWord(word);
     if (!_result.valid) {
@@ -37,7 +37,7 @@ class GameController extends Cubit<Game> {
     } else {
       emit(state.copyWith(current: WordData.blank(), guesses: List.from(state.guesses)..add(_result.word!)));
     }
-    return Result.ok(state);
+    return Result.ok(_result);
   }
 
   Stream<int> get numRowsStream => stream.map((e) => e.numRows).distinct();

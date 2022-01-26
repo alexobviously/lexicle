@@ -15,50 +15,31 @@ import 'package:word_game/services/service_locator.dart';
 import 'package:word_game/ui/standard_scaffold.dart';
 
 class GroupView extends StatefulWidget {
-  final String id;
-  const GroupView(this.id, {Key? key}) : super(key: key);
+  final GameGroupController controller;
+  const GroupView(this.controller, {Key? key}) : super(key: key);
 
   @override
   State<GroupView> createState() => _GroupViewState();
 }
 
 class _GroupViewState extends State<GroupView> {
-  GameGroupController? controller;
+  GameGroupController get controller => widget.controller;
   TextEditingController wordController = TextEditingController();
   bool invalidWord = false;
 
   @override
   void initState() {
-    initController();
+    if (controller.state.group.words.containsKey(auth().state.name)) {
+      wordController.text = controller.state.group.words[auth().state.name]!;
+    }
     super.initState();
   }
 
-  @override
-  void dispose() {
-    controller?.close();
-    super.dispose();
-  }
-
-  void initController() async {
-    print('initialising controller');
-    final manager = BlocProvider.of<GameGroupManager>(context);
-    final _result = await manager.getGroup(widget.id);
-    if (_result.ok) {
-      controller = GameGroupController(_result.object!);
-      setState(() {
-        if (controller!.state.words.containsKey(auth().state.name)) {
-          wordController.text = controller!.state.words[auth().state.name]!;
-        }
-      });
-    }
-  }
-
   void _submitWord() async {
-    if (controller == null) return;
-    final state = controller!.state;
+    final state = controller.state.group;
     if (!isAlpha(wordController.text) || wordController.text.length != state.config.wordLength) return;
 
-    final _result = await controller!.setWord(wordController.text);
+    final _result = await controller.setWord(wordController.text);
     if (!_result.ok) {
       setState(() => invalidWord = true);
     }
@@ -71,11 +52,11 @@ class _GroupViewState extends State<GroupView> {
       body: Center(
         child: SafeArea(
           child: controller != null
-              ? BlocBuilder<GameGroupController, GameGroup>(
-                  bloc: controller!,
+              ? BlocBuilder<GameGroupController, GameGroupState>(
+                  bloc: controller,
                   builder: (context, state) {
-                    if (state.state == MatchState.lobby) {
-                      return _lobbyView(context, state);
+                    if (state.group.state == MatchState.lobby) {
+                      return _lobbyView(context, state.group);
                     } else {
                       return Container();
                     }
@@ -165,7 +146,7 @@ class _GroupViewState extends State<GroupView> {
         Spacer(),
         if (isCreator && state.canBegin)
           NeumorphicButton(
-            onPressed: controller!.start,
+            onPressed: controller.start,
             child: Text(
               'Start Group',
               style: textTheme.headline5,

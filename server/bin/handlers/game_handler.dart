@@ -189,7 +189,7 @@ class GameHandler {
         return HttpUtils.buildErrorResponse(_result.error!);
       } else {
         return HttpUtils.buildResponse(data: {
-          'game': _result.object!.toMap(hideAnswer: true),
+          'result': _result.object!.toMap(),
         });
       }
     } catch (e, s) {
