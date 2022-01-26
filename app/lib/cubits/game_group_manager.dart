@@ -1,17 +1,33 @@
-import 'dart:math';
+import 'dart:async';
+
 import 'package:bloc/bloc.dart';
 import 'package:common/common.dart';
-import 'package:mongo_dart/mongo_dart.dart';
 import 'package:word_game/cubits/auth_controller.dart';
 import 'package:word_game/services/api_client.dart';
 import 'package:word_game/services/service_locator.dart';
 
 class GameGroupManager extends Cubit<GroupManagerState> {
   String get player => auth().state.name;
-  GameGroupManager() : super(GroupManagerState.initial());
+  GameGroupManager() : super(GroupManagerState.initial()) {
+    init();
+  }
+
+  late Timer timer;
 
   void init() {
     auth().stream.listen(_handleAuthState);
+    timer = Timer.periodic(Duration(milliseconds: 5000), _onTimerEvent);
+  }
+
+  void _onTimerEvent(Timer t) {
+    print('on timer event');
+    refresh();
+  }
+
+  @override
+  Future<void> close() {
+    timer.cancel();
+    return super.close();
   }
 
   void _handleAuthState(AuthState authState) {
@@ -19,6 +35,7 @@ class GameGroupManager extends Cubit<GroupManagerState> {
   }
 
   void refresh() async {
+    emit(state.copyWith(working: true));
     print('refreshing groups');
     final _result = await ApiClient.allGroups();
     print('groups: $_result');
@@ -27,6 +44,7 @@ class GameGroupManager extends Cubit<GroupManagerState> {
     for (final g in groupList) {
       getGroup(g);
     }
+    emit(state.copyWith(working: false));
   }
 
   void updateGroup(GameGroup g) {
@@ -81,16 +99,23 @@ class GameGroupManager extends Cubit<GroupManagerState> {
 class GroupManagerState {
   final Map<String, GameGroup> groups;
   final List<String> joined;
+  final bool working;
 
-  GroupManagerState({this.groups = const {}, this.joined = const []});
+  GroupManagerState({
+    this.groups = const {},
+    this.joined = const [],
+    this.working = false,
+  });
   factory GroupManagerState.initial() => GroupManagerState();
 
   GroupManagerState copyWith({
     Map<String, GameGroup>? groups,
     List<String>? joined,
+    bool? working,
   }) =>
       GroupManagerState(
         groups: groups ?? this.groups,
         joined: joined ?? this.joined,
+        working: working ?? this.working,
       );
 }

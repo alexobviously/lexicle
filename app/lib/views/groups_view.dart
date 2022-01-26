@@ -2,6 +2,7 @@ import 'package:common/common.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:word_game/app/colours.dart';
 import 'package:word_game/cubits/game_group_manager.dart';
@@ -65,8 +66,10 @@ class _GroupsViewState extends State<GroupsView> {
                         ),
                         Container(width: 10),
                         NeumorphicButton(
-                          onPressed: () => cubit.refresh(),
-                          child: const Icon(MdiIcons.refresh),
+                          onPressed: () => state.working ? null : cubit.refresh(),
+                          child: state.working
+                              ? SpinKitFadingCircle(size: 24, color: Colors.black87)
+                              : const Icon(MdiIcons.refresh),
                         ),
                       ],
                     ),

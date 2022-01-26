@@ -1,15 +1,32 @@
+import 'dart:async';
+
 import 'package:bloc/bloc.dart';
 import 'package:common/common.dart';
 import 'package:word_game/services/api_client.dart';
 import '../services/service_locator.dart';
 
 class GameGroupController extends Cubit<GameGroup> {
-  GameGroupController(GameGroup initial) : super(initial);
+  GameGroupController(GameGroup initial) : super(initial) {
+    timer = Timer.periodic(Duration(milliseconds: 5000), _onTimerEvent);
+  }
+
+  late Timer timer;
 
   String get id => state.id;
   String get player => auth().state.name;
   Map<String, dynamic> toMap({bool hideAnswers = true}) => state.toMap(hideAnswers: hideAnswers);
   List<String> get unreadyPlayers => state.players.where((e) => !state.words.containsKey(e)).toList();
+
+  void _onTimerEvent(Timer t) {
+    print('on timer event');
+    refresh();
+  }
+
+  @override
+  Future<void> close() {
+    timer.cancel();
+    return super.close();
+  }
 
   Result<bool> get canStart {
     if (player != state.creator) return Result.error('unauthorised');

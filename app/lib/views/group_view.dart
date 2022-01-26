@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:common/common.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -29,6 +31,12 @@ class _GroupViewState extends State<GroupView> {
   void initState() {
     initController();
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    controller?.close();
+    super.dispose();
   }
 
   void initController() async {
