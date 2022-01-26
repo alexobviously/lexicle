@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:common/common.dart';
+import 'package:word_game/mediator/online_mediator.dart';
 import 'package:word_game/services/api_client.dart';
 import '../services/service_locator.dart';
 
@@ -30,6 +31,25 @@ class GameGroupController extends Cubit<GameGroupState> {
     return super.close();
   }
 
+  bool hasGameController(String gid) => state.games.containsKey(gid);
+
+  void _createGameController(String gid) async {
+    final _result = await ApiClient.getGame(gid);
+    if (!_result.ok) return; // should we do something here maybe?
+    final gc = GameController(_result.object!, OnlineMediator(gameId: gid, wordLength: _result.object!.length));
+    emit(state.copyWith(games: Map.from(state.games)..[gid] = gc));
+  }
+
+  void _checkGames() {
+    if (state.group.games.containsKey(player)) {
+      for (String gid in state.group.games[player]!) {
+        if (!hasGameController(gid)) {
+          _createGameController(gid);
+        }
+      }
+    }
+  }
+
   Result<bool> get canStart {
     if (player != state.group.creator) return Result.error('unauthorised');
     if (state.group.state > MatchState.lobby) return Result.error('group_started');
@@ -44,6 +64,7 @@ class GameGroupController extends Cubit<GameGroupState> {
     final _result = await ApiClient.getGroup(id);
     if (_result.ok && !isClosed) {
       emit(state.copyWith(group: _result.object!));
+      _checkGames();
     }
   }
 
@@ -51,6 +72,7 @@ class GameGroupController extends Cubit<GameGroupState> {
     final _result = await ApiClient.startGroup(id);
     if (_result.ok) {
       emit(state.copyWith(group: _result.object!));
+      _checkGames();
     }
   }
 

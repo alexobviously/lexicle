@@ -12,6 +12,8 @@ import 'package:word_game/app/colours.dart';
 import 'package:word_game/cubits/game_group_controller.dart';
 import 'package:word_game/cubits/game_group_manager.dart';
 import 'package:word_game/services/service_locator.dart';
+import 'package:word_game/ui/game_overview.dart';
+import 'package:word_game/ui/game_page.dart';
 import 'package:word_game/ui/standard_scaffold.dart';
 
 class GroupView extends StatefulWidget {
@@ -57,6 +59,8 @@ class _GroupViewState extends State<GroupView> {
                   builder: (context, state) {
                     if (state.group.state == MatchState.lobby) {
                       return _lobbyView(context, state.group);
+                    } else if (state.group.state == MatchState.playing) {
+                      return _playView(context, state);
                     } else {
                       return Container();
                     }
@@ -158,6 +162,32 @@ class _GroupViewState extends State<GroupView> {
             style: NeumorphicStyle(depth: 2),
             child: Text('Waiting for players..', style: textTheme.headline5),
           ),
+      ],
+    );
+  }
+
+  Widget _playView(BuildContext context, GameGroupState state) {
+    List<GameController> gcs = state.games.entries.map((e) => e.value).toList();
+    return Column(
+      children: [
+        GridView.count(
+          // controller: _controller,
+          shrinkWrap: true,
+          children: gcs.reversed
+              .map((e) => GestureDetector(
+                    child: GameOverview(e, key: ValueKey('go_${e.state.id}')),
+                    onTap: () => Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => GamePage(game: e, title: '${e.state.creator}\'s game'),
+                      ),
+                    ),
+                  ))
+              .toList(),
+          crossAxisCount: 2,
+          crossAxisSpacing: 16,
+          mainAxisSpacing: 16,
+          childAspectRatio: 3 / 4,
+        ),
       ],
     );
   }
