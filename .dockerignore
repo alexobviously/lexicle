@@ -1,0 +1,10 @@
+.dockerignore
+Dockerfile
+app/
+*/build/
+*/.dart_tool/
+*/.git/
+*/.vscode/
+.github/
+.gitignore
+.packages
