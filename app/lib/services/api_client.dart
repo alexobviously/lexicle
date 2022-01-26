@@ -64,7 +64,8 @@ class ApiClient {
       final resp = await rc.Client().execute(request: req);
       if (resp.statusCode != 200) return ApiResponse.error('http_${resp.statusCode}');
       return parseBody(resp.body);
-    } catch (e, _) {
+    } catch (e, s) {
+      print('ApiClient.get($path), error $e\n$s');
       return ApiResponse.unknownError();
     }
   }
@@ -79,7 +80,8 @@ class ApiClient {
       final resp = await rc.Client().execute(request: req);
       if (resp.statusCode != 200) return ApiResponse.error('http_${resp.statusCode}');
       return parseBody(resp.body);
-    } catch (e, _) {
+    } catch (e, s) {
+      print('ApiClient.post($path), error $e\n$s');
       return ApiResponse.unknownError();
     }
   }
