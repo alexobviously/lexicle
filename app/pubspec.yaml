@@ -18,6 +18,7 @@ dependencies:
   bloc: ^8.0.2
   cupertino_icons: ^1.0.2
   flutter_bloc: ^8.0.1
+  flutter_dotenv: ^5.0.2
   flutter_neumorphic: ^3.2.0
   flutter_spinkit: ^5.1.0
   fluttering_phrases: ^0.3.2
@@ -41,6 +42,7 @@ flutter:
   assets:
     - assets/words_alpha.txt
     - assets/words_common.txt
+    - .env
 
   # To add assets to your application, add an assets section, like this:
   # assets:

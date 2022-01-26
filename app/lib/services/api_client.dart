@@ -8,7 +8,7 @@ typedef Unwrapper<T> = T Function(Map<String, dynamic> data);
 
 class ApiClient {
   // todo: put this in .env
-  static const String host = 'http://localhost:8080';
+  static String host = 'http://localhost:8080';
 
   static Future<Result<List<String>>> allGroups() =>
       getAndUnwrap('/groups/all', unwrapper: (data) => coerceList(data['groups']));
