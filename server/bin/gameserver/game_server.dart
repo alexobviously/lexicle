@@ -36,6 +36,14 @@ class GameServer with ReadyManager {
     return Result.ok(games[id]!);
   }
 
+  Result<GameGroupController> getGroupForGameId(String id) {
+    final _result = getGameController(id);
+    if (_result.ok) {
+      return getGroupController(_result.object!.state.group ?? '');
+    }
+    return Result.error('not_found');
+  }
+
   Result<GameGroupController> joinGroup(String id, String player) {
     if (!gameGroups.containsKey(id)) return Result.error('not_found');
     GameGroupController ggc = gameGroups[id]!;
@@ -101,9 +109,9 @@ class GameServer with ReadyManager {
     return Result.ok(ggc);
   }
 
-  Map<String, List<String>> createGamesForGroup(GameGroupController controller) {
+  Map<String, List<GameStub>> createGamesForGroup(GameGroupController controller) {
     GameGroup _group = controller.state;
-    Map<String, List<String>> _games = {};
+    Map<String, List<GameStub>> _games = {};
     for (String p in _group.players) {
       List<String> playerGames = [];
       for (String c in _group.players) {
@@ -121,7 +129,7 @@ class GameServer with ReadyManager {
         games[gid] = GameController(g, ServerMediator(answer: _group.words[c]!));
         playerGames.add(gid);
       }
-      _games[p] = playerGames;
+      _games[p] = playerGames.map((e) => GameStub.initial(e)).toList();
     }
     return _games;
   }
@@ -136,7 +144,7 @@ class GameServer with ReadyManager {
     GameGroupController ggc = gameGroups[id]!;
     if (ggc.state.state == MatchState.playing) {
       bool finished = true;
-      for (final playerGames in ggc.state.games.entries) {
+      for (final playerGames in ggc.state.gameIds.entries) {
         if (!finished) break;
         for (String g in playerGames.value) {
           final _result = getGameController(g);
@@ -154,6 +162,14 @@ class GameServer with ReadyManager {
     }
   }
 
+  void updateStub(String player, GameStub stub) {
+    String id = stub.id;
+    final _result = getGroupForGameId(id);
+    if (_result.ok) {
+      _result.object!.updateStub(player, stub);
+    }
+  }
+
   Future<Result<WordValidationResult>> makeGuess(String gameId, String word) async {
     if (!games.containsKey(gameId)) return Result.error('not_found');
     GameController gc = games[gameId]!;
@@ -163,6 +179,7 @@ class GameServer with ReadyManager {
       return Result.error(_result.error!);
     }
     Game g = gc.state;
+    updateStub(g.player, g.stub);
     if (g.group != null && g.gameFinished) updateGroupStatus(gc.state.group!);
     return Result.ok(_result.object!);
   }

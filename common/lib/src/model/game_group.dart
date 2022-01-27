@@ -1,4 +1,5 @@
 import 'package:common/common.dart';
+import 'package:common/src/model/standing.dart';
 import 'package:copy_with_extension/copy_with_extension.dart';
 
 part 'game_group.g.dart';
@@ -19,11 +20,53 @@ class GameGroup {
   final Map<String, String> words;
 
   /// Map player IDs to all of the games they currently have.
-  final Map<String, List<String>> games;
+  final Map<String, List<GameStub>> games;
 
   bool get canBegin => state == MatchState.lobby && words.length == players.length && players.length > 1;
   Map<String, String> get hiddenWords => words.map((k, v) => MapEntry(k, '*' * v.length));
   bool playerReady(String id) => words.containsKey(id);
+  Map<String, List<String>> get gameIds => games.map((k, v) => MapEntry(k, v.map((e) => e.id).toList()));
+
+  double playerProgress(String player) =>
+      games[player]?.fold<double>(0.0, (a, b) => a + (b.progress / games[player]!.length)) ?? 0.0;
+  int playerGuesses(String player) => games[player]?.fold<int>(0, (a, b) => a + b.guesses) ?? 0;
+  Map<String, int> get scores => games.map((k, v) => MapEntry(k, playerGuesses(k)));
+
+  List<Standing>? _standings;
+  List<Standing> get standings {
+    if (_standings != null) return _standings!;
+    _standings = players
+        .map((e) => Standing(
+              player: e,
+              guesses: playerGuesses(e),
+              progress: playerProgress(e),
+            ))
+        .toList();
+    _standings!.sort((a, b) => a.orderWeight.compareTo(b.orderWeight));
+    return _standings!;
+  }
+
+  /// Returns all of [player]'s GameStubs sorted by standing.
+  /// Includes a blank GameStub at the position of the player.
+  List<GameStub> playerGamesSorted(String player) {
+    if (!games.containsKey(player)) return [];
+    List<GameStub> _games = games[player]!;
+    Map<int, GameStub> _mapping = {};
+    for (int i = 0; i < standings.length; i++) {
+      if (standings[i].player == player) {
+        _mapping[i] = GameStub.blank();
+      } else {
+        int index = players.indexOf(standings[i].player);
+        if (index == -1) {
+          _mapping[i] = GameStub.blank();
+        } else {
+          if (index > players.indexOf(player)) index--;
+          _mapping[i] = _games[index];
+        }
+      }
+    }
+    return _mapping.entries.map((e) => e.value).toList();
+  }
 
   GameGroup({
     required this.id,
@@ -58,7 +101,8 @@ class GameGroup {
       players: coerceList<String>(doc[__players] ?? []),
       words: (doc[__words] ?? {}).map<String, String>((k, v) => MapEntry(k.toString(), v.toString())),
       games: {
-        for (MapEntry entry in (doc[__games] ?? {}).entries) entry.key: coerceList<String>(entry.value),
+        for (MapEntry entry in (doc[__games] ?? {}).entries)
+          entry.key: mapList<GameStub>(entry.value, (e) => GameStub.fromJson(e)),
       },
     );
   }
@@ -73,8 +117,19 @@ class GameGroup {
       __state: state,
       __players: players,
       __words: hideAnswers ? hiddenWords : words,
-      __games: games,
+      __games: {
+        for (MapEntry<String, List<GameStub>> entry in games.entries)
+          entry.key: mapList<Map<String, dynamic>>(entry.value, (e) => e.toMap()),
+      },
     };
+  }
+
+  GameGroup updateGameStub(String player, GameStub stub) {
+    Map<String, List<GameStub>> _games = Map.from(games);
+    if (!_games.containsKey(player)) _games[player] = [];
+    _games[player]!.removeWhere((e) => e.id == stub.id);
+    _games[player]!.add(stub);
+    return copyWith(games: _games);
   }
 
   @override

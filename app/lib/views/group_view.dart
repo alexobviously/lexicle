@@ -62,7 +62,7 @@ class _GroupViewState extends State<GroupView> {
                     } else if (state.group.state == MatchState.playing) {
                       return _playView(context, state);
                     } else {
-                      return Container();
+                      return _resultsView(context, state);
                     }
                   },
                 )
@@ -167,9 +167,16 @@ class _GroupViewState extends State<GroupView> {
   }
 
   Widget _playView(BuildContext context, GameGroupState state) {
+    final theme = Theme.of(context);
+    final textTheme = theme.textTheme;
     List<GameController> gcs = state.games.entries.map((e) => e.value).toList();
     return Column(
       children: [
+        Text(
+          'Standings',
+          style: textTheme.headline5,
+        ),
+        _standings(context, state.group),
         GridView.count(
           // controller: _controller,
           shrinkWrap: true,
@@ -188,6 +195,76 @@ class _GroupViewState extends State<GroupView> {
           mainAxisSpacing: 16,
           childAspectRatio: 3 / 4,
         ),
+      ],
+    );
+  }
+
+  Widget _resultsView(BuildContext context, GameGroupState state) {
+    final theme = Theme.of(context);
+    final textTheme = theme.textTheme;
+    return Column(
+      children: [
+        Text('Results', style: textTheme.headline5),
+        Container(height: 32),
+        _standings(context, state.group, true),
+      ],
+    );
+  }
+
+  Widget _standings(BuildContext context, GameGroup state, [bool finished = false]) {
+    final theme = Theme.of(context);
+    final textTheme = theme.textTheme;
+    final standings = state.standings;
+
+    Color? _standingColour(Standing st) {
+      if (!finished) return null;
+      int i = standings.indexOf(st);
+      if (i == 0) return Colours.gold.lighten();
+      if (i == 1) return Colours.silver.lighten(0.05);
+      if (i == 2) return Colours.bronze.lighten();
+      return null;
+    }
+
+    Color? _boxColour(GameStub g) {
+      if (g.id.isEmpty) return Colours.wrong;
+      if (g.progress >= 1.0) return Colours.correct;
+      return Color.lerp(Colours.blank, Colours.semiCorrect, g.progress);
+    }
+
+    return Column(
+      children: [
+        ...standings
+            .map(
+              (e) => Container(
+                padding: const EdgeInsets.all(8.0),
+                color: _standingColour(e),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    SizedBox(width: 100, child: Text(e.player, style: textTheme.headline6)),
+                    Text('${e.guesses}', style: textTheme.headline6),
+                    Spacer(),
+                    ...state
+                        .playerGamesSorted(e.player)
+                        .map((g) => Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 2.0),
+                              child: Container(
+                                width: 32,
+                                height: 32,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(4.0),
+                                  color: _boxColour(g),
+                                ),
+                                child: g.id.isNotEmpty ? Center(child: Text(g.guesses.toString())) : null,
+                              ),
+                            ))
+                        .toList(),
+                    Container(width: 16),
+                  ],
+                ),
+              ),
+            )
+            .toList(),
       ],
     );
   }

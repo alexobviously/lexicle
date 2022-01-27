@@ -8,6 +8,7 @@ class GameController extends Cubit<Game> {
       GameController(Game.initial(player, length), mediator);
 
   Map<String, dynamic> toMap({bool hideAnswer = false}) => state.toMap(hideAnswer: hideAnswer);
+  GameStub get stub => state.stub;
 
   void addLetter(String l) {
     if (state.word.length >= state.length || state.gameFinished) return;

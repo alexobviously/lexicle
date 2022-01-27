@@ -42,7 +42,7 @@ class GameGroupController extends Cubit<GameGroupState> {
 
   void _checkGames() {
     if (state.group.games.containsKey(player)) {
-      for (String gid in state.group.games[player]!) {
+      for (String gid in state.group.gameIds[player]!) {
         if (!hasGameController(gid)) {
           _createGameController(gid);
         }

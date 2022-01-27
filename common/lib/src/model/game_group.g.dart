@@ -11,7 +11,7 @@ extension GameGroupCopyWith on GameGroup {
     String? code,
     GameConfig? config,
     String? creator,
-    Map<String, List<String>>? games,
+    Map<String, List<GameStub>>? games,
     String? id,
     List<String>? players,
     int? state,
