@@ -56,6 +56,17 @@ class _GroupsViewState extends State<GroupsView> {
                             child: TextField(
                               enabled: state.joined.isEmpty,
                               controller: nameController,
+                              decoration: InputDecoration(
+                                suffixIcon: state.joined.isEmpty && auth().state.name.isNotEmpty
+                                    ? IconButton(
+                                        onPressed: () {
+                                          auth().setName('');
+                                          setState(() => nameController.text = '');
+                                        },
+                                        icon: Icon(Icons.clear),
+                                      )
+                                    : null,
+                              ),
                             ),
                           ),
                         ),
@@ -98,32 +109,34 @@ class _GroupsViewState extends State<GroupsView> {
                             padding: const EdgeInsets.all(8.0),
                             child: Text('${g.players.length}', style: textTheme.headline5, textAlign: TextAlign.center),
                           ),
-                          trailing: NeumorphicButton(
-                            style: NeumorphicStyle(
-                              color: tileColour,
-                              depth: 2,
-                            ),
-                            onPressed: () {
-                              if (isCreator) {
-                                cubit.deleteGroup(g.id);
-                              } else if (joined) {
-                                cubit.leaveGroup(g.id);
-                              } else {
-                                cubit.joinGroup(g.id);
-                              }
-                            },
-                            child: SizedBox(
-                              width: 50,
-                              child: Text(
-                                isCreator
-                                    ? 'Delete'
-                                    : joined
-                                        ? 'Leave'
-                                        : 'Join',
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-                          ),
+                          trailing: auth().state.name.isNotEmpty
+                              ? NeumorphicButton(
+                                  style: NeumorphicStyle(
+                                    color: tileColour,
+                                    depth: 2,
+                                  ),
+                                  onPressed: () {
+                                    if (isCreator) {
+                                      cubit.deleteGroup(g.id);
+                                    } else if (joined) {
+                                      cubit.leaveGroup(g.id);
+                                    } else {
+                                      cubit.joinGroup(g.id);
+                                    }
+                                  },
+                                  child: SizedBox(
+                                    width: 50,
+                                    child: Text(
+                                      isCreator
+                                          ? 'Delete'
+                                          : joined
+                                              ? 'Leave'
+                                              : 'Join',
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
+                                )
+                              : null,
                         );
                       },
                     ),
