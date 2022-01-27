@@ -44,7 +44,7 @@ class GameHandler {
         return HttpUtils.buildErrorResponse(_result.error!);
       } else {
         return HttpUtils.buildResponse(data: {
-          'group': _result.object!.toMap(),
+          'group': _result.object!.toMap(hideAnswers: !_result.object!.state.finished),
         });
       }
     } catch (e, s) {

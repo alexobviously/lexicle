@@ -74,59 +74,60 @@ class _GroupsViewState extends State<GroupsView> {
                     ),
                   ),
                   Container(height: 20),
-                  ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: state.groups.length,
-                    itemBuilder: (context, i) {
-                      GameGroup g = state.groups.entries.toList()[i].value;
-                      bool isCreator = g.creator == auth().state.name;
-                      Color? tileColour = i % 2 == 0 ? Colours.wrong : null;
-                      bool joined = state.joined.contains(g.id);
-                      if (joined) tileColour = Colours.semiCorrect;
-                      return ListTile(
-                        title: Text(g.title),
-                        tileColor: tileColour,
-                        onTap: joined
-                            ? () => Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                    builder: (context) => GroupView(cubit.getControllerForGroup(g)),
-                                  ),
-                                )
-                            : null,
-                        leading: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text('${g.players.length}', style: textTheme.headline5, textAlign: TextAlign.center),
-                        ),
-                        trailing: NeumorphicButton(
-                          style: NeumorphicStyle(
-                            color: tileColour,
-                            depth: 2,
+                  Expanded(
+                    child: ListView.builder(
+                      // shrinkWrap: true,
+                      itemCount: state.groups.length,
+                      itemBuilder: (context, i) {
+                        GameGroup g = state.groups.entries.toList()[i].value;
+                        bool isCreator = g.creator == auth().state.name;
+                        Color? tileColour = i % 2 == 0 ? Colours.wrong : null;
+                        bool joined = state.joined.contains(g.id);
+                        if (joined) tileColour = Colours.semiCorrect;
+                        return ListTile(
+                          title: Text(g.title),
+                          tileColor: tileColour,
+                          onTap: joined
+                              ? () => Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                      builder: (context) => GroupView(cubit.getControllerForGroup(g)),
+                                    ),
+                                  )
+                              : null,
+                          leading: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text('${g.players.length}', style: textTheme.headline5, textAlign: TextAlign.center),
                           ),
-                          onPressed: () {
-                            if (isCreator) {
-                              cubit.deleteGroup(g.id);
-                            } else if (joined) {
-                              cubit.leaveGroup(g.id);
-                            } else {
-                              cubit.joinGroup(g.id);
-                            }
-                          },
-                          child: SizedBox(
-                            width: 50,
-                            child: Text(
-                              isCreator
-                                  ? 'Delete'
-                                  : joined
-                                      ? 'Leave'
-                                      : 'Join',
-                              textAlign: TextAlign.center,
+                          trailing: NeumorphicButton(
+                            style: NeumorphicStyle(
+                              color: tileColour,
+                              depth: 2,
+                            ),
+                            onPressed: () {
+                              if (isCreator) {
+                                cubit.deleteGroup(g.id);
+                              } else if (joined) {
+                                cubit.leaveGroup(g.id);
+                              } else {
+                                cubit.joinGroup(g.id);
+                              }
+                            },
+                            child: SizedBox(
+                              width: 50,
+                              child: Text(
+                                isCreator
+                                    ? 'Delete'
+                                    : joined
+                                        ? 'Leave'
+                                        : 'Join',
+                                textAlign: TextAlign.center,
+                              ),
                             ),
                           ),
-                        ),
-                      );
-                    },
+                        );
+                      },
+                    ),
                   ),
-                  Spacer(),
                   GameCreator(
                     onCreate: (cfg) => cubit.createGroup(cfg),
                   )
