@@ -7,6 +7,7 @@ import 'package:shelf_router/shelf_router.dart' as shelf_router;
 import 'handlers/dictionary_handler.dart';
 import 'handlers/game_handler.dart';
 import 'handlers/game_server_handler.dart';
+import 'handlers/status_handler.dart';
 import 'services/service_locator.dart';
 
 Future main() async {
@@ -15,6 +16,8 @@ Future main() async {
 
   final _router = shelf_router.Router()
     ..get('/hello', _echoRequest)
+    ..get('/', StatusHandler.serverStatus)
+    ..get('/status', StatusHandler.serverStatus)
     ..get('/dict/<w>', DictionaryHandler.validateWord)
     ..get('/ws', gameServerHandler())
     ..get('/groups/all', GameHandler.allGroupIds)

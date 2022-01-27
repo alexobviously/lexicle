@@ -6,7 +6,8 @@ import 'package:word_game/cubits/game_manager.dart';
 import 'package:word_game/ui/length_control.dart';
 
 class GameCreator extends StatefulWidget {
-  const GameCreator({Key? key}) : super(key: key);
+  final Function(GameConfig) onCreate;
+  const GameCreator({required this.onCreate, Key? key}) : super(key: key);
 
   @override
   _GameCreatorState createState() => _GameCreatorState();
@@ -44,7 +45,8 @@ class _GameCreatorState extends State<GameCreator> {
             OutlinedButton(
               onPressed: () {
                 HapticFeedback.vibrate();
-                gameManager.createLocalGame(GameConfig(wordLength: length));
+                final config = GameConfig(wordLength: length);
+                widget.onCreate(config);
               },
               child: Text('Create New Game', style: textTheme.headline6!.copyWith(color: theme.primaryColor)),
             ),

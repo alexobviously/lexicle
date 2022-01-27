@@ -1,10 +1,12 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:word_game/app/routes.dart';
 import 'package:word_game/cubits/auth_controller.dart';
 import 'package:word_game/cubits/game_group_manager.dart';
 import 'package:word_game/cubits/game_manager.dart';
+import 'package:word_game/services/api_client.dart';
 import 'package:word_game/views/dict_search_view.dart';
 import 'package:word_game/views/groups_view.dart';
 import 'package:word_game/views/home_view.dart';
@@ -14,9 +16,19 @@ import 'package:word_game/services/service_locator.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await loadEnv();
   await setUpServiceLocator();
   await dictionary().ready;
   runApp(const MyApp());
+}
+
+Future<void> loadEnv() async {
+  try {
+    await dotenv.load(fileName: '.env');
+    if (dotenv.env['SERVER_HOST'] != null) ApiClient.host = dotenv.env['SERVER_HOST']!;
+  } catch (_) {
+    print('.env not loaded, no problem tho');
+  }
 }
 
 class MyApp extends StatelessWidget {

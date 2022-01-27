@@ -8,7 +8,7 @@ typedef Unwrapper<T> = T Function(Map<String, dynamic> data);
 
 class ApiClient {
   // todo: put this in .env
-  static const String host = 'http://localhost:8080';
+  static String host = 'https://word-w7y24cao7q-ew.a.run.app'; //'http://localhost:8080';
 
   static Future<Result<List<String>>> allGroups() =>
       getAndUnwrap('/groups/all', unwrapper: (data) => coerceList(data['groups']));
@@ -46,10 +46,10 @@ class ApiClient {
   static Future<Result<List<String>>> activeGames() =>
       getAndUnwrap('/games/active', unwrapper: (data) => coerceList(data['games']));
   static Future<Result<Game>> getGame(String id) => getAndUnwrap('/games/$id', unwrapper: unwrapGame);
-  static Future<Result<Game>> makeGuess(String game, String guess) => postAndUnwrap(
+  static Future<Result<WordValidationResult>> makeGuess(String game, String guess) => postAndUnwrap(
         '/games/$game/guess',
         body: {'guess': guess},
-        unwrapper: unwrapGame,
+        unwrapper: (data) => WordValidationResult.fromJson(data['result']),
       );
 
   static Future<Result<bool>> validateWord(String word) =>
@@ -64,7 +64,8 @@ class ApiClient {
       final resp = await rc.Client().execute(request: req);
       if (resp.statusCode != 200) return ApiResponse.error('http_${resp.statusCode}');
       return parseBody(resp.body);
-    } catch (e, _) {
+    } catch (e, s) {
+      print('ApiClient.get($path), error $e\n$s');
       return ApiResponse.unknownError();
     }
   }
@@ -79,7 +80,8 @@ class ApiClient {
       final resp = await rc.Client().execute(request: req);
       if (resp.statusCode != 200) return ApiResponse.error('http_${resp.statusCode}');
       return parseBody(resp.body);
-    } catch (e, _) {
+    } catch (e, s) {
+      print('ApiClient.post($path), error $e\n$s');
       return ApiResponse.unknownError();
     }
   }

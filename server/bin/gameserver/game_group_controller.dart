@@ -49,7 +49,7 @@ class GameGroupController extends Cubit<GameGroup> {
     return Result.ok(true);
   }
 
-  void start(Map<String, List<String>> games) {
+  void start(Map<String, List<GameStub>> games) {
     emit(state.copyWith(
       state: MatchState.playing,
       games: games,
@@ -63,6 +63,10 @@ class GameGroupController extends Cubit<GameGroup> {
     if (!dictionary().isValidWord(word)) return Result.error('invalid_word');
     emit(state.copyWith(words: Map.from(state.words)..[player] = word));
     return Result.ok(true);
+  }
+
+  void updateStub(String player, GameStub stub) {
+    emit(state.updateGameStub(player, stub));
   }
 
   void setState(int _state) => emit(state.copyWith(state: _state));
