@@ -10,7 +10,8 @@ import 'package:word_game/ui/word_row.dart';
 class GameOverview extends StatefulWidget {
   final GameController game;
   final VoidCallback? onRemove;
-  const GameOverview(this.game, {this.onRemove, Key? key}) : super(key: key);
+  final Widget? header;
+  const GameOverview(this.game, {this.onRemove, this.header, Key? key}) : super(key: key);
 
   @override
   State<GameOverview> createState() => _GameOverviewState();
@@ -60,11 +61,15 @@ class _GameOverviewState extends State<GameOverview> {
             controller: _controller,
             children: [
               Container(height: 10),
-
-              // Steve: creates delete game IconButton
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
+                  if (widget.header != null)
+                    Padding(
+                      padding: const EdgeInsets.only(left: 7.0),
+                      child: widget.header!,
+                    ),
+                  Spacer(),
                   if (widget.onRemove != null)
                     Padding(
                       padding: const EdgeInsets.only(right: 7.0),
@@ -78,7 +83,6 @@ class _GameOverviewState extends State<GameOverview> {
                     ),
                 ],
               ),
-
               ...state.guesses
                   .map(
                     (e) => FittedBox(
