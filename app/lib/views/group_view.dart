@@ -214,7 +214,11 @@ class _GroupViewState extends State<GroupView> {
               physics: NeverScrollableScrollPhysics(),
               children: gcs
                   .map((e) => GestureDetector(
-                        child: GameOverview(e, key: ValueKey('go_${e.state.id}')),
+                        child: GameOverview(
+                          e,
+                          header: Text(e.state.creator),
+                          key: ValueKey('go_${e.state.id}'),
+                        ),
                         onTap: () => Navigator.of(context).push(
                           MaterialPageRoute(
                             builder: (context) => GamePage(game: e, title: '${e.state.creator}\'s game'),

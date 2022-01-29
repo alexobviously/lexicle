@@ -2,12 +2,16 @@ import 'package:common/common.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:word_game/app/colours.dart';
+import 'package:word_game/cubits/game_manager.dart';
 import 'package:word_game/ui/word_row.dart';
 
 class GameOverview extends StatefulWidget {
   final GameController game;
-  const GameOverview(this.game, {Key? key}) : super(key: key);
+  final VoidCallback? onRemove;
+  final Widget? header;
+  const GameOverview(this.game, {this.onRemove, this.header, Key? key}) : super(key: key);
 
   @override
   State<GameOverview> createState() => _GameOverviewState();
@@ -37,6 +41,9 @@ class _GameOverviewState extends State<GameOverview> {
 
   @override
   Widget build(BuildContext context) {
+    // STEVE: added to callback (?) method from game_manager
+    final _gm = BlocProvider.of<GameManager>(context);
+
     return Neumorphic(
       padding: const EdgeInsets.symmetric(horizontal: 6.0),
       style: NeumorphicStyle(
@@ -54,6 +61,28 @@ class _GameOverviewState extends State<GameOverview> {
             controller: _controller,
             children: [
               Container(height: 10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  if (widget.header != null)
+                    Padding(
+                      padding: const EdgeInsets.only(left: 7.0),
+                      child: widget.header!,
+                    ),
+                  Spacer(),
+                  if (widget.onRemove != null)
+                    Padding(
+                      padding: const EdgeInsets.only(right: 7.0),
+                      child: IconButton(
+                        icon: Icon(MdiIcons.closeThick),
+                        iconSize: 14.0,
+                        onPressed: widget.onRemove,
+                        padding: EdgeInsets.zero,
+                        constraints: BoxConstraints(),
+                      ),
+                    ),
+                ],
+              ),
               ...state.guesses
                   .map(
                     (e) => FittedBox(
