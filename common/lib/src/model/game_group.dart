@@ -22,6 +22,7 @@ class GameGroup {
   /// Map player IDs to all of the games they currently have.
   final Map<String, List<GameStub>> games;
 
+  bool get started => state > MatchState.lobby;
   bool get finished => state >= MatchState.finished;
   bool get canBegin => state == MatchState.lobby && words.length == players.length && players.length > 1;
   Map<String, String> get hiddenWords => words.map((k, v) => MapEntry(k, '*' * v.length));

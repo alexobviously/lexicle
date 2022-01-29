@@ -90,11 +90,12 @@ class _GroupsViewState extends State<GroupsView> {
                       // shrinkWrap: true,
                       itemCount: state.groups.length,
                       itemBuilder: (context, i) {
-                        GameGroup g = state.groups.entries.toList()[i].value;
+                        GameGroup g = state.groups.entries.toList().reversed.toList()[i].value;
                         bool isCreator = g.creator == auth().state.name;
                         Color? tileColour = i % 2 == 0 ? Colours.wrong : null;
                         bool joined = state.joined.contains(g.id);
                         if (joined) tileColour = Colours.semiCorrect;
+                        if (g.finished) tileColour = Colours.victory;
                         return ListTile(
                           title: Text(g.title),
                           tileColor: tileColour,
@@ -109,7 +110,7 @@ class _GroupsViewState extends State<GroupsView> {
                             padding: const EdgeInsets.all(8.0),
                             child: Text('${g.players.length}', style: textTheme.headline5, textAlign: TextAlign.center),
                           ),
-                          trailing: auth().state.name.isNotEmpty
+                          trailing: !g.started && auth().state.name.isNotEmpty
                               ? NeumorphicButton(
                                   style: NeumorphicStyle(
                                     color: tileColour,
