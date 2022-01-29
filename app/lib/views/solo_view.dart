@@ -56,7 +56,11 @@ class _SoloViewState extends State<SoloView> {
                         shrinkWrap: true,
                         children: state.games.reversed
                             .map((e) => GestureDetector(
-                                  child: GameOverview(e, key: ValueKey('go_${e.state.id}')),
+                                  child: GameOverview(
+                                    e,
+                                    onRemove: () => gameManager.removeLocalGame(e.state.id),
+                                    key: ValueKey('go_${e.state.id}'),
+                                  ),
                                   onTap: () => Navigator.of(context).push(
                                     MaterialPageRoute(
                                       builder: (context) => GamePage(game: e, title: '${e.state.length} letter game'),

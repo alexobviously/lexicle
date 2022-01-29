@@ -16,9 +16,12 @@ class GameManager extends Cubit<GameManagerState> {
     emit(state.copyWith(games: _games));
   }
 
-  void removeLocalGame() {
-    // Steve: need to remove a game based on id, below is not correct
-    state.games.remove(state);
+  void removeLocalGame(String id) {
+    int index = state.games.indexWhere((e) => e.state.id == id);
+    if (index == -1) return;
+    List<GameController> _games = List.from(state.games);
+    _games.removeAt(index);
+    emit(state.copyWith(games: _games));
   }
 
   Stream<int> get numGamesStream => stream.map((e) => e.games.length).distinct();
