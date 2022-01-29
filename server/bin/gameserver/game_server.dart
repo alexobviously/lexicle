@@ -16,11 +16,12 @@ class GameServer with ReadyManager {
 
   Result<GameGroupController> createGameGroup({
     required String creator,
+    required String title,
     required GameConfig config,
     bool private = false,
   }) {
     String id = newId();
-    GameGroup gg = GameGroup(id: id, title: '$creator\'s game', config: config, creator: creator, players: [creator]);
+    GameGroup gg = GameGroup(id: id, title: title, config: config, creator: creator, players: [creator]);
     GameGroupController ggc = GameGroupController(gg);
     gameGroups[id] = ggc;
     return Result.ok(ggc);

@@ -3,11 +3,13 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:word_game/cubits/game_manager.dart';
+import 'package:word_game/model/game_creation_data.dart';
 import 'package:word_game/ui/length_control.dart';
 
 class GameCreator extends StatefulWidget {
-  final Function(GameConfig) onCreate;
-  const GameCreator({required this.onCreate, Key? key}) : super(key: key);
+  final bool showTitle;
+  final Function(GameCreationData) onCreate;
+  const GameCreator({this.showTitle = false, required this.onCreate, Key? key}) : super(key: key);
 
   @override
   _GameCreatorState createState() => _GameCreatorState();
@@ -15,6 +17,7 @@ class GameCreator extends StatefulWidget {
 
 class _GameCreatorState extends State<GameCreator> {
   final _formKey = GlobalKey<FormState>();
+  final _titleController = TextEditingController();
 
   static int length = 5;
 
@@ -38,6 +41,17 @@ class _GameCreatorState extends State<GameCreator> {
         padding: const EdgeInsets.all(12.0),
         child: Column(
           children: [
+            if (widget.showTitle)
+              Neumorphic(
+                style: NeumorphicStyle(depth: -2),
+                padding: EdgeInsets.symmetric(horizontal: 16.0),
+                child: TextField(
+                  controller: _titleController,
+                  decoration: InputDecoration(
+                    hintText: 'Enter a title',
+                  ),
+                ),
+              ),
             LengthControl(
               length: length,
               onChanged: _setLength,
@@ -46,7 +60,10 @@ class _GameCreatorState extends State<GameCreator> {
               onPressed: () {
                 HapticFeedback.vibrate();
                 final config = GameConfig(wordLength: length);
-                widget.onCreate(config);
+                widget.onCreate(GameCreationData(
+                  config: config,
+                  title: _titleController.text,
+                ));
               },
               child: Text('Create New Game', style: textTheme.headline6!.copyWith(color: theme.primaryColor)),
             ),

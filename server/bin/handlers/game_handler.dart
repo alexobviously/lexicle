@@ -23,7 +23,9 @@ class GameHandler {
       Map<String, dynamic> data = json.decode(payload);
       GameConfig config = GameConfig.fromJson(data['config']);
       String creator = data['creator'];
-      final _result = gameServer().createGameGroup(creator: creator, config: config);
+      String? title = data['title'];
+      if (title == null || title.isEmpty) title = '$creator\'s game';
+      final _result = gameServer().createGameGroup(creator: creator, title: title, config: config);
       if (!_result.ok) {
         return HttpUtils.buildErrorResponse(_result.error!);
       } else {

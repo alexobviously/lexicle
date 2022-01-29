@@ -76,7 +76,7 @@ class _SoloViewState extends State<SoloView> {
                     ),
                   ),
                   GameCreator(
-                    onCreate: (cfg) => gameManager.createLocalGame(cfg),
+                    onCreate: (cfg) => gameManager.createLocalGame(cfg.config),
                   ),
                 ],
               );

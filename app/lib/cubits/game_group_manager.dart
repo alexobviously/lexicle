@@ -117,8 +117,8 @@ class GameGroupManager extends Cubit<GroupManagerState> {
     ));
   }
 
-  void createGroup(GameConfig config) async {
-    final _result = await ApiClient.createGroup(player, config);
+  void createGroup(String title, GameConfig config) async {
+    final _result = await ApiClient.createGroup(player, title, config);
     if (!_result.ok) return;
     _updateGroup(_result.object!);
   }

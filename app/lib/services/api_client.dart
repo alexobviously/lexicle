@@ -13,9 +13,9 @@ class ApiClient {
   static Future<Result<List<String>>> allGroups() =>
       getAndUnwrap('/groups/all', unwrapper: (data) => coerceList(data['groups']));
   static Future<Result<GameGroup>> getGroup(String id) => getAndUnwrap('/groups/$id', unwrapper: unwrapGameGroup);
-  static Future<Result<GameGroup>> createGroup(String creator, GameConfig config) => postAndUnwrap(
+  static Future<Result<GameGroup>> createGroup(String creator, String title, GameConfig config) => postAndUnwrap(
         '/groups/create',
-        body: {'creator': creator, 'config': config.toMap()},
+        body: {'creator': creator, 'title': title, 'config': config.toMap()},
         unwrapper: unwrapGameGroup,
       );
   static Future<Result<GameGroup>> joinGroup(String id, String player) => postAndUnwrap(
