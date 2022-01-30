@@ -53,21 +53,16 @@ class GameGroup {
   List<GameStub> playerGamesSorted(String player) {
     if (!games.containsKey(player)) return [];
     List<GameStub> _games = games[player]!;
-    Map<int, GameStub> _mapping = {};
-    for (int i = 0; i < standings.length; i++) {
-      if (standings[i].player == player) {
-        _mapping[i] = GameStub.blank();
+    List<GameStub> _sorted = [];
+    for (Standing s in standings) {
+      String p = s.player;
+      if (p == player) {
+        _sorted.add(GameStub.blank());
       } else {
-        int index = players.indexOf(standings[i].player);
-        if (index == -1) {
-          _mapping[i] = GameStub.blank();
-        } else {
-          if (index > players.indexOf(player)) index--;
-          _mapping[i] = _games[index];
-        }
+        _sorted.add(_games.firstWhereOrNull((e) => e.creator == p) ?? GameStub.blank());
       }
     }
-    return _mapping.entries.map((e) => e.value).toList();
+    return _sorted;
   }
 
   GameGroup({
