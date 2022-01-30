@@ -12,6 +12,7 @@ class GameGroup {
   final String creator;
   final String? code;
   final int state;
+  late final int created;
 
   /// A list of player IDs.
   final List<String> players;
@@ -85,7 +86,10 @@ class GameGroup {
     this.players = const [],
     this.words = const {},
     this.games = const {},
-  }) : assert(players.contains(creator));
+    int? created,
+  }) : assert(players.contains(creator)) {
+    this.created = created ?? DateTime.now().millisecondsSinceEpoch;
+  }
 
   static const String __id = 'id';
   static const String __title = 't';
@@ -96,6 +100,7 @@ class GameGroup {
   static const String __players = 'p';
   static const String __words = 'w';
   static const String __games = 'g';
+  static const String __created = 'r';
 
   factory GameGroup.fromJson(Map<String, dynamic> doc) {
     return GameGroup(
@@ -111,6 +116,7 @@ class GameGroup {
         for (MapEntry entry in (doc[__games] ?? {}).entries)
           entry.key: mapList<GameStub>(entry.value, (e) => GameStub.fromJson(e)),
       },
+      created: doc[__created],
     );
   }
 
@@ -128,6 +134,7 @@ class GameGroup {
         for (MapEntry<String, List<GameStub>> entry in games.entries)
           entry.key: mapList<Map<String, dynamic>>(entry.value, (e) => e.toMap()),
       },
+      __created: created,
     };
   }
 

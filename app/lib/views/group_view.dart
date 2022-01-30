@@ -1,4 +1,5 @@
 import 'package:common/common.dart';
+import 'package:duration/duration.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -80,12 +81,26 @@ class _GroupViewState extends State<GroupView> {
     );
   }
 
-  Widget _lobbyView(BuildContext context, GameGroup state) {
-    final isCreator = auth().state.name == state.creator;
+  String _timeString(int created) {
+    Duration d = DateTime.now().difference(DateTime.fromMillisecondsSinceEpoch(created));
+    return prettyDuration(d, abbreviated: true, tersity: DurationTersity.minute);
+  }
+
+  Widget _created(BuildContext context, GameGroup group) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        Text('Created ${_timeString(group.created)} ago'),
+      ],
+    );
+  }
+
+  Widget _lobbyView(BuildContext context, GameGroup group) {
+    final isCreator = auth().state.name == group.creator;
     final theme = Theme.of(context);
     final textTheme = theme.textTheme;
     bool isValid = !invalidWord && isAlpha(wordController.text);
-    bool canSubmit = wordController.text.length == state.config.wordLength && isValid;
+    bool canSubmit = wordController.text.length == group.config.wordLength && isValid;
     InputBorder? wordFieldBorder = (isValid || wordController.text.isEmpty)
         ? null
         : UnderlineInputBorder(borderSide: BorderSide(color: Colours.invalid));
@@ -111,7 +126,7 @@ class _GroupViewState extends State<GroupView> {
                     children: [
                       Expanded(
                         child: TextField(
-                          maxLength: state.config.wordLength,
+                          maxLength: group.config.wordLength,
                           maxLengthEnforcement: MaxLengthEnforcement.enforced,
                           onChanged: (x) => setState(() => invalidWord = false), // hmm
                           textCapitalization: TextCapitalization.none,
@@ -143,10 +158,10 @@ class _GroupViewState extends State<GroupView> {
         Expanded(
           child: ListView.builder(
             // shrinkWrap: true,
-            itemCount: state.players.length,
+            itemCount: group.players.length,
             itemBuilder: (context, i) {
-              String player = state.players[i];
-              bool ready = state.playerReady(player);
+              String player = group.players[i];
+              bool ready = group.playerReady(player);
               return ListTile(
                 title: Text(player),
                 trailing: Text(ready ? 'Ready' : 'Not Ready'),
@@ -155,7 +170,7 @@ class _GroupViewState extends State<GroupView> {
           ),
         ),
         // Spacer(),
-        if (isCreator && state.canBegin)
+        if (isCreator && group.canBegin)
           NeumorphicButton(
             onPressed: controller.start,
             child: Text(
@@ -163,12 +178,13 @@ class _GroupViewState extends State<GroupView> {
               style: textTheme.headline5,
             ),
           ),
-        if (isCreator && !state.canBegin)
+        if (isCreator && !group.canBegin)
           Neumorphic(
             padding: EdgeInsets.all(16.0),
             style: NeumorphicStyle(depth: 2),
             child: Text('Waiting for players..', style: textTheme.headline5),
           ),
+        _created(context, group),
       ],
     );
   }
@@ -219,6 +235,8 @@ class _GroupViewState extends State<GroupView> {
               mainAxisSpacing: 16,
               childAspectRatio: 3 / 4,
             ),
+            Container(height: 64),
+            _created(context, state.group),
           ],
         );
       }),
