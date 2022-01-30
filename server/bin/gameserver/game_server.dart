@@ -115,6 +115,7 @@ class GameServer with ReadyManager {
     Map<String, List<GameStub>> _games = {};
     for (String p in _group.players) {
       List<String> playerGames = [];
+      _games[p] = [];
       for (String c in _group.players) {
         if (c == p) continue;
         String gid = newId();
@@ -129,8 +130,8 @@ class GameServer with ReadyManager {
         );
         games[gid] = GameController(g, ServerMediator(answer: _group.words[c]!));
         playerGames.add(gid);
+        _games[p]!.add(g.stub);
       }
-      _games[p] = playerGames.map((e) => GameStub.initial(e)).toList();
     }
     return _games;
   }
