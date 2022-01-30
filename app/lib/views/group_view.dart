@@ -1,19 +1,13 @@
-import 'dart:async';
-import 'dart:math';
-
 import 'package:common/common.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:linked_scroll_controller/linked_scroll_controller.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:validators/validators.dart';
 import 'package:word_game/app/colours.dart';
 import 'package:word_game/cubits/game_group_controller.dart';
-import 'package:word_game/cubits/game_group_manager.dart';
 import 'package:word_game/services/service_locator.dart';
 import 'package:word_game/ui/game_overview.dart';
 import 'package:word_game/ui/game_page.dart';
@@ -69,23 +63,18 @@ class _GroupViewState extends State<GroupView> {
     return StandardScaffold(
       title: 'Group Game',
       body: SafeArea(
-        child: controller != null
-            ? BlocBuilder<GameGroupController, GameGroupState>(
-                bloc: controller,
-                builder: (context, state) {
-                  if (state.group.state == MatchState.lobby) {
-                    return _lobbyView(context, state.group);
-                  } else if (state.group.state == MatchState.playing) {
-                    return _playView(context, state);
-                  } else {
-                    return _resultsView(context, state);
-                  }
-                },
-              )
-            : SpinKitFadingGrid(
-                color: Colours.correct,
-                size: 150,
-              ),
+        child: BlocBuilder<GameGroupController, GameGroupState>(
+          bloc: controller,
+          builder: (context, state) {
+            if (state.group.state == MatchState.lobby) {
+              return _lobbyView(context, state.group);
+            } else if (state.group.state == MatchState.playing) {
+              return _playView(context, state);
+            } else {
+              return _resultsView(context, state);
+            }
+          },
+        ),
       ),
     );
   }

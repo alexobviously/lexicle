@@ -1,7 +1,6 @@
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:word_game/app/routes.dart';
-import 'package:word_game/services/api_client.dart';
 import 'package:word_game/ui/standard_scaffold.dart';
 
 class HomeView extends StatefulWidget {

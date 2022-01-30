@@ -2,7 +2,6 @@ import 'package:bloc/bloc.dart';
 import 'package:common/common.dart';
 import 'package:word_game/mediator/offline_mediator.dart';
 import 'package:word_game/services/service_locator.dart';
-import 'package:word_game/ui/game_overview.dart';
 
 class GameManager extends Cubit<GameManagerState> {
   GameManager() : super(GameManagerState.initial());

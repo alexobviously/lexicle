@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:common/common.dart';
-import 'package:validators/validators.dart';
 import 'package:word_game/cubits/auth_controller.dart';
 import 'package:word_game/cubits/game_group_controller.dart';
 import 'package:word_game/services/api_client.dart';
