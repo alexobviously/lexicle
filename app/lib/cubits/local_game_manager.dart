@@ -3,10 +3,10 @@ import 'package:common/common.dart';
 import 'package:word_game/mediator/offline_mediator.dart';
 import 'package:word_game/services/service_locator.dart';
 
-class GameManager extends Cubit<GameManagerState> {
-  GameManager() : super(GameManagerState.initial());
+class LocalGameManager extends Cubit<LocalGameManagerState> {
+  LocalGameManager() : super(LocalGameManagerState.initial());
 
-  void createLocalGame(GameConfig config) {
+  void createGame(GameConfig config) {
     String _answer = dictionary().randomWord(config.wordLength);
     Mediator _mediator = OfflineMediator(answer: _answer);
     GameController _gc = GameController.initial(player: 'player', length: config.wordLength, mediator: _mediator);
@@ -15,7 +15,7 @@ class GameManager extends Cubit<GameManagerState> {
     emit(state.copyWith(games: _games));
   }
 
-  void removeLocalGame(String id) {
+  void removeGame(String id) {
     int index = state.games.indexWhere((e) => e.state.id == id);
     if (index == -1) return;
     List<GameController> _games = List.from(state.games);
@@ -26,10 +26,10 @@ class GameManager extends Cubit<GameManagerState> {
   Stream<int> get numGamesStream => stream.map((e) => e.games.length).distinct();
 }
 
-class GameManagerState {
+class LocalGameManagerState {
   final List<GameController> games;
-  GameManagerState({this.games = const []});
-  factory GameManagerState.initial() => GameManagerState();
+  LocalGameManagerState({this.games = const []});
+  factory LocalGameManagerState.initial() => LocalGameManagerState();
 
-  GameManagerState copyWith({List<GameController>? games}) => GameManagerState(games: games ?? this.games);
+  LocalGameManagerState copyWith({List<GameController>? games}) => LocalGameManagerState(games: games ?? this.games);
 }

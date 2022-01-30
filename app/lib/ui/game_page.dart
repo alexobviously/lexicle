@@ -7,7 +7,7 @@ import 'package:word_game/ui/game_keyboard.dart';
 import 'package:word_game/ui/standard_scaffold.dart';
 import 'package:word_game/ui/word_row.dart';
 
-import '../game_end.dart';
+import 'post_game_panel.dart';
 
 class GamePage extends StatefulWidget {
   final GameController game;
@@ -139,7 +139,7 @@ class _GamePageState extends State<GamePage> {
                           ),
                           secondChild: SizedBox(
                             width: MediaQuery.of(context).size.width - 16.0,
-                            child: GameEnd(
+                            child: PostGamePanel(
                               guesses: state.guesses.length,
                             ),
                           ),

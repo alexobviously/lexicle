@@ -6,7 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:word_game/app/routes.dart';
 import 'package:word_game/cubits/auth_controller.dart';
 import 'package:word_game/cubits/game_group_manager.dart';
-import 'package:word_game/cubits/game_manager.dart';
+import 'package:word_game/cubits/local_game_manager.dart';
 import 'package:word_game/services/api_client.dart';
 import 'package:word_game/views/dict_search_view.dart';
 import 'package:word_game/views/groups_view.dart';
@@ -43,8 +43,8 @@ class MyApp extends StatelessWidget {
         BlocProvider<AuthController>(
           create: (_) => auth(),
         ),
-        BlocProvider<GameManager>(
-          create: (_) => GameManager(),
+        BlocProvider<LocalGameManager>(
+          create: (_) => LocalGameManager(),
         ),
         BlocProvider<GameGroupManager>(
           create: (_) => GameGroupManager(),

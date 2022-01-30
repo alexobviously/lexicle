@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:word_game/app/colours.dart';
-import 'package:word_game/cubits/game_manager.dart';
+import 'package:word_game/cubits/local_game_manager.dart';
 import 'package:word_game/ui/word_row.dart';
 
 class GameOverview extends StatefulWidget {
@@ -42,7 +42,7 @@ class _GameOverviewState extends State<GameOverview> {
   @override
   Widget build(BuildContext context) {
     // STEVE: added to callback (?) method from game_manager
-    final _gm = BlocProvider.of<GameManager>(context);
+    final _gm = BlocProvider.of<LocalGameManager>(context);
 
     return Neumorphic(
       padding: const EdgeInsets.symmetric(horizontal: 6.0),

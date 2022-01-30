@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
-import 'package:word_game/cubits/game_manager.dart';
+import 'package:word_game/cubits/local_game_manager.dart';
 import 'package:word_game/ui/game_creator.dart';
 import 'package:word_game/ui/game_overview.dart';
 import 'package:word_game/ui/game_page.dart';
@@ -33,18 +33,18 @@ class _SoloViewState extends State<SoloView> {
 
   @override
   void initState() {
-    BlocProvider.of<GameManager>(context).numGamesStream.listen((_) => _scrollUp());
+    BlocProvider.of<LocalGameManager>(context).numGamesStream.listen((_) => _scrollUp());
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    final gameManager = BlocProvider.of<GameManager>(context);
+    final gameManager = BlocProvider.of<LocalGameManager>(context);
     return StandardScaffold(
       title: 'Solo Play',
       body: Center(
         child: SafeArea(
-          child: BlocBuilder<GameManager, GameManagerState>(
+          child: BlocBuilder<LocalGameManager, LocalGameManagerState>(
             builder: (context, state) {
               return Column(
                 children: [
@@ -58,7 +58,7 @@ class _SoloViewState extends State<SoloView> {
                             .map((e) => GestureDetector(
                                   child: GameOverview(
                                     e,
-                                    onRemove: () => gameManager.removeLocalGame(e.state.id),
+                                    onRemove: () => gameManager.removeGame(e.state.id),
                                     key: ValueKey('go_${e.state.id}'),
                                   ),
                                   onTap: () => Navigator.of(context).push(
@@ -76,7 +76,7 @@ class _SoloViewState extends State<SoloView> {
                     ),
                   ),
                   GameCreator(
-                    onCreate: (cfg) => gameManager.createLocalGame(cfg.config),
+                    onCreate: (cfg) => gameManager.createGame(cfg.config),
                   ),
                 ],
               );

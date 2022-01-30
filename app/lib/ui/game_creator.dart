@@ -2,7 +2,7 @@ import 'package:common/common.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
-import 'package:word_game/cubits/game_manager.dart';
+import 'package:word_game/cubits/local_game_manager.dart';
 import 'package:word_game/model/game_creation_data.dart';
 import 'package:word_game/ui/length_control.dart';
 
@@ -30,7 +30,7 @@ class _GameCreatorState extends State<GameCreator> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final textTheme = theme.textTheme;
-    final gameManager = BlocProvider.of<GameManager>(context);
+    final gameManager = BlocProvider.of<LocalGameManager>(context);
     return SizedBox(
       width: MediaQuery.of(context).size.width * 0.8,
       child: Neumorphic(
