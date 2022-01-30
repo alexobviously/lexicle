@@ -21,7 +21,6 @@ class GameGroupController extends Cubit<GameGroupState> {
   void startTimer() => timer = Timer.periodic(Duration(milliseconds: 5000), _onTimerEvent);
 
   void _onTimerEvent(Timer t) {
-    print('on timer event');
     refresh();
   }
 

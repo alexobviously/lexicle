@@ -36,7 +36,6 @@ class GameGroupManager extends Cubit<GroupManagerState> {
   }
 
   void _onTimerEvent(Timer t) {
-    print('on timer event');
     refresh();
   }
 
@@ -59,9 +58,7 @@ class GameGroupManager extends Cubit<GroupManagerState> {
 
   void refresh() async {
     emit(state.copyWith(working: true));
-    print('refreshing groups');
     final _result = await ApiClient.allGroups();
-    print('groups: $_result');
     if (!_result.ok || isClosed) return;
     final groupList = _result.object!;
     for (final g in groupList) {
