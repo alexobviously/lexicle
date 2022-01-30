@@ -76,8 +76,9 @@ class _HomeViewState extends State<HomeView> {
               ),
             ],
           );
-        } else
+        } else {
           return Text('Version...');
+        }
       },
     );
   }

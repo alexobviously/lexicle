@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'app/colours.dart';
+import '../app/colours.dart';
 
-class GameEnd extends StatelessWidget {
+class PostGamePanel extends StatelessWidget {
   final int guesses;
 
-  const GameEnd({
+  const PostGamePanel({
     Key? key,
     required this.guesses,
   }) : super(key: key);
