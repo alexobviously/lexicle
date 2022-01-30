@@ -65,6 +65,16 @@ class GameGroup {
     return _sorted;
   }
 
+  double wordDifficulty(String player) {
+    int total = 0;
+    for (MapEntry<String, List<GameStub>> gl in games.entries) {
+      if (gl.key == player) continue;
+      GameStub? g = gl.value.firstWhereOrNull((e) => e.creator == player);
+      if (g != null) total += g.guesses;
+    }
+    return total / (players.length - 1);
+  }
+
   GameGroup({
     required this.id,
     required this.title,

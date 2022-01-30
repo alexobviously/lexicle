@@ -189,14 +189,12 @@ class _GroupViewState extends State<GroupView> {
               'Standings',
               style: textTheme.headline5,
             ),
-            SizedBox(width: c.maxWidth, child: FittedBox(child: _standings(context, state.group, c.maxWidth))),
-            // SizedBox(
-            //   width: constraints.maxWidth,
-            //   height: min(36.0 * state.group.standings.length, constraints.maxHeight * 0.5),
-            //   child: FittedBox(
-            //     child: _standings(context, state.group),
-            //   ),
-            // ),
+            SizedBox(
+              width: c.maxWidth,
+              child: FittedBox(
+                child: _standings(context, state.group, c.maxWidth),
+              ),
+            ),
             GridView.count(
               // controller: _controller,
               shrinkWrap: true,
@@ -229,11 +227,62 @@ class _GroupViewState extends State<GroupView> {
   Widget _resultsView(BuildContext context, GameGroupState state) {
     final theme = Theme.of(context);
     final textTheme = theme.textTheme;
+    return SingleChildScrollView(
+      child: LayoutBuilder(builder: (context, c) {
+        return Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Text(
+              'Results',
+              style: textTheme.headline5,
+            ),
+            Container(height: 32),
+            SizedBox(
+              width: c.maxWidth,
+              child: FittedBox(
+                child: _standings(context, state.group, c.maxWidth, true),
+              ),
+            ),
+            Container(height: 32),
+            Text(
+              'Answers',
+              style: textTheme.headline5,
+            ),
+            SizedBox(
+              width: c.maxWidth,
+              child: FittedBox(
+                child: _answers(context, state.group, c.maxWidth),
+              ),
+            ),
+          ],
+        );
+      }),
+    );
+  }
+
+  Widget _answers(BuildContext context, GameGroup group, double width) {
+    final textTheme = Theme.of(context).textTheme;
+    List<AnswerTableRow> _rows =
+        group.players.map((e) => AnswerTableRow(e, group.words[e] ?? '', group.wordDifficulty(e))).toList();
+    _rows.sort((a, b) => b.difficulty.compareTo(a.difficulty));
     return Column(
       children: [
-        Text('Results', style: textTheme.headline5),
-        Container(height: 32),
-        _standings(context, state.group, MediaQuery.of(context).size.width, true),
+        ..._rows.map(
+          (e) => Container(
+            width: width,
+            height: 48,
+            padding: const EdgeInsets.all(8.0),
+            color: Color.lerp(Colours.correct, Colours.invalid.lighten(0.2), e.difficulty / 8.0)!,
+            child: Row(
+              children: [
+                SizedBox(width: 150, child: Text(e.player, style: textTheme.headline6)),
+                Text(e.word, style: textTheme.headline6),
+                Spacer(),
+                Text(e.difficulty.toStringAsFixed(2), style: textTheme.headline6),
+              ],
+            ),
+          ),
+        ),
       ],
     );
   }
@@ -310,4 +359,11 @@ class _GroupViewState extends State<GroupView> {
       ],
     );
   }
+}
+
+class AnswerTableRow {
+  final String player;
+  final String word;
+  final double difficulty;
+  AnswerTableRow(this.player, this.word, this.difficulty);
 }

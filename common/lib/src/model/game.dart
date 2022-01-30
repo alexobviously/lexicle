@@ -24,7 +24,7 @@ class Game {
   bool get gameFinished => guesses.isNotEmpty && guesses.last.correctLetters.length == length;
   int get numRows => guesses.length + (gameFinished ? 0 : 1);
   bool get invalid => flags.contains(flagInvalid);
-  double get progress => (correctLetters.length * 2 + semiCorrectLetters.length) / (length * 2);
+  double get progress => gameFinished ? 1.0 : (correctLetters.length * 2 + semiCorrectLetters.length) / (length * 2);
   GameStub get stub => GameStub(id: id, creator: creator, progress: progress, guesses: guesses.length);
 
   Game({
