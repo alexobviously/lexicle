@@ -42,8 +42,9 @@ class _SettingsViewState extends State<SettingsView> {
               ),
             ],
           );
-        } else
+        } else {
           return Text('Version...');
+        }
       },
     );
   }

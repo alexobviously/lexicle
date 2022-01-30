@@ -1,5 +1,4 @@
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
-import 'package:validators/sanitizers.dart';
 import 'package:word_game/app/colours.dart';
 
 class DictWordRow extends StatelessWidget {

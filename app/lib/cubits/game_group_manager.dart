@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:common/common.dart';
-import 'package:validators/validators.dart';
 import 'package:word_game/cubits/auth_controller.dart';
 import 'package:word_game/cubits/game_group_controller.dart';
 import 'package:word_game/services/api_client.dart';
@@ -36,7 +35,6 @@ class GameGroupManager extends Cubit<GroupManagerState> {
   }
 
   void _onTimerEvent(Timer t) {
-    print('on timer event');
     refresh();
   }
 
@@ -59,9 +57,7 @@ class GameGroupManager extends Cubit<GroupManagerState> {
 
   void refresh() async {
     emit(state.copyWith(working: true));
-    print('refreshing groups');
     final _result = await ApiClient.allGroups();
-    print('groups: $_result');
     if (!_result.ok || isClosed) return;
     final groupList = _result.object!;
     for (final g in groupList) {
