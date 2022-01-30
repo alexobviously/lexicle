@@ -33,7 +33,8 @@ class _GroupViewState extends State<GroupView> {
     if (controller.state.group.words.containsKey(auth().state.name)) {
       wordController.text = controller.state.group.words[auth().state.name]!;
     }
-    for (int i = 0; i < controller.state.group.players.length * 2; i++) {
+    // todo: unfuck this
+    for (int i = 0; i < 50; i++) {
       _scrollControllers.add(_scrollControllerGroup.addAndGet());
     }
     SchedulerBinding.instance!.addPostFrameCallback((_) {
@@ -331,7 +332,6 @@ class _GroupViewState extends State<GroupView> {
                         reverse: true,
                         scrollDirection: Axis.horizontal,
                         shrinkWrap: true,
-                        // children: [Text('asdg')],
                         children: state
                             .playerGamesSorted(e.player)
                             .reversed
