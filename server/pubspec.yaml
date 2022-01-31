@@ -12,6 +12,7 @@ dependencies:
       path: ../common/
 
   bloc: ^8.0.2
+  dart_dotenv: ^1.0.1
   get_it: ^7.2.0
   jaguar_jwt: ^3.0.0
   mongo_dart: ^0.7.4
