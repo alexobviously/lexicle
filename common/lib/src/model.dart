@@ -1,3 +1,5 @@
+export 'model/constants.dart';
+export 'model/entity.dart';
 export 'model/game.dart';
 export 'model/game_config.dart';
 export 'model/game_group.dart';

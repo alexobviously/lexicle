@@ -3,7 +3,7 @@
 import 'package:common/common.dart';
 import 'package:mongo_dart/mongo_dart.dart';
 
-class Game {
+class Game implements Entity {
   final String id;
   final String answer;
   final String player;
@@ -82,6 +82,9 @@ class Game {
       if (group != null) __group: group,
     };
   }
+
+  @override
+  Map<String, dynamic> export() => toMap();
 
   Game copyWith({
     String? id,

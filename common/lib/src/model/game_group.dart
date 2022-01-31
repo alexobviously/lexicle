@@ -5,7 +5,7 @@ import 'package:copy_with_extension/copy_with_extension.dart';
 part 'game_group.g.dart';
 
 @CopyWith()
-class GameGroup {
+class GameGroup implements Entity {
   final String id;
   final String title;
   final GameConfig config;
@@ -137,6 +137,9 @@ class GameGroup {
       __created: created,
     };
   }
+
+  @override
+  Map<String, dynamic> export() => toMap();
 
   GameGroup updateGameStub(String player, GameStub stub) {
     Map<String, List<GameStub>> _games = Map.from(games);
