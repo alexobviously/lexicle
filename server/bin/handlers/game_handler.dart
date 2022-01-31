@@ -25,6 +25,7 @@ class GameHandler {
       String creator = data['creator'];
       String? title = data['title'];
       if (title == null || title.isEmpty) title = '$creator\'s game';
+      print('got create request from creator [$creator] title $title');
       final _result = gameServer().createGameGroup(creator: creator, title: title, config: config);
       if (!_result.ok) {
         return HttpUtils.buildErrorResponse(_result.error!);

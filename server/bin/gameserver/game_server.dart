@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:common/common.dart';
 import '../mediators/server_mediator.dart';
+import '../services/service_locator.dart';
 import '../utils/string_utils.dart';
 import 'game_group_controller.dart';
 
@@ -7,11 +10,30 @@ class GameServer with ReadyManager {
   Map<String, GameGroupController> gameGroups = {};
   Map<String, String> privateGroups = {};
   Map<String, GameController> games = {};
-  Map<String, String> playerGroups = {};
+  Map<String, StreamSubscription<Game>> gameSubs = {};
+  Map<String, StreamSubscription<GameGroup>> groupSubs = {};
 
   @override
   void initialise() {
     setReady();
+  }
+
+  void _handleGameUpdate(Game g) {
+    gameStore().set(g, g.gameFinished);
+    if (g.gameFinished) {
+      final sub = gameSubs[g.id];
+      sub?.cancel();
+      gameSubs.remove(g.id);
+    }
+  }
+
+  void _handleGroupUpdate(GameGroup g) {
+    groupStore().set(g, g.finished);
+    if (g.finished) {
+      final sub = groupSubs[g.id];
+      sub?.cancel();
+      groupSubs.remove(g.id);
+    }
   }
 
   Result<GameGroupController> createGameGroup({
@@ -24,6 +46,8 @@ class GameServer with ReadyManager {
     GameGroup gg = GameGroup(id: id, title: title, config: config, creator: creator, players: [creator]);
     GameGroupController ggc = GameGroupController(gg);
     gameGroups[id] = ggc;
+    final sub = ggc.stream.listen(_handleGroupUpdate);
+    groupSubs[id] = sub;
     return Result.ok(ggc);
   }
 
@@ -130,6 +154,8 @@ class GameServer with ReadyManager {
         );
         games[gid] = GameController(g, ServerMediator(answer: _group.words[c]!));
         playerGames.add(gid);
+        final sub = games[gid]!.stream.listen(_handleGameUpdate);
+        gameSubs[gid] = sub;
         _games[p]!.add(g.stub);
       }
     }
