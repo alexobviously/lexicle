@@ -291,7 +291,7 @@ class _GroupViewState extends State<GroupView> {
             width: width,
             height: 48,
             padding: const EdgeInsets.all(8.0),
-            color: Color.lerp(Colours.correct, Colours.invalid.lighten(0.2), e.difficulty / 8.0)!,
+            color: Color.lerp(Colours.correct, Colours.invalid.lighten(0.2), (e.difficulty - 2.0) / 6.0)!,
             child: Row(
               children: [
                 SizedBox(width: 150, child: Text(e.player, style: textTheme.headline6)),
