@@ -10,8 +10,12 @@ class EntityStore<T extends Entity> {
     if (items.containsKey(id)) return Result.ok(items[id]!);
 
     Result<T> result = await db.get<T>(id);
-    if (result.ok) items[result.object!.id] = result.object!;
+    if (result.ok) onGet(result.object!);
     return result;
+  }
+
+  Future<void> onGet(T entity) async {
+    items[entity.id] = entity;
   }
 
   Future<List<T>> getMultiple(List<String> ids) async {
@@ -25,8 +29,11 @@ class EntityStore<T extends Entity> {
 
   List<T> getAllCached() => items.values.toList();
 
-  Future<Result<T>> write(T entity) async {
+  Future<Result<T>> set(T entity) async {
     Result<T> result = await db.write<T>(entity);
+    if (result.ok) {
+      onGet(entity);
+    }
     return result;
   }
 
