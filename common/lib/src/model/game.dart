@@ -56,6 +56,7 @@ class Game implements Entity {
   static const __current = 'u';
   static const __flags = 'f';
   static const __group = 'h';
+  static const __finished = 'n';
   static const flagInvalid = 'i';
 
   factory Game.fromJson(Map<String, dynamic> doc) {
@@ -84,7 +85,11 @@ class Game implements Entity {
   }
 
   @override
-  Map<String, dynamic> export() => toMap();
+  Map<String, dynamic> export() {
+    Map<String, dynamic> _map = toMap();
+    _map[__finished] = gameFinished; // for queries
+    return _map;
+  }
 
   Game copyWith({
     String? id,
