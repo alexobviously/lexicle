@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:common/common.dart';
 import 'package:dart_dotenv/dart_dotenv.dart';
 import 'package:shelf/shelf.dart';
 import 'package:shelf_cors_headers/shelf_cors_headers.dart';
@@ -11,24 +12,32 @@ import 'handlers/game_handler.dart';
 import 'handlers/game_server_handler.dart';
 import 'handlers/status_handler.dart';
 import 'services/environment.dart';
+import 'services/mongo_service.dart';
 import 'services/service_locator.dart';
 
 Environment readEnvironment() {
   final dotEnv = DotEnv(filePath: '.env');
-  print(dotEnv.getDotEnv());
   if (!dotEnv.exists()) {
     dotEnv.createNew();
   }
+  dotEnv.getDotEnv();
   return Environment(
     port: int.parse(dotEnv.get('PORT') ?? '8080'),
     mongoUser: dotEnv.get('MONGO_USER') ?? '',
     mongoPass: dotEnv.get('MONGO_PASS') ?? '',
+    mongoDb: dotEnv.get('MONGO_DB') ?? '',
+    mongoHost: dotEnv.get('MONGO_HOST') ?? '',
   );
 }
 
 Future main() async {
+  print('Reading .env...');
   final env = readEnvironment();
-  await setUpServiceLocator(environment: env);
+  print('Connecting to MongoDB...');
+  final _db = MongoService();
+  await _db.init(env);
+  print('MongoDB ready!');
+  await setUpServiceLocator(environment: env, db: _db);
 
   final _router = shelf_router.Router()
     ..get('/hello', _echoRequest)
@@ -58,8 +67,6 @@ Future main() async {
     InternetAddress.anyIPv4, // Allows external connections
     env.port,
   );
-
-  print('env: ${env.port} ${env.mongoUser} ${env.mongoPass}');
 
   print('Serving at http://${server.address.host}:${server.port}');
 }

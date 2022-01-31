@@ -110,4 +110,7 @@ class Game implements Entity {
 
   Game copyWithFlags(List<String> flags) => copyWith(flags: flags);
   Game copyWithInvalid() => copyWith(flags: [flagInvalid]);
+
+  @override
+  String toString() => 'Game($id, player; $player, creator: $creator, answer: $answer, guesses: ${guesses.length})';
 }

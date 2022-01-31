@@ -29,9 +29,9 @@ class Dictionary with ReadyManager {
     }
   }
 
-  Future<void> parseDictionary(String data, DictionaryType dict) async {
+  Future<void> parseDictionary(String data, DictionaryType dict, [bool debug = false]) async {
     List<String> allWords = data.split('\n');
-    print('%% [${elapsed}ms] words split: ${allWords.length}');
+    if (debug) print('%% [${elapsed}ms] words split: ${allWords.length}');
     final _words = getDict(dict);
     for (String w in allWords) {
       if (w.length < minimumLength || w.length > maximumLength || !isAlpha(w)) continue;
@@ -41,9 +41,9 @@ class Dictionary with ReadyManager {
         if (!words[w.length]!.contains(w)) print('!!!!! word $w in common dict not found in expanded');
       }
     }
-    print('%% [${elapsed}ms] words sorted by length');
+    if (debug) print('%% [${elapsed}ms] words sorted by length');
     for (int i = minimumLength; i <= maximumLength; i++) {
-      print('%%% $i: ${_words[i]!.length}');
+      if (debug) print('%%% $i: ${_words[i]!.length}');
     }
   }
 
