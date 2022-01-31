@@ -48,46 +48,38 @@ class Game implements Entity {
         id: id,
       );
 
-  static const __id = 'id';
-  static const __answer = 'a';
-  static const __player = 'p';
-  static const __creator = 'c';
-  static const __guesses = 'g';
-  static const __current = 'u';
-  static const __flags = 'f';
-  static const __group = 'h';
-  static const __finished = 'n';
   static const flagInvalid = 'i';
 
   factory Game.fromJson(Map<String, dynamic> doc) {
     return Game(
-      id: parseObjectId(doc[__id]),
-      answer: doc[__answer],
-      player: doc[__player],
-      creator: doc[__creator],
-      guesses: (doc[__guesses] as List).map<WordData>((e) => WordData.fromJson(e as Map<String, dynamic>)).toList(),
-      current: WordData.fromJson(doc[__current] as Map<String, dynamic>),
-      flags: coerceList(doc[__flags] ?? []),
+      id: parseObjectId(doc[Fields.id]),
+      answer: doc[GameFields.answer],
+      player: doc[GameFields.player],
+      creator: doc[GameFields.creator],
+      guesses:
+          (doc[GameFields.guesses] as List).map<WordData>((e) => WordData.fromJson(e as Map<String, dynamic>)).toList(),
+      current: WordData.fromJson(doc[GameFields.current] as Map<String, dynamic>),
+      flags: coerceList(doc[GameFields.flags] ?? []),
     );
   }
 
   Map<String, dynamic> toMap({bool hideAnswer = false}) {
     return {
-      __id: parseObjectId(id),
-      __answer: hideAnswer ? ('*' * answer.length) : answer,
-      __player: player,
-      __creator: creator,
-      __guesses: guesses.map((e) => e.toMap()).toList(),
-      __current: current.toMap(),
-      __flags: flags,
-      if (group != null) __group: group,
+      Fields.id: parseObjectId(id),
+      GameFields.answer: hideAnswer ? ('*' * answer.length) : answer,
+      GameFields.player: player,
+      GameFields.creator: creator,
+      GameFields.guesses: guesses.map((e) => e.toMap()).toList(),
+      GameFields.current: current.toMap(),
+      GameFields.flags: flags,
+      if (group != null) GameFields.group: group,
     };
   }
 
   @override
   Map<String, dynamic> export() {
     Map<String, dynamic> _map = toMap();
-    _map[__finished] = gameFinished; // for queries
+    _map[GameFields.finished] = gameFinished; // for queries
     return _map;
   }
 

@@ -1,3 +1,4 @@
+import 'package:common/common.dart';
 import 'package:copy_with_extension/copy_with_extension.dart';
 
 part 'standing.g.dart';
@@ -24,20 +25,16 @@ class Standing {
   });
   factory Standing.initial(String player) => Standing(player: player);
 
-  static const __player = 'p';
-  static const __progress = 'r';
-  static const __guesses = 'g';
-
   factory Standing.fromJson(Map<String, dynamic> doc) => Standing(
-        player: doc[__player],
-        progress: doc[__progress],
-        guesses: doc[__guesses],
+        player: doc[StubFields.player],
+        progress: doc[StubFields.progress],
+        guesses: doc[StubFields.guesses],
       );
 
   Map<String, dynamic> toMap() => {
-        __player: player,
-        __progress: progress,
-        __guesses: guesses,
+        StubFields.player: player,
+        StubFields.progress: progress,
+        StubFields.guesses: guesses,
       };
 
   @override

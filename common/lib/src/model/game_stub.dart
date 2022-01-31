@@ -1,3 +1,4 @@
+import 'package:common/common.dart';
 import 'package:copy_with_extension/copy_with_extension.dart';
 
 part 'game_stub.g.dart';
@@ -28,23 +29,18 @@ class GameStub {
   factory GameStub.initial(String id, String creator) => GameStub(id: id, creator: creator);
   factory GameStub.blank() => GameStub(id: '', creator: '');
 
-  static const __id = 'id';
-  static const __progress = 'p';
-  static const __guesses = 'g';
-  static const __creator = 'c';
-
   factory GameStub.fromJson(Map<String, dynamic> doc) => GameStub(
-        id: doc[__id],
-        progress: doc[__progress],
-        guesses: doc[__guesses],
-        creator: doc[__creator],
+        id: doc[Fields.id],
+        progress: doc[StubFields.progress],
+        guesses: doc[StubFields.guesses],
+        creator: doc[StubFields.creator],
       );
 
   Map<String, dynamic> toMap() => {
-        __id: id,
-        __progress: progress,
-        __guesses: guesses,
-        __creator: creator,
+        Fields.id: id,
+        StubFields.progress: progress,
+        StubFields.guesses: guesses,
+        StubFields.creator: creator,
       };
 
   @override

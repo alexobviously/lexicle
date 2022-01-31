@@ -91,50 +91,39 @@ class GameGroup implements Entity {
     this.created = created ?? DateTime.now().millisecondsSinceEpoch;
   }
 
-  static const String __id = 'id';
-  static const String __title = 't';
-  static const String __config = 'c';
-  static const String __creator = 'x';
-  static const String __code = 'q';
-  static const String __state = 's';
-  static const String __players = 'p';
-  static const String __words = 'w';
-  static const String __games = 'g';
-  static const String __created = 'r';
-
   factory GameGroup.fromJson(Map<String, dynamic> doc) {
     return GameGroup(
-      id: parseObjectId(doc[__id])!,
-      title: doc[__title],
-      config: GameConfig.fromJson(doc[__config]),
-      creator: doc[__creator],
-      code: doc[__code],
-      state: doc[__state],
-      players: coerceList<String>(doc[__players] ?? []),
-      words: (doc[__words] ?? {}).map<String, String>((k, v) => MapEntry(k.toString(), v.toString())),
+      id: parseObjectId(doc[Fields.id])!,
+      title: doc[GroupFields.title],
+      config: GameConfig.fromJson(doc[GroupFields.config]),
+      creator: doc[GroupFields.creator],
+      code: doc[GroupFields.code],
+      state: doc[GroupFields.state],
+      players: coerceList<String>(doc[GroupFields.players] ?? []),
+      words: (doc[GroupFields.words] ?? {}).map<String, String>((k, v) => MapEntry(k.toString(), v.toString())),
       games: {
-        for (MapEntry entry in (doc[__games] ?? {}).entries)
+        for (MapEntry entry in (doc[GroupFields.games] ?? {}).entries)
           entry.key: mapList<GameStub>(entry.value, (e) => GameStub.fromJson(e)),
       },
-      created: doc[__created],
+      created: doc[GroupFields.created],
     );
   }
 
   Map<String, dynamic> toMap({bool hideAnswers = false}) {
     return {
-      __id: parseObjectId(id),
-      __title: title,
-      __config: config.toMap(),
-      __creator: creator,
-      if (code != null) __code: code,
-      __state: state,
-      __players: players,
-      __words: hideAnswers ? hiddenWords : words,
-      __games: {
+      Fields.id: parseObjectId(id),
+      GroupFields.title: title,
+      GroupFields.config: config.toMap(),
+      GroupFields.creator: creator,
+      if (code != null) GroupFields.code: code,
+      GroupFields.state: state,
+      GroupFields.players: players,
+      GroupFields.words: hideAnswers ? hiddenWords : words,
+      GroupFields.games: {
         for (MapEntry<String, List<GameStub>> entry in games.entries)
           entry.key: mapList<Map<String, dynamic>>(entry.value, (e) => e.toMap()),
       },
-      __created: created,
+      GroupFields.created: created,
     };
   }
 
