@@ -1,6 +1,6 @@
+import 'package:common/common.dart';
 import 'package:get_it/get_it.dart';
 import '../gameserver/game_server.dart';
-import 'database_service.dart';
 import 'dictionary.dart';
 import 'environment.dart';
 
