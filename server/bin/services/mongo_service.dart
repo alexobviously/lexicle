@@ -1,7 +1,4 @@
 import 'package:common/common.dart';
-import 'package:common/src/model/result.dart';
-
-import 'package:common/src/model/entity.dart';
 import 'package:mongo_dart/mongo_dart.dart';
 import 'package:validators/validators.dart';
 import 'environment.dart';

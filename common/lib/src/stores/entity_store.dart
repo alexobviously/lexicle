@@ -2,7 +2,7 @@ import 'package:common/common.dart';
 
 class EntityStore<T extends Entity> {
   final DatabaseService db;
-  EntityStore({required this.db});
+  EntityStore(this.db);
 
   Map<String, T> items = {};
 
