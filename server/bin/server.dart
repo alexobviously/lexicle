@@ -21,12 +21,15 @@ Environment readEnvironment() {
     dotEnv.createNew();
   }
   dotEnv.getDotEnv();
+
+  String _getEnv(String key, [String def = '']) => Platform.environment[key] ?? dotEnv.get(key) ?? def;
+
   return Environment(
-    port: int.parse(Platform.environment['PORT'] ?? dotEnv.get('PORT') ?? '8080'),
-    mongoUser: dotEnv.get('MONGO_USER') ?? '',
-    mongoPass: dotEnv.get('MONGO_PASS') ?? '',
-    mongoDb: dotEnv.get('MONGO_DB') ?? '',
-    mongoHost: dotEnv.get('MONGO_HOST') ?? '',
+    port: int.parse(_getEnv('PORT', '8080')),
+    mongoUser: _getEnv('MONGO_USER'),
+    mongoPass: _getEnv('MONGO_PASS'),
+    mongoDb: _getEnv('MONGO_DB'),
+    mongoHost: _getEnv('MONGO_HOST'),
   );
 }
 
