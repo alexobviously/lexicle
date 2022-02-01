@@ -3,12 +3,13 @@ import 'dart:convert';
 import 'package:common/common.dart';
 import 'package:word_game/model/api_response.dart';
 import 'package:rest_client/rest_client.dart' as rc;
+import 'package:word_game/services/service_locator.dart';
 
 typedef Unwrapper<T> = T Function(Map<String, dynamic> data);
 
 class ApiClient {
-  // todo: put this in .env
-  static String host = 'https://word-w7y24cao7q-ew.a.run.app'; //'http://localhost:8080';
+  // static String host = 'https://word-w7y24cao7q-ew.a.run.app'; //'http://localhost:8080';
+  static String get host => env().serverHost;
 
   static Future<Result<List<String>>> allGroups() =>
       getAndUnwrap('/groups/all', unwrapper: (data) => coerceList(data['groups']));
