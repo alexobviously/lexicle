@@ -22,7 +22,7 @@ Environment readEnvironment() {
   }
   dotEnv.getDotEnv();
   return Environment(
-    port: int.parse(dotEnv.get('PORT') ?? '8080'),
+    port: int.parse(Platform.environment['PORT'] ?? dotEnv.get('PORT') ?? '8080'),
     mongoUser: dotEnv.get('MONGO_USER') ?? '',
     mongoPass: dotEnv.get('MONGO_PASS') ?? '',
     mongoDb: dotEnv.get('MONGO_DB') ?? '',
