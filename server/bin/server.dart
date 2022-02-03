@@ -7,6 +7,7 @@ import 'package:shelf_cors_headers/shelf_cors_headers.dart';
 import 'package:shelf/shelf_io.dart' as shelf_io;
 import 'package:shelf_router/shelf_router.dart' as shelf_router;
 
+import 'handlers/auth_handler.dart';
 import 'handlers/dictionary_handler.dart';
 import 'handlers/game_handler.dart';
 import 'handlers/game_server_handler.dart';
@@ -48,6 +49,8 @@ Future main() async {
     ..get('/status', StatusHandler.serverStatus)
     ..get('/dict/<w>', DictionaryHandler.validateWord)
     ..get('/ws', gameServerHandler())
+    ..post('/auth/register', AuthHandler.register)
+    ..post('/auth/login', AuthHandler.login)
     ..get('/groups/all', GameHandler.allGroupIds)
     ..get('/groups/<id>', GameHandler.getGameGroup)
     ..post('/groups/create', GameHandler.createGameGroup)

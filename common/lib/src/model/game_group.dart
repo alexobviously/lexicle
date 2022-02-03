@@ -6,6 +6,7 @@ part 'game_group.g.dart';
 
 @CopyWith()
 class GameGroup implements Entity {
+  @override
   final String id;
   final String title;
   final GameConfig config;

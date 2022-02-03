@@ -1,5 +1,9 @@
 import 'package:common/common.dart';
+import 'package:copy_with_extension/copy_with_extension.dart';
 
+part 'auth_data.g.dart';
+
+@CopyWith()
 class AuthData implements Entity {
   @override
   final String id;

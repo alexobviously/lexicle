@@ -1,6 +1,10 @@
+// ignore_for_file: unnecessary_this
+
 import 'package:common/common.dart';
-import 'package:common/src/model/auth_data.dart';
 import 'package:copy_with_extension/copy_with_extension.dart';
+import 'package:mongo_dart/mongo_dart.dart';
+
+part 'user.g.dart';
 
 @CopyWith()
 class User implements Entity {
@@ -8,12 +12,15 @@ class User implements Entity {
   final String id;
   final String username;
 
-  User({required this.id, required this.username});
+  User({
+    String? id,
+    required this.username,
+  }) : this.id = id ?? ObjectId().id.hexString;
 
   factory User.fromJson(Map<String, dynamic> doc) {
     return User(
       id: doc[Fields.id],
-      username: UserFields.username,
+      username: doc[UserFields.username],
     );
   }
 

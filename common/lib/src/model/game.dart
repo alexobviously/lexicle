@@ -4,6 +4,7 @@ import 'package:common/common.dart';
 import 'package:mongo_dart/mongo_dart.dart';
 
 class Game implements Entity {
+  @override
   final String id;
   final String answer;
   final String player;

@@ -12,6 +12,8 @@ Environment env() => getIt.get<Environment>();
 DatabaseService db() => getIt.get<DatabaseService>();
 GameStore gameStore() => getIt.get<GameStore>();
 GameGroupStore groupStore() => getIt.get<GameGroupStore>();
+UserStore userStore() => getIt.get<UserStore>();
+AuthStore authStore() => getIt.get<AuthStore>();
 
 Future<void> setUpServiceLocator({required Environment environment, required DatabaseService db}) async {
   getIt.registerSingleton<ServerDictionary>(ServerDictionary());
@@ -20,4 +22,6 @@ Future<void> setUpServiceLocator({required Environment environment, required Dat
   getIt.registerSingleton<DatabaseService>(db);
   getIt.registerSingleton<GameStore>(GameStore(db));
   getIt.registerSingleton<GameGroupStore>(GameGroupStore(db));
+  getIt.registerSingleton<UserStore>(UserStore(db));
+  getIt.registerSingleton<AuthStore>(AuthStore(db));
 }

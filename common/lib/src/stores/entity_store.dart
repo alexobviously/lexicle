@@ -17,6 +17,12 @@ class EntityStore<T extends Entity> {
 
   Result<T> getLocal(String id) => items.containsKey(id) ? Result.ok(items[id]!) : Result.error('not_found');
 
+  Future<Result<T>> getByField(String field, dynamic value) async {
+    Result<T> result = await db.getByField<T>(field, value);
+    if (result.ok) onGet(result.object!);
+    return result;
+  }
+
   Future<void> onGet(T entity) async {
     items[entity.id] = entity;
   }

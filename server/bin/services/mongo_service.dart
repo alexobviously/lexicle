@@ -38,6 +38,20 @@ class MongoService implements DatabaseService {
   }
 
   @override
+  Future<Result<T>> getByField<T extends Entity>(String field, dynamic value) async {
+    await connected;
+    final coll = db.collection(Entity.table(T));
+    final doc = await coll.findOne(where.eq(field, value));
+    if (doc == null) {
+      return Result.error('not_found');
+    } else {
+      ObjectId? objectId = doc['_id'];
+      doc['id'] = objectId?.id.hexString;
+      return Result.ok(Entity.build<T>(doc));
+    }
+  }
+
+  @override
   Future<Result<T>> write<T extends Entity>(T entity) async {
     if (!isMongoId(entity.id)) return Result.error('invalid_id');
     Map<String, dynamic> data = entity.export();
