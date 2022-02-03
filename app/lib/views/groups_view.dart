@@ -7,6 +7,7 @@ import 'package:word_game/app/colours.dart';
 import 'package:word_game/cubits/game_group_manager.dart';
 import 'package:word_game/services/service_locator.dart';
 import 'package:word_game/ui/game_creator.dart';
+import 'package:word_game/ui/neumorphic_text_field.dart';
 import 'package:word_game/ui/standard_scaffold.dart';
 import 'package:word_game/views/group_view.dart';
 
@@ -48,27 +49,37 @@ class _GroupsViewState extends State<GroupsView> {
                     child: Row(
                       children: [
                         Expanded(
-                          child: Neumorphic(
-                            style: NeumorphicStyle(
-                              depth: -2,
-                            ),
-                            padding: EdgeInsets.symmetric(horizontal: 16.0),
-                            child: TextField(
-                              enabled: state.joined.isEmpty,
-                              controller: nameController,
-                              decoration: InputDecoration(
-                                suffixIcon: state.joined.isEmpty && auth().state.name.isNotEmpty
-                                    ? IconButton(
-                                        onPressed: () {
-                                          auth().setName('');
-                                          setState(() => nameController.text = '');
-                                        },
-                                        icon: Icon(Icons.clear),
-                                      )
-                                    : null,
-                              ),
-                            ),
+                          child: NeumorphicTextField(
+                            controller: nameController,
+                            enabled: state.joined.isEmpty,
+                            onClear: state.joined.isEmpty && auth().state.name.isNotEmpty
+                                ? () {
+                                    auth().setName('');
+                                    setState(() => nameController.text = '');
+                                  }
+                                : null,
                           ),
+                          // child: Neumorphic(
+                          //   style: NeumorphicStyle(
+                          //     depth: -2,
+                          //   ),
+                          //   padding: EdgeInsets.symmetric(horizontal: 16.0),
+                          //   child: TextField(
+                          //     enabled: state.joined.isEmpty,
+                          //     controller: nameController,
+                          //     decoration: InputDecoration(
+                          //       suffixIcon: state.joined.isEmpty && auth().state.name.isNotEmpty
+                          //           ? IconButton(
+                          //               onPressed: () {
+                          //                 auth().setName('');
+                          //                 setState(() => nameController.text = '');
+                          //               },
+                          //               icon: Icon(Icons.clear),
+                          //             )
+                          //           : null,
+                          //     ),
+                          //   ),
+                          // ),
                         ),
                         NeumorphicButton(
                           onPressed: state.joined.isEmpty ? () => auth().setName(nameController.text) : null,

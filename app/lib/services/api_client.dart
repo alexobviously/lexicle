@@ -52,6 +52,12 @@ class ApiClient {
         unwrapper: (data) => WordValidationResult.fromJson(data['result']),
       );
 
+  static Future<Result<User>> login(String username, String password) => postAndUnwrap(
+        '/auth/login',
+        body: {UserFields.username: username, UserFields.password: password},
+        unwrapper: unwrapUser,
+      );
+
   static Future<Result<bool>> validateWord(String word) =>
       getAndUnwrap('/dict/$word', unwrapper: (data) => data['valid']);
 
@@ -121,4 +127,5 @@ class ApiClient {
 
   static GameGroup unwrapGameGroup(Map<String, dynamic> data) => GameGroup.fromJson(data['group']);
   static Game unwrapGame(Map<String, dynamic> data) => Game.fromJson(data['game']);
+  static User unwrapUser(Map<String, dynamic> data) => User.fromJson(data['user']);
 }

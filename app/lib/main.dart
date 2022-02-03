@@ -8,6 +8,7 @@ import 'package:word_game/cubits/auth_controller.dart';
 import 'package:word_game/cubits/game_group_manager.dart';
 import 'package:word_game/cubits/local_game_manager.dart';
 import 'package:word_game/services/api_client.dart';
+import 'package:word_game/views/auth/auth_view.dart';
 import 'package:word_game/views/dict_search_view.dart';
 import 'package:word_game/views/groups_view.dart';
 import 'package:word_game/views/home_view.dart';
@@ -73,6 +74,7 @@ class MyApp extends StatelessWidget {
         initialRoute: Routes.home,
         routes: {
           Routes.home: (ctx) => const HomeView(),
+          Routes.auth: (ctx) => const AuthView(),
           Routes.solo: (ctx) => const SoloView(),
           Routes.groups: (ctx) => const GroupsView(),
           Routes.settings: (ctx) => const SettingsView(),

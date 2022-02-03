@@ -53,6 +53,15 @@ class _HomeViewState extends State<HomeView> {
                 ),
                 child: Text('Dictionary', style: textTheme.headline6),
               ),
+              Container(height: 20),
+              NeumorphicButton(
+                onPressed: () => Navigator.of(context).pushNamed(Routes.auth),
+                style: NeumorphicStyle(
+                  shape: NeumorphicShape.flat,
+                  boxShape: NeumorphicBoxShape.roundRect(BorderRadius.circular(16)),
+                ),
+                child: Text('Login', style: textTheme.headline6),
+              ),
               Spacer(),
               _version(),
             ],
