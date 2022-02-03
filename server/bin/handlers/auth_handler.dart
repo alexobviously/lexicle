@@ -21,9 +21,10 @@ class AuthHandler {
       if (!_uResult.ok) return HttpUtils.buildErrorResponse('unknown');
       final _aResult = await authStore().write(authData);
       if (!_aResult.ok) return HttpUtils.buildErrorResponse('unknown');
-      return HttpUtils.buildResponse(data: {
-        'user': user.toMap(),
-      });
+      return HttpUtils.buildResponse(
+        data: {'user': user.toMap()},
+        tokenData: issueToken(user.id),
+      );
     } catch (e, s) {
       print('exception in register: $e\n$s');
       return HttpUtils.invalidRequestResponse();
@@ -38,12 +39,14 @@ class AuthHandler {
       String password = data[UserFields.password];
       final u = await userStore().getByUsername(username);
       if (!u.ok) return HttpUtils.buildErrorResponse('not_found');
-      final a = await authStore().get(u.object!.id);
+      final user = u.object!;
+      final a = await authStore().get(user.id);
       if (!a.ok) return HttpUtils.buildErrorResponse('unknown');
       if (a.object!.password == null) return HttpUtils.buildErrorResponse('no_password');
       if (!checkpw(password, a.object!.password!)) return HttpUtils.buildErrorResponse('wrong_password');
       return HttpUtils.buildResponse(
-        data: {'user': u.object!.toMap()},
+        data: {'user': user.toMap()},
+        tokenData: issueToken(user.id),
       );
     } catch (e, s) {
       print('exception in login: $e\n$s');

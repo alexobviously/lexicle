@@ -31,6 +31,7 @@ Environment readEnvironment() {
     mongoPass: _getEnv('MONGO_PASS'),
     mongoDb: _getEnv('MONGO_DB'),
     mongoHost: _getEnv('MONGO_HOST'),
+    jwtSecret: _getEnv('JWT_SECRET'),
   );
 }
 
