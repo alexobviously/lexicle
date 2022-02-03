@@ -12,6 +12,7 @@ import 'handlers/dictionary_handler.dart';
 import 'handlers/game_handler.dart';
 import 'handlers/game_server_handler.dart';
 import 'handlers/status_handler.dart';
+import 'handlers/user_handler.dart';
 import 'services/environment.dart';
 import 'services/mongo_service.dart';
 import 'services/service_locator.dart';
@@ -52,6 +53,8 @@ Future main() async {
     ..get('/ws', gameServerHandler())
     ..post('/auth/register', AuthHandler.register)
     ..post('/auth/login', AuthHandler.login)
+    ..get('/users/get/<id>', UserHandler.getUser)
+    ..get('/users/me', UserHandler.getMe)
     ..get('/groups/all', GameHandler.allGroupIds)
     ..get('/groups/<id>', GameHandler.getGameGroup)
     ..post('/groups/create', GameHandler.createGameGroup)

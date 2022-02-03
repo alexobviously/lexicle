@@ -61,6 +61,16 @@ TokenData verifyToken(String token, [bool forceRenew = false]) {
   return TokenData.invalid();
 }
 
+TokenData verifyHeaders(Map<String, String> headers, [bool forceRenewToken = false]) {
+  String? authorization = headers['authorization'];
+  if (authorization != null && authorization.startsWith('Bearer ')) {
+    String token = authorization.substring('Bearer '.length);
+    return verifyToken(token, forceRenewToken);
+  } else {
+    return TokenData.invalid();
+  }
+}
+
 class TokenData {
   final TokenStatus status;
   final String? token;
