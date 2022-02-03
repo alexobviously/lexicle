@@ -8,6 +8,8 @@ abstract class Entity {
   static Map<Type, Function(Map<String, dynamic>)> builders = {
     Game: (doc) => Game.fromJson(doc),
     GameGroup: (doc) => GameGroup.fromJson(doc),
+    User: (doc) => User.fromJson(doc),
+    AuthData: (doc) => AuthData.fromJson(doc),
   };
 
   static T build<T extends Entity>(Map<String, dynamic> doc) => builders[T]!(doc);
@@ -15,6 +17,8 @@ abstract class Entity {
   static const Map<Type, String> entityTables = {
     Game: 'games',
     GameGroup: 'groups',
+    User: 'users',
+    AuthData: 'auth',
   };
 
   static String table(Type t) => entityTables[t] ?? '';

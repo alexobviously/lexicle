@@ -1,3 +1,4 @@
+export 'model/auth_data.dart';
 export 'model/constants.dart';
 export 'model/entity.dart';
 export 'model/game.dart';
@@ -6,4 +7,5 @@ export 'model/game_group.dart';
 export 'model/game_stub.dart';
 export 'model/result.dart';
 export 'model/standing.dart';
+export 'model/user.dart';
 export 'model/word_data.dart';

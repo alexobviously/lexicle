@@ -43,3 +43,9 @@ class WordFields {
   static const semiCorrect = 's';
   static const finalised = 'f';
 }
+
+class UserFields {
+  static const username = 'u';
+  static const auth = 'a';
+  static const password = 'p';
+}
