@@ -3,11 +3,11 @@ import 'dart:convert';
 import 'package:common/common.dart';
 import 'package:word_game/model/api_response.dart';
 import 'package:rest_client/rest_client.dart' as rc;
+import 'package:word_game/services/service_locator.dart';
 
 typedef Unwrapper<T> = T Function(Map<String, dynamic> data);
 
 class ApiClient {
-  // todo: put this in .env
   static String host = 'https://word-w7y24cao7q-ew.a.run.app'; //'http://localhost:8080';
 
   static Future<Result<List<String>>> allGroups() =>
@@ -61,11 +61,39 @@ class ApiClient {
   static Future<Result<bool>> validateWord(String word) =>
       getAndUnwrap('/dict/$word', unwrapper: (data) => data['valid']);
 
-  static Future<ApiResponse> get(String path) async {
+  static Map<Type, String Function(String)> getEndpoints = {
+    Game: (id) => '/games/$id',
+    GameGroup: (id) => '/groups/$id',
+    User: (id) => '/users/$id',
+  };
+
+  static Map<Type, Function(Map<String, dynamic>)> unwrappers = {
+    Game: (doc) => ApiClient.unwrapGame(doc),
+    GameGroup: (doc) => ApiClient.unwrapGameGroup(doc),
+    User: (doc) => ApiClient.unwrapUser(doc),
+    AuthData: (doc) => AuthData.fromJson(doc), // not used
+  };
+
+  static T unwrap<T extends Entity>(Map<String, dynamic> doc) => unwrappers[T]!(doc);
+
+  static Future<ApiResult<T>> getEntity<T extends Entity>(String id) async =>
+      getAndUnwrap(getEndpoints[T]!(id), unwrapper: unwrap<T>);
+
+  static Future<ApiResponse> get(String path, [bool needAuth = false]) async {
     try {
+      Map<String, String> headers = {};
+      if (needAuth) {
+        if (auth().hasToken) {
+          headers['Authorization'] = 'Bearer ${auth().token}';
+        } else {
+          return ApiResponse.error('unauthorised');
+        }
+      }
+
       final req = rc.Request(
         url: '$host$path',
         method: rc.RequestMethod.get,
+        headers: headers,
       );
       final resp = await rc.Client().execute(request: req);
       if (resp.statusCode != 200) return ApiResponse.error('http_${resp.statusCode}');
@@ -76,12 +104,22 @@ class ApiClient {
     }
   }
 
-  static Future<ApiResponse> post(String path, [Map<String, dynamic> body = const {}]) async {
+  static Future<ApiResponse> post(String path, {Map<String, dynamic> body = const {}, bool needAuth = false}) async {
     try {
+      Map<String, String> headers = {};
+      if (needAuth) {
+        if (auth().hasToken) {
+          headers['Authorization'] = 'Bearer ${auth().token}';
+        } else {
+          return ApiResponse.error('unauthorised');
+        }
+      }
+
       final req = rc.Request(
         url: '$host$path',
         method: rc.RequestMethod.post,
         body: jsonEncode(body),
+        headers: headers,
       );
       final resp = await rc.Client().execute(request: req);
       if (resp.statusCode != 200) return ApiResponse.error('http_${resp.statusCode}');
@@ -134,7 +172,7 @@ class ApiClient {
     required Unwrapper<T> unwrapper,
     Map<String, dynamic> body = const {},
   }) async =>
-      unwrapResponse(await post(path, body), unwrapper);
+      unwrapResponse(await post(path, body: body), unwrapper);
 
   static GameGroup unwrapGameGroup(Map<String, dynamic> data) => GameGroup.fromJson(data['group']);
   static Game unwrapGame(Map<String, dynamic> data) => Game.fromJson(data['game']);

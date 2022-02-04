@@ -7,12 +7,17 @@ class AuthController extends Cubit<AuthState> {
   AuthController() : super(AuthState.initial());
 
   void setName(String name) => emit(AuthState(name: name));
+
+  String? get token => state.token;
+  bool get hasToken => state.hasToken;
 }
 
 class AuthState {
   final String name;
   final User? user;
   final String? token;
+
+  bool get hasToken => token != null;
 
   AuthState({
     required this.name,

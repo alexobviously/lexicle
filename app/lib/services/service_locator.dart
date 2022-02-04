@@ -1,3 +1,4 @@
+import 'package:common/common.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
 import 'package:word_game/cubits/auth_controller.dart';
@@ -7,9 +8,11 @@ GetIt getIt = GetIt.I;
 
 AppDictionary dictionary() => getIt.get<AppDictionary>();
 AuthController auth() => getIt.get<AuthController>();
+DatabaseService db() => getIt.get<DatabaseService>();
 FlutterSecureStorage storage() => getIt.get<FlutterSecureStorage>();
 
-Future<void> setUpServiceLocator() async {
+Future<void> setUpServiceLocator({required DatabaseService db}) async {
+  getIt.registerSingleton<DatabaseService>(db);
   getIt.registerSingleton<AppDictionary>(AppDictionary());
   getIt.registerSingleton<AuthController>(AuthController());
   getIt.registerSingleton<FlutterSecureStorage>(FlutterSecureStorage(
