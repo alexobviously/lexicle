@@ -1,7 +1,10 @@
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:word_game/app/routes.dart';
+import 'package:word_game/cubits/auth_controller.dart';
 import 'package:word_game/ui/standard_scaffold.dart';
+import 'package:word_game/views/home/user_details.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({Key? key}) : super(key: key);
@@ -26,7 +29,17 @@ class _HomeViewState extends State<HomeView> {
                 style: textTheme.headline3,
                 textAlign: TextAlign.center,
               ),
-              Container(height: 150),
+              Container(height: 50),
+              BlocBuilder<AuthController, AuthState>(
+                builder: (context, state) {
+                  if (state.loggedIn) {
+                    return UserDetails(user: state.user!);
+                  } else {
+                    return Container();
+                  }
+                },
+              ),
+              Container(height: 20),
               NeumorphicButton(
                 onPressed: () => Navigator.of(context).pushNamed(Routes.solo),
                 style: NeumorphicStyle(

@@ -12,7 +12,7 @@ import 'package:word_game/services/api_service.dart';
 import 'package:word_game/views/auth/auth_view.dart';
 import 'package:word_game/views/dict_search_view.dart';
 import 'package:word_game/views/groups_view.dart';
-import 'package:word_game/views/home_view.dart';
+import 'package:word_game/views/home/home_view.dart';
 import 'package:word_game/views/settings_view.dart';
 import 'package:word_game/views/solo_view.dart';
 import 'package:word_game/services/service_locator.dart';
