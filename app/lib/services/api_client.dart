@@ -10,6 +10,7 @@ typedef Unwrapper<T> = T Function(Map<String, dynamic> data);
 class ApiClient {
   static String host = 'https://word-w7y24cao7q-ew.a.run.app'; //'http://localhost:8080';
 
+  static Future<ApiResult<User>> getMe() => getAndUnwrap('/users/me', unwrapper: unwrapUser, needAuth: true);
   static Future<Result<List<String>>> allGroups() =>
       getAndUnwrap('/groups/all', unwrapper: (data) => coerceList(data['groups']));
   static Future<Result<GameGroup>> getGroup(String id) => getAndUnwrap('/groups/$id', unwrapper: unwrapGameGroup);
@@ -164,15 +165,17 @@ class ApiClient {
     );
   }
 
-  static Future<ApiResult<T>> getAndUnwrap<T>(String path, {required Unwrapper<T> unwrapper}) async =>
-      unwrapResponse(await get(path), unwrapper);
+  static Future<ApiResult<T>> getAndUnwrap<T>(String path,
+          {required Unwrapper<T> unwrapper, bool needAuth = false}) async =>
+      unwrapResponse(await get(path, needAuth), unwrapper);
 
   static Future<ApiResult<T>> postAndUnwrap<T>(
     String path, {
     required Unwrapper<T> unwrapper,
     Map<String, dynamic> body = const {},
+    bool needAuth = false,
   }) async =>
-      unwrapResponse(await post(path, body: body), unwrapper);
+      unwrapResponse(await post(path, body: body, needAuth: needAuth), unwrapper);
 
   static GameGroup unwrapGameGroup(Map<String, dynamic> data) => GameGroup.fromJson(data['group']);
   static Game unwrapGame(Map<String, dynamic> data) => Game.fromJson(data['game']);

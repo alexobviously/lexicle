@@ -1,7 +1,7 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:word_game/services/api_client.dart';
+import 'package:word_game/services/service_locator.dart';
 import 'package:word_game/ui/neumorphic_text_field.dart';
 
 class LoginForm extends StatefulWidget {
@@ -30,8 +30,12 @@ class _LoginFormState extends State<LoginForm> {
         print('ok');
         print(_result.object!.toMap());
         print(_result);
+        auth().onLogin(_result.object!, _result.token!, _result.expiry!);
       } else {
         print('not ok');
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text('Login failed: ${_result.error}'),
+        ));
       }
     }
   }
