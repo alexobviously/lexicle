@@ -29,6 +29,7 @@ class _LoginFormState extends State<LoginForm> {
       if (_result.ok) {
         print('ok');
         print(_result.object!.toMap());
+        print(_result);
       } else {
         print('not ok');
       }

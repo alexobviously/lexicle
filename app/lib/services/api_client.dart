@@ -52,7 +52,7 @@ class ApiClient {
         unwrapper: (data) => WordValidationResult.fromJson(data['result']),
       );
 
-  static Future<Result<User>> login(String username, String password) => postAndUnwrap(
+  static Future<ApiResult<User>> login(String username, String password) => postAndUnwrap(
         '/auth/login',
         body: {UserFields.username: username, UserFields.password: password},
         unwrapper: unwrapUser,
@@ -100,25 +100,36 @@ class ApiClient {
     if (body.containsKey('error')) body.remove('error');
     List<String> warnings = body['warnings'] ?? [];
     if (body.containsKey('warnings')) body.remove('warnings');
+    String? token = body['token'];
+    if (body.containsKey('token')) body.remove('token');
+    int? expiry = body['expiry'];
+    if (body.containsKey('expiry')) body.remove('expiry');
     return ApiResponse(
       status,
       error: error,
       warnings: warnings,
       data: body,
+      token: token,
+      expiry: expiry,
     );
   }
 
-  static Result<T> unwrapResponse<T>(ApiResponse response, Unwrapper<T> unwrapper) {
+  static ApiResult<T> unwrapResponse<T>(ApiResponse response, Unwrapper<T> unwrapper) {
     if (!response.ok) {
-      return Result.error(response.error!, response.warnings);
+      return ApiResult.error(response.error!, response.warnings);
     }
-    return Result.ok(unwrapper(response.data));
+    return ApiResult.ok(
+      unwrapper(response.data),
+      token: response.token,
+      expiry: response.expiry,
+      warnings: response.warnings,
+    );
   }
 
-  static Future<Result<T>> getAndUnwrap<T>(String path, {required Unwrapper<T> unwrapper}) async =>
+  static Future<ApiResult<T>> getAndUnwrap<T>(String path, {required Unwrapper<T> unwrapper}) async =>
       unwrapResponse(await get(path), unwrapper);
 
-  static Future<Result<T>> postAndUnwrap<T>(
+  static Future<ApiResult<T>> postAndUnwrap<T>(
     String path, {
     required Unwrapper<T> unwrapper,
     Map<String, dynamic> body = const {},
