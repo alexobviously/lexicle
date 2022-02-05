@@ -24,19 +24,12 @@ class _LoginFormState extends State<LoginForm> {
 
   void _login() async {
     if (_formKey.currentState!.validate()) {
-      print('login: $_username $_password');
-      final _result = await ApiClient.login(_username, _password);
-      if (_result.ok) {
-        print('ok');
-        print(_result.object!.toMap());
-        print(_result);
-        auth().onLogin(_result.object!, _result.token!, _result.expiry!);
-      } else {
-        print('not ok');
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text('Login failed: ${_result.error}'),
-        ));
-      }
+      final _result = await auth().login(_username, _password);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(_result.ok ? 'Logged in as ${_result.object!.username}' : 'Login failed: ${_result.error}'),
+        ),
+      );
     }
   }
 
