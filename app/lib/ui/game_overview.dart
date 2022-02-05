@@ -41,18 +41,11 @@ class _GameOverviewState extends State<GameOverview> {
 
   @override
   Widget build(BuildContext context) {
-    // STEVE: added to callback (?) method from game_manager
-    final _gm = BlocProvider.of<LocalGameManager>(context);
-
     return Neumorphic(
       padding: const EdgeInsets.symmetric(horizontal: 6.0),
       style: NeumorphicStyle(
         depth: -10,
         color: widget.game.state.gameFinished ? Colours.correct.withAlpha(100) : null,
-        // border: widget.game.state.gameFinished
-        //     ? NeumorphicBorder(color: Colours.correct, width: 2.0)
-        //     : const NeumorphicBorder.none(),
-        // NeumorphicBorder(color: Colors.black12, width: 0.5), // maybe?
       ),
       child: BlocBuilder<GameController, Game>(
         bloc: widget.game,
