@@ -195,6 +195,7 @@ class _GroupViewState extends State<GroupView> {
               bool ready = group.playerReady(player);
               return ListTile(
                 title: EntityFutureBuilder<User>(
+                  key: ValueKey('lobby_${group.id}_$player'),
                   id: player,
                   store: userStore(),
                   loadingWidget: SpinKitCircle(size: 16, color: Colors.black87),
@@ -257,6 +258,7 @@ class _GroupViewState extends State<GroupView> {
               children: gcs
                   .map(
                     (e) => EntityFutureBuilder<User>(
+                      key: ValueKey('mpgo_${e.state.id}_${e.state.creator}'),
                       id: e.state.creator,
                       store: userStore(),
                       loadingWidget: SpinKitCubeGrid(size: 128, color: Colours.semiCorrect),
@@ -352,6 +354,7 @@ class _GroupViewState extends State<GroupView> {
                 SizedBox(
                   width: 150,
                   child: EntityFutureBuilder<User>(
+                    key: ValueKey('answers_${group.id}_${e.player}'),
                     id: e.player,
                     store: userStore(),
                     loadingWidget: SpinKitCircle(color: Colors.black87, size: 16),
@@ -414,6 +417,7 @@ class _GroupViewState extends State<GroupView> {
                     SizedBox(
                       width: 100,
                       child: EntityFutureBuilder<User>(
+                        key: ValueKey('standings_${state.id}_${finished}_${e.player}'),
                         id: e.player,
                         store: userStore(),
                         loadingWidget: SpinKitCircle(
