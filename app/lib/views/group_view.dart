@@ -305,7 +305,7 @@ class _GroupViewState extends State<GroupView> {
       if (difficulty < 5.5) {
         return Color.lerp(Colours.correct, Colours.semiCorrect, (difficulty - 2.0) / 3.5)!;
       } else {
-        return Color.lerp(Colours.semiCorrect, Colours.invalid.lighten(0.2), (difficulty - 5.5) / 4.0)!;
+        return Color.lerp(Colours.semiCorrect, Colours.invalid.lighten(0.2), (difficulty - 5.5) / 3.5)!;
       }
     }
 
