@@ -1,4 +1,5 @@
 class Environment {
+  String version;
   int port;
   String mongoUser;
   String mongoPass;
@@ -7,6 +8,7 @@ class Environment {
   String jwtSecret;
 
   Environment({
+    required this.version,
     required this.port,
     required this.mongoUser,
     required this.mongoPass,

@@ -6,6 +6,7 @@ import 'package:shelf/shelf.dart';
 import 'package:shelf_cors_headers/shelf_cors_headers.dart';
 import 'package:shelf/shelf_io.dart' as shelf_io;
 import 'package:shelf_router/shelf_router.dart' as shelf_router;
+import 'package:yaml/yaml.dart';
 
 import 'handlers/auth_handler.dart';
 import 'handlers/dictionary_handler.dart';
@@ -18,6 +19,9 @@ import 'services/mongo_service.dart';
 import 'services/service_locator.dart';
 
 Environment readEnvironment() {
+  final pubspec = loadYaml(File('pubspec.yaml').readAsStringSync());
+  String version = pubspec['version'] ?? '0.1.0';
+
   final dotEnv = DotEnv(filePath: '.env');
   if (!dotEnv.exists()) {
     dotEnv.createNew();
@@ -27,6 +31,7 @@ Environment readEnvironment() {
   String _getEnv(String key, [String def = '']) => Platform.environment[key] ?? dotEnv.get(key) ?? def;
 
   return Environment(
+    version: version,
     port: int.parse(_getEnv('PORT', '8080')),
     mongoUser: _getEnv('MONGO_USER'),
     mongoPass: _getEnv('MONGO_PASS'),
