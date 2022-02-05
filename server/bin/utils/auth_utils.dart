@@ -81,7 +81,7 @@ Future<AuthResult> authenticateRequest(Request request, {bool needAdmin = false,
   if (needAdmin) return AuthResult.error('unauthorised'); // todo
   final tokenData = verifyHeaders(request.headers);
   if (!tokenData.valid) {
-    return AuthResult.error('', tokenData);
+    return AuthResult.error('unauthorised', tokenData);
   }
   String id = tokenData.subject!;
   if (!isMongoId(id)) return AuthResult.error('invalid_token');

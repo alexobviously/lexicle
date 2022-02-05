@@ -18,10 +18,10 @@ class HttpUtils {
     if (tokenData != null) {
       switch (tokenData.status) {
         case TokenStatus.expired:
-          error = 'expired_token';
+          error ??= 'expired_token';
           break;
         case TokenStatus.invalid:
-          error = 'invalid_token';
+          error ??= 'invalid_token';
           break;
         case TokenStatus.old:
           warnings.add('old_token');

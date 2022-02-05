@@ -4,6 +4,7 @@ import 'package:common/common.dart';
 import 'package:shelf/shelf.dart';
 
 import '../services/service_locator.dart';
+import '../utils/auth_utils.dart';
 import '../utils/http_utils.dart';
 
 class GameHandler {
@@ -19,13 +20,17 @@ class GameHandler {
 
   static Future<Response> createGameGroup(Request request) async {
     try {
+      final authResult = await authenticateRequest(request);
+      if (!authResult.ok) return authResult.errorResponse;
+
       final String payload = await request.readAsString();
       Map<String, dynamic> data = json.decode(payload);
       GameConfig config = GameConfig.fromJson(data['config']);
-      String creator = data['creator'];
+      User user = authResult.user!;
+      String creator = user.id;
       String? title = data['title'];
-      if (title == null || title.isEmpty) title = '$creator\'s game';
-      print('got create request from creator [$creator] title $title');
+      if (title == null || title.isEmpty) title = '${user.username}\'s game';
+      print('got create request from creator [${user.username}] title $title');
       final _result = gameServer().createGameGroup(creator: creator, title: title, config: config);
       if (!_result.ok) {
         return HttpUtils.buildErrorResponse(_result.error!);
@@ -58,9 +63,9 @@ class GameHandler {
 
   static Future<Response> joinGameGroup(Request request, String id) async {
     try {
-      final String payload = await request.readAsString();
-      Map<String, dynamic> data = json.decode(payload);
-      final _result = gameServer().joinGroup(id, data['player']);
+      final authResult = await authenticateRequest(request);
+      if (!authResult.ok) return authResult.errorResponse;
+      final _result = gameServer().joinGroup(id, authResult.user!.id);
       if (!_result.ok) {
         return HttpUtils.buildErrorResponse(_result.error!);
       } else {
@@ -76,9 +81,9 @@ class GameHandler {
 
   static Future<Response> leaveGameGroup(Request request, String id) async {
     try {
-      final String payload = await request.readAsString();
-      Map<String, dynamic> data = json.decode(payload);
-      final _result = gameServer().leaveGroup(id, data['player']);
+      final authResult = await authenticateRequest(request);
+      if (!authResult.ok) return authResult.errorResponse;
+      final _result = gameServer().leaveGroup(id, authResult.user!.id);
       if (!_result.ok) {
         return HttpUtils.buildErrorResponse(_result.error!);
       } else {
@@ -94,9 +99,9 @@ class GameHandler {
 
   static Future<Response> deleteGameGroup(Request request, String id) async {
     try {
-      final String payload = await request.readAsString();
-      Map<String, dynamic> data = json.decode(payload);
-      final _result = gameServer().deleteGroup(id, data['player']);
+      final authResult = await authenticateRequest(request);
+      if (!authResult.ok) return authResult.errorResponse;
+      final _result = gameServer().deleteGroup(id, authResult.user!.id);
       if (!_result.ok) {
         return HttpUtils.buildErrorResponse(_result.error!);
       } else {
@@ -110,9 +115,11 @@ class GameHandler {
 
   static Future<Response> setWord(Request request, String id) async {
     try {
+      final authResult = await authenticateRequest(request);
+      if (!authResult.ok) return authResult.errorResponse;
       final String payload = await request.readAsString();
       Map<String, dynamic> data = json.decode(payload);
-      final _result = gameServer().setWord(id, data['player'], data['word']);
+      final _result = gameServer().setWord(id, authResult.user!.id, data['word']);
       if (!_result.ok) {
         return HttpUtils.buildErrorResponse(_result.error!);
       } else {
@@ -128,8 +135,9 @@ class GameHandler {
 
   static Future<Response> startGroup(Request request, String id) async {
     try {
-      // TODO: authenticate this
-      final _result = gameServer().startGroup(id);
+      final authResult = await authenticateRequest(request);
+      if (!authResult.ok) return authResult.errorResponse;
+      final _result = gameServer().startGroup(id, authResult.user!.id);
       if (!_result.ok) {
         return HttpUtils.buildErrorResponse(_result.error!, warnings: _result.warnings);
       } else {
@@ -185,9 +193,11 @@ class GameHandler {
 
   static Future<Response> makeGuess(Request request, String id) async {
     try {
+      final authResult = await authenticateRequest(request);
+      if (!authResult.ok) return authResult.errorResponse;
       final String payload = await request.readAsString();
       Map<String, dynamic> data = json.decode(payload);
-      final _result = await gameServer().makeGuess(id, data['guess']);
+      final _result = await gameServer().makeGuess(id, authResult.user!.id, data['guess']);
       if (!_result.ok) {
         return HttpUtils.buildErrorResponse(_result.error!);
       } else {

@@ -123,13 +123,14 @@ class GameServer with ReadyManager {
     throw ("Couldn't generate a code in $maxAttempts attempts");
   }
 
-  Result<GameGroupController> startGroup(String id) {
+  Result<GameGroupController> startGroup(String id, String player) {
     if (!gameGroups.containsKey(id)) return Result.error('not_found');
     GameGroupController ggc = gameGroups[id]!;
     final _result = ggc.canStart;
     if (!_result.ok) {
       return Result.error(_result.error!, _result.warnings);
     }
+    if (ggc.state.creator != player) return Result.error('unauthorised');
     ggc.start(createGamesForGroup(ggc));
     return Result.ok(ggc);
   }
@@ -198,9 +199,10 @@ class GameServer with ReadyManager {
     }
   }
 
-  Future<Result<WordValidationResult>> makeGuess(String gameId, String word) async {
+  Future<Result<WordValidationResult>> makeGuess(String gameId, String player, String word) async {
     if (!games.containsKey(gameId)) return Result.error('not_found');
     GameController gc = games[gameId]!;
+    if (gc.state.player != player) return Result.error('unauthorised');
     final _result = await gc.submitWord(word);
     // note: invalid words count as ok
     if (!_result.ok) {

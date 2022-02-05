@@ -2,8 +2,6 @@ import 'package:common/common.dart';
 import 'package:word_game/services/api_client.dart';
 
 class ApiService implements DatabaseService {
-  static Map<Type, Function(String)> getFuncs = {Game: (id) => ApiClient.getGame(id)};
-
   @override
   Future<Result<bool>> delete<T extends Entity>(T entity) async {
     return Result.error('cant_delete');

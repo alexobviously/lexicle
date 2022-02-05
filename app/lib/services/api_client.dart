@@ -10,6 +10,7 @@ typedef Unwrapper<T> = T Function(Map<String, dynamic> data);
 class ApiClient {
   static String host = 'https://word-w7y24cao7q-ew.a.run.app'; //'http://localhost:8080';
 
+  static Future<ApiResult<User>> getUser(String id) => getAndUnwrap('/users/$id', unwrapper: unwrapUser);
   static Future<ApiResult<User>> getMe() => getAndUnwrap('/users/me', unwrapper: unwrapUser, needAuth: true);
   static Future<Result<List<String>>> allGroups() =>
       getAndUnwrap('/groups/all', unwrapper: (data) => coerceList(data['groups']));
@@ -18,28 +19,33 @@ class ApiClient {
         '/groups/create',
         body: {'creator': creator, 'title': title, 'config': config.toMap()},
         unwrapper: unwrapGameGroup,
+        needAuth: true,
       );
   static Future<Result<GameGroup>> joinGroup(String id, String player) => postAndUnwrap(
         '/groups/$id/join',
         body: {'player': player},
         unwrapper: unwrapGameGroup,
+        needAuth: true,
       );
   static Future<Result<GameGroup>> leaveGroup(String id, String player) => postAndUnwrap(
         '/groups/$id/leave',
         body: {'player': player},
         unwrapper: unwrapGameGroup,
+        needAuth: true,
       );
   static Future<Result<bool>> deleteGroup(String id, String player) => postAndUnwrap(
         '/groups/$id/delete',
         body: {'player': player},
         unwrapper: (_) => true,
+        needAuth: true,
       );
   static Future<Result<GameGroup>> startGroup(String id) =>
-      postAndUnwrap('/groups/$id/start', unwrapper: unwrapGameGroup);
+      postAndUnwrap('/groups/$id/start', unwrapper: unwrapGameGroup, needAuth: true);
   static Future<Result<GameGroup>> setWord(String group, String player, String word) => postAndUnwrap(
         '/groups/$group/setword',
         body: {'player': player, 'word': word},
         unwrapper: unwrapGameGroup,
+        needAuth: true,
       );
 
   static Future<Result<List<String>>> allGames() =>
@@ -51,6 +57,7 @@ class ApiClient {
         '/games/$game/guess',
         body: {'guess': guess},
         unwrapper: (data) => WordValidationResult.fromJson(data['result']),
+        needAuth: true,
       );
 
   static Future<ApiResult<User>> login(String username, String password) => postAndUnwrap(
