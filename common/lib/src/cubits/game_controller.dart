@@ -30,8 +30,11 @@ class GameController extends Cubit<Game> {
     }
   }
 
-  Future<Result<WordValidationResult>> submitWord(String word) async {
+  Future<Result<WordValidationResult>> makeGuess(String word) async {
     if (state.gameFinished) return Result.error('game_finished');
+    if (state.guesses.isNotEmpty && state.guesses.first.finalised && state.guesses.first.content == word) {
+      return Result.error('duplicate_guess');
+    }
     final _result = await mediator.validateWord(word);
     if (!_result.valid) {
       emit(state.copyWith(current: WordData.current(word)).copyWithInvalid());

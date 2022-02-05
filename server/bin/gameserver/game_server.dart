@@ -203,7 +203,7 @@ class GameServer with ReadyManager {
     if (!games.containsKey(gameId)) return Result.error('not_found');
     GameController gc = games[gameId]!;
     if (gc.state.player != player) return Result.error('unauthorised');
-    final _result = await gc.submitWord(word);
+    final _result = await gc.makeGuess(word);
     // note: invalid words count as ok
     if (!_result.ok) {
       return Result.error(_result.error!);
