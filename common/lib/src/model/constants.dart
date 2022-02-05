@@ -12,6 +12,7 @@ class GameFields {
   static const group = 'h';
   static const finished = 'n';
   static const endTime = 't';
+  static const endReason = 'r';
 }
 
 class GroupFields {
@@ -51,4 +52,9 @@ class UserFields {
   static const username = 'u';
   static const auth = 'a';
   static const password = 'p';
+}
+
+class EndReasons {
+  static const int won = 0;
+  static const int timeout = 1;
 }
