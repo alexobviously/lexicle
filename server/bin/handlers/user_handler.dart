@@ -21,18 +21,11 @@ class UserHandler {
 
   static Future<Response> getMe(Request request) async {
     try {
-      print('getMe');
-      print('headers: ${request.headers}');
-      final tokenData = verifyHeaders(request.headers);
-      print(tokenData.toMap(false));
-      if (!tokenData.valid) return HttpUtils.buildResponse(tokenData: tokenData);
-      String id = tokenData.subject!;
-      if (!isMongoId(id)) return HttpUtils.buildErrorResponse('invalid_token');
-      final _result = await userStore().get(id);
-      if (!_result.ok) return HttpUtils.buildErrorResponse(_result.error!);
+      final result = await authenticateRequest(request);
+      if (!result.ok) return result.errorResponse;
       return HttpUtils.buildResponse(
-        data: {'user': _result.object!.toMap()},
-        tokenData: tokenData,
+        data: {'user': result.user!.toMap()},
+        tokenData: result.tokenData,
       );
     } catch (e, s) {
       print('exception in getMe: $e\n$s');

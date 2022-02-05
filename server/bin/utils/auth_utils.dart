@@ -1,10 +1,14 @@
 import 'dart:convert';
 import 'dart:math';
 
+import 'package:common/common.dart';
 import 'package:dbcrypt/dbcrypt.dart';
 import 'package:jaguar_jwt/jaguar_jwt.dart';
+import 'package:shelf/shelf.dart';
+import 'package:validators/validators.dart';
 
 import '../services/service_locator.dart';
+import 'http_utils.dart';
 
 const saltRounds = 10;
 const jwtIssuer = 'Lexicle';
@@ -71,6 +75,27 @@ TokenData verifyHeaders(Map<String, String> headers, [bool forceRenewToken = fal
   }
 }
 
+typedef AuthPredicate = bool Function(String);
+
+Future<AuthResult> authenticateRequest(Request request, {bool needAdmin = false, AuthPredicate? predicate}) async {
+  if (needAdmin) return AuthResult.error('unauthorised'); // todo
+  final tokenData = verifyHeaders(request.headers);
+  if (!tokenData.valid) {
+    return AuthResult.error('', tokenData);
+  }
+  String id = tokenData.subject!;
+  if (!isMongoId(id)) return AuthResult.error('invalid_token');
+  if (predicate != null && !predicate(id)) {
+    return AuthResult.error('authorised');
+  }
+  final _result = await userStore().get(id);
+  if (!_result.ok) return AuthResult.error(_result.error!);
+  return AuthResult.ok(tokenData, _result.object!);
+}
+
+AuthPredicate matchOneUser(String id) => ((String x) => x == id);
+AuthPredicate userInList(List<String> list) => ((String x) => list.contains(x));
+
 class TokenData {
   final TokenStatus status;
   final String? token;
@@ -123,4 +148,19 @@ enum TokenStatus {
   old,
   expired,
   invalid,
+}
+
+class AuthResult {
+  final TokenData? tokenData;
+  final User? user;
+  String? error;
+  bool get ok => error == null && (tokenData?.valid ?? false);
+  Response get errorResponse => HttpUtils.buildErrorResponse(error ?? '', tokenData: tokenData);
+
+  AuthResult({this.tokenData, this.user, this.error});
+  factory AuthResult.ok(TokenData tokenData, User user) => AuthResult(
+        tokenData: tokenData,
+        user: user,
+      );
+  factory AuthResult.error(String error, [TokenData? tokenData]) => AuthResult(error: error, tokenData: tokenData);
 }
