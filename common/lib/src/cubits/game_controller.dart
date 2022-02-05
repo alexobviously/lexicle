@@ -28,7 +28,6 @@ class GameController extends Cubit<Game> {
   void _handleHighestGuess(int count) => highestGuess = count;
 
   void start() {
-    print('starting, endTime: ${state.endTime}');
     if (state.endTime != null) {
       endTimer = Timer(DateTime.fromMillisecondsSinceEpoch(state.endTime!).difference(DateTime.now()), _timeout);
     }
@@ -45,7 +44,7 @@ class GameController extends Cubit<Game> {
   void _timeout() {
     print('timeout hit');
     if (state.gameFinished) return;
-    int targetScore = max(min(highestGuess + 1, 6), state.guesses.length);
+    int targetScore = max(max(highestGuess + 1, 6), state.guesses.length);
     int penalty = targetScore - state.guesses.length;
     emit(state.copyWith(endReason: EndReasons.timeout, penalty: penalty));
     end(EndReasons.timeout);
@@ -100,6 +99,7 @@ class GameController extends Cubit<Game> {
   @override
   Future<void> close() {
     endTimer?.cancel(); // shouldn't happen but possibly could
+    highestGuessStream?.cancel();
     return super.close();
   }
 

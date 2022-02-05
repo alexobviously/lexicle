@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:math';
+
 import 'package:common/common.dart';
 import 'package:duration/duration.dart';
 import 'package:flutter/scheduler.dart';
@@ -31,6 +34,10 @@ class _GroupViewState extends State<GroupView> {
   List<ScrollController> _scrollControllers = [];
   bool invalidWord = false;
 
+  int? endTime;
+  int? timeLeft;
+  Timer? timer;
+
   @override
   void initState() {
     if (controller.state.group.words.containsKey(auth().userId)) {
@@ -49,7 +56,28 @@ class _GroupViewState extends State<GroupView> {
         curve: Curves.fastOutSlowIn,
       );
     });
+    _initTimer();
+    controller.stream.map((e) => e.group.endTime).distinct().listen((_) => _initTimer());
     super.initState();
+  }
+
+  void _initTimer() {
+    timer?.cancel();
+    if (controller.state.group.endTime != null) {
+      endTime = controller.state.group.endTime;
+      timer = Timer.periodic(Duration(seconds: 1), (_) => _setTimeLeft());
+    }
+  }
+
+  @override
+  void dispose() {
+    timer?.cancel();
+    super.dispose();
+  }
+
+  void _setTimeLeft() {
+    if (endTime == null) return;
+    setState(() => timeLeft = max(endTime! - DateTime.now().millisecondsSinceEpoch, 0));
   }
 
   void _submitWord() async {
@@ -148,6 +176,7 @@ class _GroupViewState extends State<GroupView> {
                     ],
                   ),
                 ),
+                if (group.config.timeLimit != null) _clock(context, group.config.timeLimit!, true),
               ],
             ),
           ),
@@ -210,6 +239,7 @@ class _GroupViewState extends State<GroupView> {
         return Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
+            if (timeLeft != null) _clock(context, timeLeft!),
             Text(
               'Standings',
               style: textTheme.headline5,
@@ -426,6 +456,30 @@ class _GroupViewState extends State<GroupView> {
               ),
             )
             .toList(),
+      ],
+    );
+  }
+
+  String _formatTime(Duration duration, [bool fullDetail = false]) {
+    String _pad(int n) => n.toString().padLeft(2, "0");
+    String output = '';
+    if (fullDetail || duration.inHours > 0) output = '${_pad(duration.inHours)}:';
+    output = '$output${_pad(duration.inMinutes.remainder(60))}';
+    if (fullDetail || duration.inHours == 0) output = '$output:${_pad(duration.inSeconds.remainder(60))}';
+    return output;
+  }
+
+  Widget _clock(BuildContext context, int time, [bool fullDetail = false]) {
+    final duration = Duration(milliseconds: time);
+
+    return Row(
+      children: [
+        Icon(MdiIcons.clockOutline),
+        Container(width: 4),
+        Text(
+          _formatTime(duration, fullDetail),
+          style: Theme.of(context).textTheme.headline6,
+        ),
       ],
     );
   }

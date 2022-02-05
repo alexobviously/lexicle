@@ -25,12 +25,16 @@ class _GameCreatorState extends State<GameCreator> {
   static int length = 5;
   static Duration? duration = _durations.first;
 
-  static List<Duration> _durations = [
+  static const List<Duration> _durations = [
     Duration.zero,
-    Duration(minutes: 1),
-    Duration(minutes: 5),
-    Duration(minutes: 10),
+    Duration(minutes: 15),
+    Duration(minutes: 30),
+    Duration(minutes: 45),
     Duration(hours: 1),
+    Duration(hours: 2),
+    Duration(hours: 4),
+    Duration(days: 1),
+    Duration(days: 3),
   ];
 
   void _setLength(int l) {
