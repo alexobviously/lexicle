@@ -14,6 +14,7 @@ class GameGroup implements Entity {
   final String? code;
   final int state;
   late final int created;
+  final int? endTime;
 
   /// A list of player IDs.
   final List<String> players;
@@ -88,6 +89,7 @@ class GameGroup implements Entity {
     this.words = const {},
     this.games = const {},
     int? created,
+    this.endTime,
   }) : assert(players.contains(creator)) {
     this.created = created ?? DateTime.now().millisecondsSinceEpoch;
   }
@@ -107,6 +109,7 @@ class GameGroup implements Entity {
           entry.key: mapList<GameStub>(entry.value, (e) => GameStub.fromJson(e)),
       },
       created: doc[GroupFields.created],
+      endTime: doc[GroupFields.endTime],
     );
   }
 
@@ -125,6 +128,7 @@ class GameGroup implements Entity {
           entry.key: mapList<Map<String, dynamic>>(entry.value, (e) => e.toMap()),
       },
       GroupFields.created: created,
+      if (endTime != null) GroupFields.endTime: endTime,
     };
   }
 

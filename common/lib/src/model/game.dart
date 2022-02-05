@@ -13,6 +13,7 @@ class Game implements Entity {
   final WordData current;
   final List<String> flags;
   final String? group;
+  final int? endTime; // determined in advance by timelimited games, always set on finish
 
   int get length => answer.length;
   String get word => current.content;
@@ -37,6 +38,7 @@ class Game implements Entity {
     required this.current,
     this.flags = const [],
     this.group,
+    this.endTime,
   })  : this.id = id ?? ObjectId().id.hexString,
         this.creator = creator ?? player;
 
@@ -61,6 +63,7 @@ class Game implements Entity {
           (doc[GameFields.guesses] as List).map<WordData>((e) => WordData.fromJson(e as Map<String, dynamic>)).toList(),
       current: WordData.fromJson(doc[GameFields.current] as Map<String, dynamic>),
       flags: coerceList(doc[GameFields.flags] ?? []),
+      endTime: doc[GameFields.endTime],
     );
   }
 
@@ -74,6 +77,7 @@ class Game implements Entity {
       GameFields.current: current.toMap(),
       GameFields.flags: flags,
       if (group != null) GameFields.group: group,
+      if (endTime != null) GameFields.endTime: endTime,
     };
   }
 
@@ -93,6 +97,7 @@ class Game implements Entity {
     WordData? current,
     List<String> flags = const [],
     String? group,
+    int? endTime,
   }) {
     return Game(
       id: id ?? this.id,
@@ -103,6 +108,7 @@ class Game implements Entity {
       current: current ?? this.current,
       flags: flags,
       group: group ?? this.group,
+      endTime: endTime ?? this.endTime,
     );
   }
 

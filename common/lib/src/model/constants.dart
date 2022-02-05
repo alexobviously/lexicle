@@ -11,6 +11,7 @@ class GameFields {
   static const flags = 'f';
   static const group = 'h';
   static const finished = 'n';
+  static const endTime = 't';
 }
 
 class GroupFields {
@@ -23,6 +24,7 @@ class GroupFields {
   static const words = 'w';
   static const games = 'g';
   static const created = 'r';
+  static const endTime = 'm';
 }
 
 // also used for Standings
@@ -35,6 +37,7 @@ class StubFields {
 
 class ConfigFields {
   static const wordLength = 'l';
+  static const timeLimit = 't';
 }
 
 class WordFields {
