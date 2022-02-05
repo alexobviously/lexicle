@@ -1,5 +1,6 @@
 import 'package:common/common.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:word_game/services/service_locator.dart';
 
 class UserDetails extends StatelessWidget {
   final User user;
@@ -19,7 +20,31 @@ class UserDetails extends StatelessWidget {
         child: Column(
           children: [
             Text(user.username, style: textTheme.headline5),
-            Text('Rank: Wood 1'),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Flexible(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Rank: Wood 1'),
+                      Text('Games played: 0'),
+                    ],
+                  ),
+                ),
+                Flexible(
+                  child: Column(
+                    children: [
+                      NeumorphicButton(
+                        style: NeumorphicStyle(depth: 3),
+                        child: Text('Log Out'),
+                        onPressed: () => auth().logout(),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            )
           ],
         ),
       ),

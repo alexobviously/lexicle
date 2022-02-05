@@ -48,44 +48,23 @@ class _GroupsViewState extends State<GroupsView> {
                     padding: const EdgeInsets.all(8.0),
                     child: Row(
                       children: [
-                        Expanded(
-                          child: NeumorphicTextField(
-                            controller: nameController,
-                            enabled: state.joined.isEmpty,
-                            onClear: state.joined.isEmpty && auth().state.name.isNotEmpty
-                                ? () {
-                                    auth().setName('');
-                                    setState(() => nameController.text = '');
-                                  }
-                                : null,
-                          ),
-                          // child: Neumorphic(
-                          //   style: NeumorphicStyle(
-                          //     depth: -2,
-                          //   ),
-                          //   padding: EdgeInsets.symmetric(horizontal: 16.0),
-                          //   child: TextField(
-                          //     enabled: state.joined.isEmpty,
-                          //     controller: nameController,
-                          //     decoration: InputDecoration(
-                          //       suffixIcon: state.joined.isEmpty && auth().state.name.isNotEmpty
-                          //           ? IconButton(
-                          //               onPressed: () {
-                          //                 auth().setName('');
-                          //                 setState(() => nameController.text = '');
-                          //               },
-                          //               icon: Icon(Icons.clear),
-                          //             )
-                          //           : null,
-                          //     ),
-                          //   ),
-                          // ),
-                        ),
-                        NeumorphicButton(
-                          onPressed: state.joined.isEmpty ? () => auth().setName(nameController.text) : null,
-                          child: const Icon(MdiIcons.keyboardReturn),
-                        ),
-                        Container(width: 10),
+                        // Expanded(
+                        //   child: NeumorphicTextField(
+                        //     controller: nameController,
+                        //     enabled: state.joined.isEmpty,
+                        //     onClear: state.joined.isEmpty && auth().state.name.isNotEmpty
+                        //         ? () {
+                        //             auth().setName('');
+                        //             setState(() => nameController.text = '');
+                        //           }
+                        //         : null,
+                        //   ),
+                        // ),
+                        // NeumorphicButton(
+                        //   onPressed: state.joined.isEmpty ? () => auth().setName(nameController.text) : null,
+                        //   child: const Icon(MdiIcons.keyboardReturn),
+                        // ),
+                        // Container(width: 10),
                         NeumorphicButton(
                           onPressed: () => state.working ? null : cubit.refresh(),
                           child: state.working
@@ -102,7 +81,7 @@ class _GroupsViewState extends State<GroupsView> {
                       itemCount: state.groups.length,
                       itemBuilder: (context, i) {
                         GameGroup g = state.groups.entries.toList().reversed.toList()[i].value;
-                        bool isCreator = g.creator == auth().state.name;
+                        bool isCreator = g.creator == auth().userId;
                         Color? tileColour = i % 2 == 0 ? Colours.wrong : null;
                         bool joined = state.joined.contains(g.id);
                         if (joined) tileColour = Colours.semiCorrect;
@@ -121,7 +100,7 @@ class _GroupsViewState extends State<GroupsView> {
                             padding: const EdgeInsets.all(8.0),
                             child: Text('${g.players.length}', style: textTheme.headline5, textAlign: TextAlign.center),
                           ),
-                          trailing: !g.started && auth().state.name.isNotEmpty
+                          trailing: !g.started
                               ? NeumorphicButton(
                                   style: NeumorphicStyle(
                                     color: tileColour,

@@ -6,19 +6,23 @@ import 'package:word_game/services/service_locator.dart';
 class AuthController extends Cubit<AuthState> {
   AuthController() : super(AuthState.initial());
 
-  void setName(String name) => emit(AuthState(name: name));
-
   void onLogin(User user, String token, int expiry) {
     userStore().set(user);
     emit(state.copyWith(user: user, token: token, expiry: expiry));
   }
 
+  void logout() {
+    emit(AuthState.initial());
+  }
+
   String? get token => state.token;
   bool get hasToken => state.hasToken;
+  bool get loggedIn => state.loggedIn;
+  String? get userId => state.user?.id;
+  String? get username => state.user?.username;
 }
 
 class AuthState {
-  final String name;
   final User? user;
   final String? token;
   final int? expiry;
@@ -27,21 +31,18 @@ class AuthState {
   bool get loggedIn => user != null;
 
   AuthState({
-    required this.name,
     this.user,
     this.token,
     this.expiry,
   });
-  factory AuthState.initial() => AuthState(name: fp.generate());
+  factory AuthState.initial() => AuthState();
 
   AuthState copyWith({
-    String? name,
     User? user,
     String? token,
     int? expiry,
   }) =>
       AuthState(
-        name: name ?? this.name,
         user: user ?? this.user,
         token: token ?? this.token,
         expiry: expiry ?? this.expiry,

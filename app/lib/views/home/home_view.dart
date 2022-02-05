@@ -25,7 +25,7 @@ class _HomeViewState extends State<HomeView> {
           child: Column(
             children: [
               Text(
-                'Counter Strike: Wordle Offensive',
+                'Lexicle',
                 style: textTheme.headline3,
                 textAlign: TextAlign.center,
               ),

@@ -10,7 +10,7 @@ import 'package:word_game/services/service_locator.dart';
 class GameGroupManager extends Cubit<GroupManagerState> {
   Map<String, GameGroupController> groupControllers = {};
   Map<String, StreamSubscription> streams = {};
-  String get player => auth().state.name;
+  String get player => auth().userId!;
   GameGroupManager() : super(GroupManagerState.initial()) {
     init();
   }

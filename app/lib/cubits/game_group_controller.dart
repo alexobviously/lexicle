@@ -14,7 +14,7 @@ class GameGroupController extends Cubit<GameGroupState> {
   Timer? timer;
 
   String get id => state.group.id;
-  String get player => auth().state.name;
+  String get player => auth().userId!;
   Map<String, dynamic> toMap({bool hideAnswers = true}) => state.group.toMap(hideAnswers: hideAnswers);
   List<String> get unreadyPlayers => state.group.players.where((e) => !state.group.words.containsKey(e)).toList();
 

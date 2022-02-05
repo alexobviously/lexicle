@@ -31,8 +31,8 @@ class _GroupViewState extends State<GroupView> {
 
   @override
   void initState() {
-    if (controller.state.group.words.containsKey(auth().state.name)) {
-      wordController.text = controller.state.group.words[auth().state.name]!;
+    if (controller.state.group.words.containsKey(auth().userId)) {
+      wordController.text = controller.state.group.words[auth().userId!]!;
     }
     // todo: unfuck this
     for (int i = 0; i < 50; i++) {
@@ -96,7 +96,7 @@ class _GroupViewState extends State<GroupView> {
   }
 
   Widget _lobbyView(BuildContext context, GameGroup group) {
-    final isCreator = auth().state.name == group.creator;
+    final isCreator = auth().userId == group.creator;
     final theme = Theme.of(context);
     final textTheme = theme.textTheme;
     bool isValid = !invalidWord && isAlpha(wordController.text);
