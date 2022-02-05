@@ -4,12 +4,14 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:linked_scroll_controller/linked_scroll_controller.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:validators/validators.dart';
 import 'package:word_game/app/colours.dart';
 import 'package:word_game/cubits/game_group_controller.dart';
 import 'package:word_game/services/service_locator.dart';
+import 'package:word_game/ui/entity_future_builder.dart';
 import 'package:word_game/ui/game_overview.dart';
 import 'package:word_game/ui/game_page.dart';
 import 'package:word_game/ui/standard_scaffold.dart';
@@ -217,18 +219,26 @@ class _GroupViewState extends State<GroupView> {
               shrinkWrap: true,
               physics: NeverScrollableScrollPhysics(),
               children: gcs
-                  .map((e) => GestureDetector(
+                  .map(
+                    (e) => EntityFutureBuilder<User>(
+                      id: e.state.creator,
+                      store: userStore(),
+                      loadingWidget: SpinKitCubeGrid(size: 128, color: Colours.semiCorrect),
+                      errorWidget: (_) => Icon(Icons.error),
+                      resultWidget: (u) => GestureDetector(
                         child: GameOverview(
                           e,
-                          header: Text(e.state.creator),
+                          header: Text(u.username),
                           key: ValueKey('go_${e.state.id}'),
                         ),
                         onTap: () => Navigator.of(context).push(
                           MaterialPageRoute(
-                            builder: (context) => GamePage(game: e, title: '${e.state.creator}\'s game'),
+                            builder: (context) => GamePage(game: e, title: '${u.username}\'s game'),
                           ),
                         ),
-                      ))
+                      ),
+                    ),
+                  )
                   .toList(),
               crossAxisCount: 2,
               crossAxisSpacing: 16,
@@ -294,7 +304,16 @@ class _GroupViewState extends State<GroupView> {
             color: Color.lerp(Colours.correct, Colours.invalid.lighten(0.2), (e.difficulty - 2.0) / 6.0)!,
             child: Row(
               children: [
-                SizedBox(width: 150, child: Text(e.player, style: textTheme.headline6)),
+                SizedBox(
+                  width: 150,
+                  child: EntityFutureBuilder<User>(
+                    id: e.player,
+                    store: userStore(),
+                    loadingWidget: SpinKitCircle(color: Colors.black87, size: 16),
+                    errorWidget: (_) => Icon(Icons.error),
+                    resultWidget: (u) => Text(u.username, style: textTheme.headline6),
+                  ),
+                ),
                 Text(e.word, style: textTheme.headline6),
                 Spacer(),
                 Text(e.difficulty.toStringAsFixed(2), style: textTheme.headline6),
@@ -341,7 +360,19 @@ class _GroupViewState extends State<GroupView> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    SizedBox(width: 100, child: Text(e.player, style: textTheme.headline6)),
+                    SizedBox(
+                      width: 100,
+                      child: EntityFutureBuilder<User>(
+                        id: e.player,
+                        store: userStore(),
+                        loadingWidget: SpinKitCircle(
+                          size: 16,
+                          color: Colors.black87,
+                        ),
+                        errorWidget: (_) => Icon(Icons.error),
+                        resultWidget: (e) => Text(e.username, style: textTheme.headline6),
+                      ),
+                    ),
                     Text('${e.guesses}', style: textTheme.headline6),
                     Container(width: 32),
                     Expanded(
