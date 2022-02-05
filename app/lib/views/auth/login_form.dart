@@ -1,3 +1,4 @@
+import 'package:common/common.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:word_game/services/api_client.dart';
@@ -43,12 +44,14 @@ class _LoginFormState extends State<LoginForm> {
               controller: _usernameController,
               hintText: 'Enter a username',
               label: Text('Username'),
+              maxLength: usernameMaxLength,
             ),
             Container(height: 16),
             NeumorphicTextField(
               controller: _passwordController,
               enableSuggestions: false,
               obscureText: !_showPassword,
+              maxLength: passwordMaxLength,
               inputDecoration: InputDecoration(
                 hintText: 'Enter a password',
                 label: Text('Password'),

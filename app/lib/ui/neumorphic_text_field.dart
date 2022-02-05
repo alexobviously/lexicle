@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 
 class NeumorphicTextField extends StatelessWidget {
@@ -15,6 +16,8 @@ class NeumorphicTextField extends StatelessWidget {
   final bool autocorrect;
   final bool enableSuggestions;
   final bool obscureText;
+  final int? maxLength;
+  final List<TextInputFormatter>? inputFormatters;
   const NeumorphicTextField({
     Key? key,
     this.depth = -2,
@@ -30,6 +33,8 @@ class NeumorphicTextField extends StatelessWidget {
     this.autocorrect = false,
     this.enableSuggestions = true,
     this.obscureText = false,
+    this.maxLength,
+    this.inputFormatters,
   }) : super(key: key);
 
   @override
@@ -40,6 +45,9 @@ class NeumorphicTextField extends StatelessWidget {
       ),
       padding: padding,
       child: TextFormField(
+        inputFormatters: inputFormatters,
+        maxLength: maxLength,
+        maxLengthEnforcement: maxLength != null ? MaxLengthEnforcement.enforced : MaxLengthEnforcement.none,
         enabled: enabled,
         controller: controller,
         autocorrect: autocorrect,

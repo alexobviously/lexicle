@@ -1,6 +1,8 @@
-RegExp _username = RegExp(r'^[a-zA-Z0-9-_]+$');
+RegExp usernameRegex = RegExp(r'^[a-z0-9-_]+$');
 const usernameMinLength = 3;
 const usernameMaxLength = 16;
+const passwordMinLength = 4;
+const passwordMaxLength = 64;
 
 isValidUsername(String username) =>
-    _username.hasMatch(username) && username.length >= usernameMinLength && username.length <= usernameMaxLength;
+    usernameRegex.hasMatch(username) && username.length >= usernameMinLength && username.length <= usernameMaxLength;
