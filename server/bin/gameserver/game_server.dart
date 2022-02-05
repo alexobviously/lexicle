@@ -20,6 +20,9 @@ class GameServer with ReadyManager {
 
   void _handleGameUpdate(Game g) {
     gameStore().set(g, g.gameFinished);
+    updateStub(g.player, g.stub);
+    GameController gc = games[g.id]!;
+    if (g.group != null && g.gameFinished) updateGroupStatus(gc.state.group!);
     if (g.gameFinished) {
       final sub = gameSubs[g.id];
       sub?.cancel();
@@ -152,6 +155,7 @@ class GameServer with ReadyManager {
           guesses: [],
           current: WordData.blank(),
           group: controller.id,
+          endTime: controller.state.endTime,
         );
         games[gid] = GameController(g, ServerMediator(answer: _group.words[c]!));
         playerGames.add(gid);
@@ -208,9 +212,6 @@ class GameServer with ReadyManager {
     if (!_result.ok) {
       return Result.error(_result.error!);
     }
-    Game g = gc.state;
-    updateStub(g.player, g.stub);
-    if (g.group != null && g.gameFinished) updateGroupStatus(gc.state.group!);
     return Result.ok(_result.object!);
   }
 }

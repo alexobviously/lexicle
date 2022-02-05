@@ -165,7 +165,13 @@ class _GroupViewState extends State<GroupView> {
               String player = group.players[i];
               bool ready = group.playerReady(player);
               return ListTile(
-                title: Text(player),
+                title: EntityFutureBuilder<User>(
+                  id: player,
+                  store: userStore(),
+                  loadingWidget: SpinKitCircle(size: 16, color: Colors.black87),
+                  errorWidget: (_) => Icon(Icons.error),
+                  resultWidget: (u) => Text(u.username),
+                ),
                 trailing: Text(ready ? 'Ready' : 'Not Ready'),
               );
             },

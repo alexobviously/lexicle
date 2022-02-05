@@ -97,7 +97,7 @@ class _GamePageState extends State<GamePage> {
                                           semiCorrect: e.semiCorrect,
                                           finalised: e.finalised,
                                           shape: NeumorphicShape.convex,
-                                          surfaceIntensity: e.isCorrect ? 0.4 : 0.25,
+                                          surfaceIntensity: e.solved ? 0.4 : 0.25,
                                         ),
                                       ),
                                     )

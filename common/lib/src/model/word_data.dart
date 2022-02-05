@@ -14,7 +14,7 @@ class WordData {
   List<String> get semiCorrectLetters => semiCorrect.map((e) => content[e]).toList();
   List<String> get wrongLetters =>
       content.split('')..removeWhere((e) => correctLetters.contains(e) || semiCorrectLetters.contains(e));
-  bool get isCorrect => content.length == correct.length;
+  bool get solved => content.length == correct.length;
 
   const WordData({
     this.content = '',

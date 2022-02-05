@@ -24,7 +24,8 @@ class Game implements Entity {
   Set<String> get semiCorrectLetters =>
       Set<String>.from(guesses.expand((e) => e.semiCorrectLetters))..removeWhere((e) => correctLetters.contains(e));
   Set<String> get wrongLetters => Set<String>.from(guesses.expand((e) => e.wrongLetters));
-  bool get gameFinished => guesses.isNotEmpty && guesses.last.correctLetters.length == length;
+  bool get solved => guesses.isNotEmpty && guesses.last.solved;
+  bool get gameFinished => endReason != null;
   int get numRows => guesses.length + (gameFinished ? 0 : 1);
   bool get invalid => flags.contains(flagInvalid);
   double get progress => gameFinished ? 1.0 : (correctLetters.length * 2 + semiCorrectLetters.length) / (length * 2);

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bloc/bloc.dart';
 import 'package:common/common.dart';
 
@@ -9,6 +11,7 @@ class GameGroupController extends Cubit<GameGroup> {
   String get id => state.id;
   Map<String, dynamic> toMap({bool hideAnswers = true}) => state.toMap(hideAnswers: hideAnswers);
   List<String> get unreadyPlayers => state.players.where((e) => !state.words.containsKey(e)).toList();
+  GameConfig get config => state.config;
 
   Result<bool> addPlayer(String id) {
     if (state.players.contains(id)) return Result.error('already_in_group');
@@ -49,9 +52,13 @@ class GameGroupController extends Cubit<GameGroup> {
   }
 
   void start(Map<String, List<GameStub>> games) {
+    int? endTime = config.timeLimit != null
+        ? DateTime.now().add(Duration(milliseconds: config.timeLimit!)).millisecondsSinceEpoch
+        : null;
     emit(state.copyWith(
       state: MatchState.playing,
       games: games,
+      endTime: endTime,
     ));
   }
 

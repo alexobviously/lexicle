@@ -55,6 +55,6 @@ class UserFields {
 }
 
 class EndReasons {
-  static const int won = 0;
+  static const int solved = 0;
   static const int timeout = 1;
 }
