@@ -13,6 +13,9 @@ class AuthHandler {
       final String payload = await request.readAsString();
       Map<String, dynamic> data = json.decode(payload);
       String username = data[UserFields.username];
+      if (!isValidUsername(username)) return HttpUtils.buildErrorResponse('invalid_username');
+      final userResult = await userStore().getByUsername(username);
+      if (userResult.ok) return HttpUtils.buildErrorResponse('username_taken');
       String password = data[UserFields.password];
       password = encrypt(password);
       User user = User(username: username);
