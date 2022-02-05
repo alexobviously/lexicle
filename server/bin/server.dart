@@ -18,6 +18,16 @@ import 'services/environment.dart';
 import 'services/mongo_service.dart';
 import 'services/service_locator.dart';
 
+SecurityContext getSecurityContext() {
+  // Bind with a secure HTTPS connection
+  final chain = Platform.script.resolve('cert.pem').toFilePath();
+  final key = Platform.script.resolve('key.pem').toFilePath();
+
+  return SecurityContext()
+    ..useCertificateChain(chain)
+    ..usePrivateKey(key, password: '1234');
+}
+
 Environment readEnvironment() {
   final pubspec = loadYaml(File('pubspec.yaml').readAsStringSync());
   String version = pubspec['version'] ?? '0.1.0';
@@ -81,6 +91,7 @@ Future main() async {
     pipeline,
     InternetAddress.anyIPv4, // Allows external connections
     env.port,
+    // securityContext: getSecurityContext(),
   );
 
   print('Serving at http://${server.address.host}:${server.port}');
