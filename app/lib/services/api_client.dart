@@ -66,6 +66,12 @@ class ApiClient {
         unwrapper: unwrapUser,
       );
 
+  static Future<ApiResult<User>> register(String username, String password) => postAndUnwrap(
+        '/auth/register',
+        body: {UserFields.username: username, UserFields.password: password},
+        unwrapper: unwrapUser,
+      );
+
   static Future<Result<bool>> validateWord(String word) =>
       getAndUnwrap('/dict/$word', unwrapper: (data) => data['valid']);
 

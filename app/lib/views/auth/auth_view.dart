@@ -5,6 +5,7 @@ import 'package:word_game/app/routes.dart';
 import 'package:word_game/cubits/auth_controller.dart';
 import 'package:word_game/ui/standard_scaffold.dart';
 import 'package:word_game/views/auth/login_form.dart';
+import 'package:word_game/views/auth/register_form.dart';
 
 class AuthView extends StatefulWidget {
   const AuthView({Key? key}) : super(key: key);
@@ -80,7 +81,7 @@ class _AuthViewState extends State<AuthView> {
                       controller: _controller,
                       children: [
                         LoginForm(),
-                        Text(' Registration '),
+                        RegisterForm(),
                       ],
                     ),
                   ),

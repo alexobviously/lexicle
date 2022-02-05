@@ -35,6 +35,17 @@ class AuthController extends Cubit<AuthState> {
     }
   }
 
+  Future<Result<User>> register(String username, String password) async {
+    emit(state.copyWith(working: true));
+    final _result = await ApiClient.register(username, password);
+    if (_result.ok) {
+      onLogin(_result.object!, _result.token!, _result.expiry!);
+      return Result.ok(_result.object!);
+    } else {
+      return Result.error(_result.error!);
+    }
+  }
+
   void onLogin(User user, String token, int expiry) {
     userStore().set(user);
     emit(state.copyWith(
