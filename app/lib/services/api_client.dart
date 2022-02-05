@@ -143,6 +143,10 @@ class ApiClient {
     if (body.containsKey('token')) body.remove('token');
     int? expiry = body['expiry'];
     if (body.containsKey('expiry')) body.remove('expiry');
+    if (token != null && expiry != null) {
+      // the server will occasionally issue new tokens if they expire
+      auth().updateToken(token, expiry);
+    }
     return ApiResponse(
       status,
       error: error,

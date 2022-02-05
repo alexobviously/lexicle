@@ -14,11 +14,11 @@ FlutterSecureStorage storage() => getIt.get<FlutterSecureStorage>();
 AppUserStore userStore() => getIt.get<AppUserStore>();
 
 Future<void> setUpServiceLocator({required DatabaseService db}) async {
-  getIt.registerSingleton<DatabaseService>(db);
-  getIt.registerSingleton<AppDictionary>(AppDictionary());
-  getIt.registerSingleton<AuthController>(AuthController());
   getIt.registerSingleton<FlutterSecureStorage>(FlutterSecureStorage(
     aOptions: AndroidOptions(encryptedSharedPreferences: true),
   ));
+  getIt.registerSingleton<DatabaseService>(db);
+  getIt.registerSingleton<AppDictionary>(AppDictionary());
+  getIt.registerSingleton<AuthController>(AuthController());
   getIt.registerSingleton<AppUserStore>(AppUserStore(db));
 }

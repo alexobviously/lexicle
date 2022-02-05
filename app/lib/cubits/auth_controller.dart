@@ -4,11 +4,28 @@ import 'package:word_game/services/api_client.dart';
 import 'package:word_game/services/service_locator.dart';
 
 class AuthController extends Cubit<AuthState> {
-  AuthController() : super(AuthState.initial());
+  AuthController() : super(AuthState.initial()) {
+    init();
+  }
 
-  void init() {}
+  void init() async {
+    final token = await storage().read(key: 'token');
+    final expiry = int.parse(await storage().read(key: 'expiry') ?? '0');
+    if (token != null && expiry > nowMs()) {
+      emit(state.copyWith(token: token, expiry: expiry, working: true));
+      final _result = await ApiClient.getMe();
+      if (_result.ok) {
+        emit(state.copyWith(user: _result.object!, working: false));
+      } else {
+        emit(AuthState.initial());
+        storage().delete(key: 'token');
+        storage().delete(key: 'expiry');
+      }
+    }
+  }
 
   Future<Result<User>> login(String username, String password) async {
+    emit(state.copyWith(working: true));
     final _result = await ApiClient.login(username, password);
     if (_result.ok) {
       onLogin(_result.object!, _result.token!, _result.expiry!);
@@ -20,11 +37,24 @@ class AuthController extends Cubit<AuthState> {
 
   void onLogin(User user, String token, int expiry) {
     userStore().set(user);
-    emit(state.copyWith(user: user, token: token, expiry: expiry));
+    emit(state.copyWith(
+      user: user,
+      token: token,
+      expiry: expiry,
+      working: false,
+    ));
   }
 
   void logout() {
     emit(AuthState.initial());
+  }
+
+  void updateToken(String token, int expiry) {
+    if (token != state.token || expiry != state.expiry) {
+      emit(state.copyWith(token: token, expiry: expiry));
+      storage().write(key: 'token', value: token);
+      storage().write(key: 'expiry', value: expiry.toString());
+    }
   }
 
   String? get token => state.token;
