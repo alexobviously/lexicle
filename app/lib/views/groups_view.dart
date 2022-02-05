@@ -134,6 +134,7 @@ class _GroupsViewState extends State<GroupsView> {
                   ),
                   GameCreator(
                     showTitle: true,
+                    showTimeLimit: true,
                     onCreate: (cfg) => cubit.createGroup(cfg.title, cfg.config),
                   )
                 ],

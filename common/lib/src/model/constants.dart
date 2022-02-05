@@ -34,6 +34,7 @@ class StubFields {
   static const progress = 'r';
   static const guesses = 'g';
   static const creator = 'c';
+  static const endReason = 'e';
 }
 
 class ConfigFields {

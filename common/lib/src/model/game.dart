@@ -15,6 +15,7 @@ class Game implements Entity {
   final String? group;
   final int? endTime; // determined in advance by timelimited games, always set on finish
   final int? endReason;
+  final int penalty;
 
   int get length => answer.length;
   String get word => current.content;
@@ -29,7 +30,14 @@ class Game implements Entity {
   int get numRows => guesses.length + (gameFinished ? 0 : 1);
   bool get invalid => flags.contains(flagInvalid);
   double get progress => gameFinished ? 1.0 : (correctLetters.length * 2 + semiCorrectLetters.length) / (length * 2);
-  GameStub get stub => GameStub(id: id, creator: creator, progress: progress, guesses: guesses.length);
+  int get score => guesses.length + penalty;
+  GameStub get stub => GameStub(
+        id: id,
+        creator: creator,
+        progress: progress,
+        guesses: score,
+        endReason: endReason,
+      );
 
   Game({
     String? id,
@@ -42,16 +50,18 @@ class Game implements Entity {
     this.group,
     this.endTime,
     this.endReason,
+    this.penalty = 0,
   })  : this.id = id ?? ObjectId().id.hexString,
         this.creator = creator ?? player;
 
-  factory Game.initial(String player, int length, {String? creator, String? id}) => Game(
+  factory Game.initial(String player, int length, {String? creator, String? id, int? endTime}) => Game(
         answer: '*' * length,
         guesses: [],
         current: WordData.blank(),
         player: player,
         creator: creator,
         id: id,
+        endTime: endTime,
       );
 
   static const flagInvalid = 'i';
@@ -104,6 +114,7 @@ class Game implements Entity {
     String? group,
     int? endTime,
     int? endReason,
+    int? penalty,
   }) {
     return Game(
       id: id ?? this.id,
@@ -116,6 +127,7 @@ class Game implements Entity {
       group: group ?? this.group,
       endTime: endTime ?? this.endTime,
       endReason: endReason ?? this.endReason,
+      penalty: penalty ?? this.penalty,
     );
   }
 

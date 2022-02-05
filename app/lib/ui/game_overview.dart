@@ -45,7 +45,11 @@ class _GameOverviewState extends State<GameOverview> {
       padding: const EdgeInsets.symmetric(horizontal: 6.0),
       style: NeumorphicStyle(
         depth: -10,
-        color: widget.game.state.gameFinished ? Colours.correct.withAlpha(100) : null,
+        color: widget.game.state.gameFinished
+            ? widget.game.state.solved
+                ? Colours.correct.withAlpha(100)
+                : Colours.wrong.withAlpha(150)
+            : null,
       ),
       child: BlocBuilder<GameController, Game>(
         bloc: widget.game,

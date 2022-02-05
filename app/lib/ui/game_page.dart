@@ -76,9 +76,13 @@ class _GamePageState extends State<GamePage> {
                           duration: const Duration(milliseconds: 2000),
                           style: NeumorphicStyle(
                             depth: -10,
-                            color: state.gameFinished ? Colours.correct.withAlpha(100) : null,
-                            border: state.gameFinished
-                                ? NeumorphicBorder(color: Colours.correct, width: 2.0)
+                            color: state.gameFinished
+                                ? state.endReason == EndReasons.solved
+                                    ? Colours.correct.withAlpha(100)
+                                    : Colours.wrong.withAlpha(150)
+                                : null,
+                            border: state.solved
+                                ? NeumorphicBorder(color: Colours.correct, width: 1.0)
                                 : const NeumorphicBorder.none(),
                           ),
                           child: SingleChildScrollView(
@@ -141,6 +145,7 @@ class _GamePageState extends State<GamePage> {
                             width: MediaQuery.of(context).size.width - 16.0,
                             child: PostGamePanel(
                               guesses: state.guesses.length,
+                              reason: state.endReason,
                             ),
                           ),
                           crossFadeState: !state.gameFinished ? CrossFadeState.showFirst : CrossFadeState.showSecond,

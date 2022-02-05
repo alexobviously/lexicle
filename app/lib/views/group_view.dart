@@ -300,6 +300,15 @@ class _GroupViewState extends State<GroupView> {
     List<AnswerTableRow> _rows =
         group.players.map((e) => AnswerTableRow(e, group.words[e] ?? '', group.wordDifficulty(e))).toList();
     _rows.sort((a, b) => b.difficulty.compareTo(a.difficulty));
+
+    Color _answerColour(double difficulty) {
+      if (difficulty < 5.5) {
+        return Color.lerp(Colours.correct, Colours.semiCorrect, (difficulty - 2.0) / 3.5)!;
+      } else {
+        return Color.lerp(Colours.semiCorrect, Colours.invalid.lighten(0.2), (difficulty - 5.5) / 4.0)!;
+      }
+    }
+
     return Column(
       children: [
         ..._rows.map(
@@ -307,7 +316,7 @@ class _GroupViewState extends State<GroupView> {
             width: width,
             height: 48,
             padding: const EdgeInsets.all(8.0),
-            color: Color.lerp(Colours.correct, Colours.invalid.lighten(0.2), (e.difficulty - 2.0) / 6.0)!,
+            color: _answerColour(e.difficulty),
             child: Row(
               children: [
                 SizedBox(
@@ -347,7 +356,13 @@ class _GroupViewState extends State<GroupView> {
 
     Color? _boxColour(GameStub g) {
       if (g.id.isEmpty) return Colours.wrong;
-      if (g.progress >= 1.0) return Colours.correct;
+      if (g.progress >= 1.0) {
+        if (g.endReason == EndReasons.solved) {
+          return Colours.correct;
+        } else {
+          return Colours.invalid.lighten(0.3);
+        }
+      }
       return Color.lerp(Colours.blank, Colours.semiCorrect, g.progress);
     }
 

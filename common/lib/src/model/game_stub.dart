@@ -18,6 +18,8 @@ class GameStub {
   /// The creator of the game (user id).
   final String creator;
 
+  final int? endReason;
+
   bool get finished => progress >= 1.0;
 
   const GameStub({
@@ -25,6 +27,7 @@ class GameStub {
     this.progress = 0.0,
     this.guesses = 0,
     required this.creator,
+    this.endReason,
   });
   factory GameStub.initial(String id, String creator) => GameStub(id: id, creator: creator);
   factory GameStub.blank() => GameStub(id: '', creator: '');
@@ -34,6 +37,7 @@ class GameStub {
         progress: doc[StubFields.progress],
         guesses: doc[StubFields.guesses],
         creator: doc[StubFields.creator],
+        endReason: doc[StubFields.endReason],
       );
 
   Map<String, dynamic> toMap() => {
@@ -41,6 +45,7 @@ class GameStub {
         StubFields.progress: progress,
         StubFields.guesses: guesses,
         StubFields.creator: creator,
+        if (endReason != null) StubFields.endReason: endReason,
       };
 
   @override

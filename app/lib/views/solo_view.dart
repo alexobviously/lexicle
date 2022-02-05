@@ -77,6 +77,7 @@ class _SoloViewState extends State<SoloView> {
                   ),
                   GameCreator(
                     onCreate: (cfg) => gameManager.createGame(cfg.config),
+                    showTimeLimit: true,
                   ),
                 ],
               );

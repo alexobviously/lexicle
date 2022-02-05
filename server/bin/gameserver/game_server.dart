@@ -22,7 +22,13 @@ class GameServer with ReadyManager {
     gameStore().set(g, g.gameFinished);
     updateStub(g.player, g.stub);
     GameController gc = games[g.id]!;
-    if (g.group != null && g.gameFinished) updateGroupStatus(gc.state.group!);
+    if (g.group != null) {
+      if (gameGroups.containsKey(g.group)) {
+        gameGroups[g.group]!.onGameUpdate(g);
+      }
+      if (g.gameFinished) updateGroupStatus(gc.state.group!);
+    }
+
     if (g.gameFinished) {
       final sub = gameSubs[g.id];
       sub?.cancel();
@@ -134,11 +140,12 @@ class GameServer with ReadyManager {
       return Result.error(_result.error!, _result.warnings);
     }
     if (ggc.state.creator != player) return Result.error('unauthorised');
-    ggc.start(createGamesForGroup(ggc));
+    int? endTime = ggc.getEndTime();
+    ggc.start(createGamesForGroup(ggc, endTime), endTime);
     return Result.ok(ggc);
   }
 
-  Map<String, List<GameStub>> createGamesForGroup(GameGroupController controller) {
+  Map<String, List<GameStub>> createGamesForGroup(GameGroupController controller, [int? endTime]) {
     GameGroup _group = controller.state;
     Map<String, List<GameStub>> _games = {};
     for (String p in _group.players) {
@@ -155,9 +162,10 @@ class GameServer with ReadyManager {
           guesses: [],
           current: WordData.blank(),
           group: controller.id,
-          endTime: controller.state.endTime,
+          endTime: endTime,
         );
         games[gid] = GameController(g, ServerMediator(answer: _group.words[c]!));
+        games[gid]!.registerHighestGuessStream(controller.highestGuessStream);
         playerGames.add(gid);
         final sub = games[gid]!.stream.listen(_handleGameUpdate);
         gameSubs[gid] = sub;

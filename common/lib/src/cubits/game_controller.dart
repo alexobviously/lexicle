@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:bloc/bloc.dart';
 import 'package:common/common.dart';
@@ -8,15 +9,26 @@ class GameController extends Cubit<Game> {
   GameController(Game game, this.mediator) : super(game) {
     start();
   }
-  factory GameController.initial({required String player, required int length, required Mediator mediator}) =>
-      GameController(Game.initial(player, length), mediator);
+  factory GameController.initial({
+    required String player,
+    required int length,
+    required Mediator mediator,
+    int? endTime,
+  }) =>
+      GameController(Game.initial(player, length, endTime: endTime), mediator);
 
   Map<String, dynamic> toMap({bool hideAnswer = false}) => state.toMap(hideAnswer: hideAnswer);
   GameStub get stub => state.stub;
 
   Timer? endTimer;
 
+  StreamSubscription<int>? highestGuessStream; // listen to highest guess count in the group, for penalty
+  int highestGuess = 0;
+  void registerHighestGuessStream(Stream<int> stream) => highestGuessStream = stream.listen(_handleHighestGuess);
+  void _handleHighestGuess(int count) => highestGuess = count;
+
   void start() {
+    print('starting, endTime: ${state.endTime}');
     if (state.endTime != null) {
       endTimer = Timer(DateTime.fromMillisecondsSinceEpoch(state.endTime!).difference(DateTime.now()), _timeout);
     }
@@ -31,7 +43,11 @@ class GameController extends Cubit<Game> {
   }
 
   void _timeout() {
+    print('timeout hit');
     if (state.gameFinished) return;
+    int targetScore = max(min(highestGuess + 1, 6), state.guesses.length);
+    int penalty = targetScore - state.guesses.length;
+    emit(state.copyWith(endReason: EndReasons.timeout, penalty: penalty));
     end(EndReasons.timeout);
   }
 
@@ -66,6 +82,7 @@ class GameController extends Cubit<Game> {
       return Result.error('duplicate_guess');
     }
     final _result = await mediator.validateWord(word);
+    if (state.gameFinished) return Result.error('game_finished'); // no race conditions thx
     if (!_result.valid) {
       emit(state.copyWith(current: WordData.current(word)).copyWithInvalid());
     } else {
