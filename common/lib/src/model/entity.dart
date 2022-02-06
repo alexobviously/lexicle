@@ -21,7 +21,7 @@ abstract class Entity {
     GameGroup: 'groups',
     User: 'users',
     AuthData: 'auth',
-    UserStats: 'user_stats',
+    UserStats: 'ustats',
   };
 
   static String table(Type t) => entityTables[t] ?? '';

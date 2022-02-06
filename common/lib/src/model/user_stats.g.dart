@@ -12,6 +12,7 @@ extension UserStatsCopyWith on UserStats {
     String? id,
     Map<int, int>? numGames,
     Map<int, int>? numGroups,
+    Map<int, int>? wins,
     List<WordDifficulty>? words,
   }) {
     return UserStats(
@@ -19,6 +20,7 @@ extension UserStatsCopyWith on UserStats {
       id: id ?? this.id,
       numGames: numGames ?? this.numGames,
       numGroups: numGroups ?? this.numGroups,
+      wins: wins ?? this.wins,
       words: words ?? this.words,
     );
   }

@@ -63,6 +63,7 @@ class StatsFields {
   static const numGames = 'g';
   static const guessCounts = 'c';
   static const words = 'w';
+  static const wins = 'q';
 }
 
 class EndReasons {

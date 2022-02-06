@@ -50,7 +50,7 @@ class UserHandler {
     try {
       final result = await authenticateRequest(request);
       if (!result.ok) return result.errorResponse;
-      final sResult = await userStore().get(result.user!.id);
+      final sResult = await ustatsStore().get(result.user!.id);
       if (!sResult.ok) return HttpUtils.buildErrorResponse(sResult.error!);
       return HttpUtils.buildResponse(
         data: {'stats': sResult.object!.toMap()},
