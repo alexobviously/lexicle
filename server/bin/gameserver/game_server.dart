@@ -198,9 +198,26 @@ class GameServer with ReadyManager {
         }
       }
       if (finished) {
-        ggc.setState(MatchState.finished);
+        onGroupFinished(ggc);
       }
     }
+  }
+
+  void onGroupFinished(GameGroupController ggc) async {
+    ggc.setState(MatchState.finished);
+    List<PlayerResult> pr = await Future.wait(
+      ggc.state.standings
+          .map((e) async => PlayerResult(
+                id: e.player,
+                rating: (await userStore().get(e.player)).object!.rating,
+                score: e.guesses,
+              ))
+          .toList(),
+    );
+    print(pr);
+    final ratings = adjustRatings(pr);
+    print(ratings);
+    ratings.forEach((u, r) => userStore().updateRating(u, r));
   }
 
   void updateStub(String player, GameStub stub) {

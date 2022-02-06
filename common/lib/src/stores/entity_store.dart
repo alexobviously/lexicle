@@ -7,8 +7,8 @@ class EntityStore<T extends Entity> {
   Map<String, T> items = {};
   Set<String> cache = {};
 
-  Future<Result<T>> get(String id) async {
-    if (items.containsKey(id)) return Result.ok(items[id]!);
+  Future<Result<T>> get(String id, [bool forceUpdate = false]) async {
+    if (!forceUpdate && items.containsKey(id)) return Result.ok(items[id]!);
 
     Result<T> result = await db.get<T>(id);
     if (result.ok) onGet(result.object!);
@@ -16,6 +16,12 @@ class EntityStore<T extends Entity> {
   }
 
   Result<T> getLocal(String id) => items.containsKey(id) ? Result.ok(items[id]!) : Result.error('not_found');
+  Future<Result<T>> getRemote(String id) => get(id, true);
+
+  Future<List<T>> getMultiple(List<String> ids, [bool forceUpdate = false]) async {
+    List<Result<T>> results = await Future.wait(ids.map((e) => get(e, forceUpdate)));
+    return results.map((e) => e.object).where((e) => e != null).map((e) => e!).toList();
+  }
 
   Future<Result<T>> getByField(String field, dynamic value) async {
     Result<T> result = await db.getByField<T>(field, value);
@@ -27,14 +33,14 @@ class EntityStore<T extends Entity> {
     items[entity.id] = entity;
   }
 
-  Future<List<T>> getMultiple(List<String> ids) async {
-    List<T> _items = [];
-    for (String id in ids) {
-      Result<T> result = await get(id);
-      if (result.ok) _items.add(result.object!);
-    }
-    return _items;
-  }
+  // Future<List<T>> getMultiple(List<String> ids) async {
+  //   List<T> _items = [];
+  //   for (String id in ids) {
+  //     Result<T> result = await get(id);
+  //     if (result.ok) _items.add(result.object!);
+  //   }
+  //   return _items;
+  // }
 
   List<T> getAllCached() => items.values.toList();
 

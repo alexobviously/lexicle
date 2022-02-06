@@ -3,6 +3,7 @@ import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:word_game/app/routes.dart';
 import 'package:word_game/cubits/auth_controller.dart';
+import 'package:word_game/services/service_locator.dart';
 import 'package:word_game/ui/standard_scaffold.dart';
 import 'package:word_game/views/home/user_details.dart';
 

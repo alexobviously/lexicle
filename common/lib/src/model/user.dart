@@ -16,8 +16,9 @@ class User implements Entity {
   User({
     String? id,
     required this.username,
-    required this.rating,
-  }) : this.id = id ?? ObjectId().id.hexString;
+    Rating? rating,
+  })  : this.id = id ?? ObjectId().id.hexString,
+        this.rating = rating ?? Rating.initial();
 
   factory User.fromJson(Map<String, dynamic> doc) {
     return User(
@@ -35,4 +36,7 @@ class User implements Entity {
 
   @override
   Map<String, dynamic> export() => toMap();
+
+  @override
+  String toString() => 'User($id, $username, $rating)';
 }

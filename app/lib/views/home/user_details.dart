@@ -27,7 +27,7 @@ class UserDetails extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Rank: Wood 1'),
+                      Text('Rating: ${user.rating.rating.toStringAsFixed(0)}'),
                       Text('Games played: 0'),
                     ],
                   ),

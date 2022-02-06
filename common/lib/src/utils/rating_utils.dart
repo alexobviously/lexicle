@@ -48,4 +48,7 @@ class PlayerResult {
 
   PlayerResult copyWith({String? id, Rating? rating, num? score}) =>
       PlayerResult(id: id ?? this.id, rating: rating ?? this.rating, score: score ?? this.score);
+
+  @override
+  String toString() => 'PlayerResult($id, $rating, $score)';
 }
