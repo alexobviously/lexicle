@@ -68,6 +68,14 @@ class AuthController extends Cubit<AuthState> {
     }
   }
 
+  void refreshUser() async {
+    if (userId == null) return;
+    final result = await userStore().getRemote(userId!);
+    if (result.ok) {
+      emit(state.copyWith(user: result.object!));
+    }
+  }
+
   String? get token => state.token;
   bool get hasToken => state.hasToken;
   bool get loggedIn => state.loggedIn;

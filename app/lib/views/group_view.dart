@@ -200,7 +200,7 @@ class _GroupViewState extends State<GroupView> {
                   store: userStore(),
                   loadingWidget: SpinKitCircle(size: 16, color: Colors.black87),
                   errorWidget: (_) => Icon(Icons.error),
-                  resultWidget: (u) => Text(u.username),
+                  resultWidget: (u) => Text('[${u.rating.rating.toStringAsFixed(0)}] ${u.username}'),
                 ),
                 trailing: Text(ready ? 'Ready' : 'Not Ready'),
               );

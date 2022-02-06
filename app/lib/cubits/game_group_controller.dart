@@ -8,20 +8,35 @@ import '../services/service_locator.dart';
 
 class GameGroupController extends Cubit<GameGroupState> {
   GameGroupController(GameGroupState initial) : super(initial) {
+    init();
     startTimer(); // hmm
   }
 
   Timer? timer;
+  StreamSubscription<bool>? finishedSub;
 
   String get id => state.group.id;
   String get player => auth().userId!;
   Map<String, dynamic> toMap({bool hideAnswers = true}) => state.group.toMap(hideAnswers: hideAnswers);
   List<String> get unreadyPlayers => state.group.players.where((e) => !state.group.words.containsKey(e)).toList();
 
+  void init() {
+    finishedSub = stream.map((e) => e.group.finished).distinct().listen((fin) {
+      if (fin) {
+        _onFinished();
+      }
+    });
+  }
+
   void startTimer() => timer = Timer.periodic(Duration(milliseconds: 5000), _onTimerEvent);
 
   void _onTimerEvent(Timer t) {
     refresh();
+  }
+
+  void _onFinished() {
+    auth().refreshUser();
+    userStore().getMultiple(List.from(state.group.players)..remove(player), true);
   }
 
   @override
