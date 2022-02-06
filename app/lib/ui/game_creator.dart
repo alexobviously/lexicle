@@ -80,7 +80,9 @@ class _GameCreatorState extends State<GameCreator> {
             OutlinedButton(
               onPressed: () {
                 HapticFeedback.vibrate();
-                final config = GameConfig(wordLength: length, timeLimit: duration?.inMilliseconds);
+                int? _duration;
+                if (duration != null && duration!.inSeconds > 0) _duration = duration!.inMilliseconds;
+                final config = GameConfig(wordLength: length, timeLimit: _duration);
                 widget.onCreate(GameCreationData(
                   config: config,
                   title: _titleController.text,

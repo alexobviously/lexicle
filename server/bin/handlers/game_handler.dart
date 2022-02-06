@@ -26,6 +26,9 @@ class GameHandler {
       final String payload = await request.readAsString();
       Map<String, dynamic> data = json.decode(payload);
       GameConfig config = GameConfig.fromJson(data['config']);
+      if (config.timeLimit != null && config.timeLimit! < minTimeLimit) {
+        return HttpUtils.buildErrorResponse('invalid_timelimit');
+      }
       User user = authResult.user!;
       String creator = user.id;
       String? title = data['title'];

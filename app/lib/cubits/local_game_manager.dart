@@ -9,11 +9,9 @@ class LocalGameManager extends Cubit<LocalGameManagerState> {
   void createGame(GameConfig config) {
     String _answer = dictionary().randomWord(config.wordLength);
     Mediator _mediator = OfflineMediator(answer: _answer);
-    print('config: $config');
     int? endTime = config.timeLimit != null
         ? DateTime.now().add(Duration(milliseconds: config.timeLimit!)).millisecondsSinceEpoch
         : null;
-    print('% endTime $endTime');
     GameController _gc = GameController.initial(
       player: 'player',
       length: config.wordLength,

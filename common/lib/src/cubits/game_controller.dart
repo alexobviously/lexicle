@@ -42,7 +42,6 @@ class GameController extends Cubit<Game> {
   }
 
   void _timeout() {
-    print('timeout hit');
     if (state.gameFinished) return;
     int targetScore = max(max(highestGuess + 1, 6), state.guesses.length);
     int penalty = targetScore - state.guesses.length;

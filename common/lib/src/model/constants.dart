@@ -59,3 +59,5 @@ class EndReasons {
   static const int solved = 0;
   static const int timeout = 1;
 }
+
+const int minTimeLimit = 60000;
