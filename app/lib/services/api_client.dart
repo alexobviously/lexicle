@@ -12,6 +12,9 @@ class ApiClient {
 
   static Future<ApiResult<User>> getUser(String id) => getAndUnwrap('/users/$id', unwrapper: unwrapUser);
   static Future<ApiResult<User>> getMe() => getAndUnwrap('/users/me', unwrapper: unwrapUser, needAuth: true);
+  static Future<ApiResult<UserStats>> getMyStats() =>
+      getAndUnwrap('/ustats/me', unwrapper: unwrapUserStats, needAuth: true);
+
   static Future<Result<List<String>>> allGroups() =>
       getAndUnwrap('/groups/all', unwrapper: (data) => coerceList(data['groups']));
   static Future<Result<GameGroup>> getGroup(String id) => getAndUnwrap('/groups/$id', unwrapper: unwrapGameGroup);
@@ -79,13 +82,15 @@ class ApiClient {
     Game: (id) => '/games/$id',
     GameGroup: (id) => '/groups/$id',
     User: (id) => '/users/$id',
+    UserStats: (id) => '/ustats/$id',
   };
 
   static Map<Type, Function(Map<String, dynamic>)> unwrappers = {
-    Game: (doc) => ApiClient.unwrapGame(doc),
-    GameGroup: (doc) => ApiClient.unwrapGameGroup(doc),
-    User: (doc) => ApiClient.unwrapUser(doc),
-    AuthData: (doc) => AuthData.fromJson(doc), // not used
+    Game: unwrapGame,
+    GameGroup: unwrapGameGroup,
+    User: unwrapUser,
+    UserStats: unwrapUserStats,
+    AuthData: AuthData.fromJson, // not used
   };
 
   static T unwrap<T extends Entity>(Map<String, dynamic> doc) => unwrappers[T]!(doc);
@@ -197,4 +202,5 @@ class ApiClient {
   static GameGroup unwrapGameGroup(Map<String, dynamic> data) => GameGroup.fromJson(data['group']);
   static Game unwrapGame(Map<String, dynamic> data) => Game.fromJson(data['game']);
   static User unwrapUser(Map<String, dynamic> data) => User.fromJson(data['user']);
+  static UserStats unwrapUserStats(Map<String, dynamic> data) => UserStats.fromJson(data['stats']);
 }

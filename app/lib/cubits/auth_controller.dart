@@ -54,6 +54,7 @@ class AuthController extends Cubit<AuthState> {
       expiry: expiry,
       working: false,
     ));
+    refreshUserStats();
   }
 
   void logout() {
@@ -68,11 +69,24 @@ class AuthController extends Cubit<AuthState> {
     }
   }
 
+  void refresh() {
+    refreshUser();
+    refreshUserStats();
+  }
+
   void refreshUser() async {
     if (userId == null) return;
     final result = await userStore().getRemote(userId!);
     if (result.ok) {
       emit(state.copyWith(user: result.object!));
+    }
+  }
+
+  void refreshUserStats() async {
+    if (userId == null) return;
+    final result = await ustatsStore().getMe();
+    if (result.ok) {
+      emit(state.copyWith(stats: result.object!));
     }
   }
 
@@ -86,6 +100,7 @@ class AuthController extends Cubit<AuthState> {
 class AuthState {
   final bool working;
   final User? user;
+  final UserStats? stats;
   final String? token;
   final int? expiry;
 
@@ -97,6 +112,7 @@ class AuthState {
   AuthState({
     this.working = false,
     this.user,
+    this.stats,
     this.token,
     this.expiry,
   });
@@ -105,12 +121,14 @@ class AuthState {
   AuthState copyWith({
     bool? working,
     User? user,
+    UserStats? stats,
     String? token,
     int? expiry,
   }) =>
       AuthState(
         working: working ?? this.working,
         user: user ?? this.user,
+        stats: stats ?? this.stats,
         token: token ?? this.token,
         expiry: expiry ?? this.expiry,
       );

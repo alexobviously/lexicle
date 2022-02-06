@@ -35,7 +35,7 @@ class GameGroupController extends Cubit<GameGroupState> {
   }
 
   void _onFinished() {
-    auth().refreshUser();
+    auth().refresh();
     userStore().getMultiple(List.from(state.group.players)..remove(player), true);
   }
 

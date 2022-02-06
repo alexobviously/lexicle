@@ -12,6 +12,9 @@ class UserStats implements Entity {
   final Map<int, Map<int, int>> guessCounts;
   final List<WordDifficulty> words;
 
+  int get groupsTotal => numGroups.entries.fold(0, (a, b) => a + b.value);
+  int get gamesTotal => numGames.entries.fold(0, (a, b) => a + b.value);
+
   UserStats({
     required this.id,
     this.numGroups = const {},

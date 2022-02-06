@@ -70,6 +70,8 @@ Future main() async {
     ..post('/auth/login', AuthHandler.login)
     ..get('/users/me', UserHandler.getMe)
     ..get('/users/<id>', UserHandler.getUser)
+    ..get('/ustats/me', UserHandler.getMyStats)
+    ..get('/ustats/id', UserHandler.getStats)
     ..get('/groups/all', GameHandler.allGroupIds)
     ..post('/groups/create', GameHandler.createGameGroup)
     ..get('/groups/<id>', GameHandler.getGameGroup)
