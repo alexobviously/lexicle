@@ -9,10 +9,12 @@ part of 'user.dart';
 extension UserCopyWith on User {
   User copyWith({
     String? id,
+    Rating? rating,
     String? username,
   }) {
     return User(
       id: id ?? this.id,
+      rating: rating ?? this.rating,
       username: username ?? this.username,
     );
   }

@@ -53,6 +53,8 @@ class UserFields {
   static const username = 'u';
   static const auth = 'a';
   static const password = 'p';
+  static const rating = 'r';
+  static const deviation = 'd';
 }
 
 class EndReasons {
