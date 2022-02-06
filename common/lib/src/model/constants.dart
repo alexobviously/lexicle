@@ -47,6 +47,7 @@ class WordFields {
   static const correct = 'c';
   static const semiCorrect = 's';
   static const finalised = 'f';
+  static const difficulty = 'd';
 }
 
 class UserFields {
@@ -55,6 +56,13 @@ class UserFields {
   static const password = 'p';
   static const rating = 'r';
   static const deviation = 'd';
+}
+
+class StatsFields {
+  static const numGroups = 'n';
+  static const numGames = 'g';
+  static const guessCounts = 'c';
+  static const words = 'w';
 }
 
 class EndReasons {
