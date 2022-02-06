@@ -4,7 +4,8 @@ import 'package:word_game/services/service_locator.dart';
 
 class UserDetails extends StatelessWidget {
   final User user;
-  const UserDetails({Key? key, required this.user}) : super(key: key);
+  final UserStats stats;
+  const UserDetails({Key? key, required this.user, required this.stats}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +29,8 @@ class UserDetails extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text('Rating: ${user.rating.rating.toStringAsFixed(0)}'),
-                      Text('Games played: 0'),
+                      Text('Games played: ${stats.groupsTotal}'),
+                      Text('Wins: ${stats.winsTotal}'),
                     ],
                   ),
                 ),

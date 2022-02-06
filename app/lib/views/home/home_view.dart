@@ -1,3 +1,4 @@
+import 'package:common/common.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -35,7 +36,10 @@ class _HomeViewState extends State<HomeView> {
                 BlocBuilder<AuthController, AuthState>(
                   builder: (context, state) {
                     if (state.loggedIn) {
-                      return UserDetails(user: state.user!);
+                      return UserDetails(
+                        user: state.user!,
+                        stats: state.stats ?? UserStats(id: state.userId!),
+                      );
                     } else {
                       return Container();
                     }
