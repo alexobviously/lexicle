@@ -1,3 +1,4 @@
+import 'package:common/common.dart';
 import 'package:shelf/shelf.dart';
 import 'package:validators/validators.dart';
 
@@ -35,10 +36,17 @@ class UserHandler {
 
   static Future<Response> getStats(Request request, String id) async {
     try {
+      final uResult = await userStore().get(id);
+      if (!uResult.ok) return HttpUtils.buildErrorResponse(uResult.error!);
       final result = await ustatsStore().get(id);
-      if (!result.ok) return HttpUtils.buildErrorResponse(result.error!);
+      UserStats stats = UserStats(id: id);
+      if (!result.ok) {
+        ustatsStore().write(stats);
+      } else {
+        stats = result.object!;
+      }
       return HttpUtils.buildResponse(
-        data: {'stats': result.object!.toMap()},
+        data: {'stats': stats.toMap()},
       );
     } catch (e, s) {
       print('exception in getStats: $e\n$s');
