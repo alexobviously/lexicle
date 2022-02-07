@@ -3,7 +3,7 @@ description: A multiplayer word guessing game, inspired by Wordle.
 
 publish_to: 'none'
 
-version: 0.3.3+7
+version: 0.3.4+8
 
 environment:
   sdk: ">=2.15.1 <3.0.0"
