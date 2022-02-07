@@ -2,7 +2,6 @@ import 'dart:math';
 
 import 'package:common/common.dart';
 import 'package:fl_chart/fl_chart.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:word_game/app/colours.dart';
@@ -132,7 +131,7 @@ class _StatsViewState extends State<StatsView> {
         _counts.remove(k);
       }
     }
-    int maxCount = _counts.entries.fold(0, (a, b) => max(a, b.value));
+    int maxCount = max(1, _counts.entries.fold(0, (a, b) => max(a, b.value)));
 
     List<BarChartGroupData> _groups = List.generate(
         8,
