@@ -80,11 +80,26 @@ class _StatsViewState extends State<StatsView> {
                       Neumorphic(
                         padding: const EdgeInsets.all(8.0),
                         style: NeumorphicStyle(depth: -2),
-                        child: SizedBox(
-                          width: MediaQuery.of(context).size.width * 0.85,
-                          child: FittedBox(child: _guessChart(u.guessCounts[_length(lengthIndex)] ?? {})),
+                        child: Column(
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Text(
+                                    'Matches Won: ${(u.wins[_length(lengthIndex)] ?? 0)} / ${(u.numGroups[_length(lengthIndex)] ?? 0)}'),
+                                Text('Games Played: ${(u.numGames[_length(lengthIndex)] ?? 0)}'),
+                              ],
+                            ),
+                            Container(height: 24),
+                            SizedBox(
+                              width: MediaQuery.of(context).size.width * 0.85,
+                              child: FittedBox(child: _guessChart(u.guessCounts[_length(lengthIndex)] ?? {})),
+                            ),
+                          ],
                         ),
                       ),
+                      Container(height: 32),
+                      _words(context, u.words),
                     ],
                   );
                 },
@@ -162,5 +177,34 @@ class _StatsViewState extends State<StatsView> {
         ),
       ),
     );
+  }
+
+  Widget _words(BuildContext context, List<WordDifficulty> words) {
+    final textTheme = Theme.of(context).textTheme;
+    Color _answerColour(double difficulty) {
+      if (difficulty < 5.5) {
+        return Color.lerp(Colours.correct, Colours.semiCorrect, (difficulty - 2.0) / 3.5)!;
+      } else {
+        return Color.lerp(Colours.semiCorrect, Colours.invalid.lighten(0.2), (difficulty - 5.5) / 3.5)!;
+      }
+    }
+
+    List<WordDifficulty> _words = [...words];
+    _words.sort((a, b) => b.difficulty.compareTo(a.difficulty));
+
+    return Column(
+        children: _words
+            .map((e) => Container(
+                  padding: const EdgeInsets.all(8.0),
+                  color: _answerColour(e.difficulty),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(e.word, style: textTheme.headline6),
+                      Text(e.difficulty.toStringAsFixed(2), style: textTheme.headline6),
+                    ],
+                  ),
+                ))
+            .toList());
   }
 }
