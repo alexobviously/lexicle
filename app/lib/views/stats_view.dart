@@ -63,20 +63,21 @@ class _StatsViewState extends State<StatsView> {
 
                   return Column(
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 32.0),
-                        child: NeumorphicToggle(
-                          selectedIndex: lengthIndex,
-                          displayForegroundOnlyIfSelected: true,
-                          children: u.guessCounts.keys.map((e) => _toggleElement(context, e.toString())).toList(),
-                          thumb: Neumorphic(
-                            style: NeumorphicStyle(
-                              boxShape: NeumorphicBoxShape.roundRect(BorderRadius.all(Radius.circular(12))),
+                      if (u.guessCounts.entries.length > 1)
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 32.0),
+                          child: NeumorphicToggle(
+                            selectedIndex: lengthIndex,
+                            displayForegroundOnlyIfSelected: true,
+                            children: u.guessCounts.keys.map((e) => _toggleElement(context, e.toString())).toList(),
+                            thumb: Neumorphic(
+                              style: NeumorphicStyle(
+                                boxShape: NeumorphicBoxShape.roundRect(BorderRadius.all(Radius.circular(12))),
+                              ),
                             ),
+                            onChanged: setLengthIndex,
                           ),
-                          onChanged: setLengthIndex,
                         ),
-                      ),
                       Neumorphic(
                         padding: const EdgeInsets.all(8.0),
                         style: NeumorphicStyle(depth: -2),

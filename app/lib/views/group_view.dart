@@ -18,6 +18,7 @@ import 'package:word_game/ui/entity_future_builder.dart';
 import 'package:word_game/ui/game_overview.dart';
 import 'package:word_game/ui/game_page.dart';
 import 'package:word_game/ui/standard_scaffold.dart';
+import 'package:word_game/ui/username_link.dart';
 
 class GroupView extends StatefulWidget {
   final GameGroupController controller;
@@ -194,13 +195,10 @@ class _GroupViewState extends State<GroupView> {
               String player = group.players[i];
               bool ready = group.playerReady(player);
               return ListTile(
-                title: EntityFutureBuilder<User>(
-                  key: ValueKey('lobby_${group.id}_$player'),
+                title: UsernameLink(
+                  innerKey: ValueKey('lobby_${group.id}_$player'),
                   id: player,
-                  store: userStore(),
-                  loadingWidget: SpinKitCircle(size: 16, color: Colors.black87),
-                  errorWidget: (_) => Icon(Icons.error),
-                  resultWidget: (u) => Text('[${u.rating.rating.toStringAsFixed(0)}] ${u.username}'),
+                  content: (context, u) => Text('[${u.rating.rating.toStringAsFixed(0)}] ${u.username}'),
                 ),
                 trailing: Text(ready ? 'Ready' : 'Not Ready'),
               );
@@ -353,13 +351,9 @@ class _GroupViewState extends State<GroupView> {
               children: [
                 SizedBox(
                   width: 150,
-                  child: EntityFutureBuilder<User>(
-                    key: ValueKey('answers_${group.id}_${e.player}'),
+                  child: UsernameLink(
+                    innerKey: ValueKey('answers_${group.id}_${e.player}'),
                     id: e.player,
-                    store: userStore(),
-                    loadingWidget: SpinKitCircle(color: Colors.black87, size: 16),
-                    errorWidget: (_) => Icon(Icons.error),
-                    resultWidget: (u) => Text(u.username, style: textTheme.headline6),
                   ),
                 ),
                 Text(e.word, style: textTheme.headline6),
@@ -416,16 +410,9 @@ class _GroupViewState extends State<GroupView> {
                   children: [
                     SizedBox(
                       width: 100,
-                      child: EntityFutureBuilder<User>(
-                        key: ValueKey('standings_${state.id}_${finished}_${e.player}'),
+                      child: UsernameLink(
+                        innerKey: ValueKey('standings_${state.id}_${finished}_${e.player}'),
                         id: e.player,
-                        store: userStore(),
-                        loadingWidget: SpinKitCircle(
-                          size: 16,
-                          color: Colors.black87,
-                        ),
-                        errorWidget: (_) => Icon(Icons.error),
-                        resultWidget: (e) => Text(e.username, style: textTheme.headline6),
                       ),
                     ),
                     Text('${e.guesses}', style: textTheme.headline6),
