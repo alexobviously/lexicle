@@ -1,4 +1,5 @@
 import 'package:common/common.dart';
+import 'package:mongo_dart_query/mongo_dart_query.dart';
 import 'package:word_game/services/api_client.dart';
 
 class ApiService implements DatabaseService {
@@ -22,5 +23,11 @@ class ApiService implements DatabaseService {
   @override
   Future<Result<T>> write<T extends Entity>(T entity) async {
     return Result.error('cant_write');
+  }
+
+  @override
+  Future<List<T>> getAll<T extends Entity>({SelectorBuilder? selector}) {
+    // TODO: implement getAll
+    throw UnimplementedError();
   }
 }

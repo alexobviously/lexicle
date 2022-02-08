@@ -38,6 +38,20 @@ class MongoService implements DatabaseService {
   }
 
   @override
+  Future<List<T>> getAll<T extends Entity>({SelectorBuilder? selector}) async {
+    await connected;
+    final coll = db.collection(Entity.table(T));
+    List<Map<String, dynamic>> results = await coll.find(selector).toList();
+    List<T> entities = [];
+    for (Map<String, dynamic> d in results) {
+      ObjectId? objectId = d['_id'];
+      d['id'] = objectId?.id.hexString;
+      entities.add(Entity.build<T>(d));
+    }
+    return entities;
+  }
+
+  @override
   Future<Result<T>> getByField<T extends Entity>(String field, dynamic value) async {
     await connected;
     final coll = db.collection(Entity.table(T));

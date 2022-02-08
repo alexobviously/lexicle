@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:common/common.dart';
 import 'package:dart_dotenv/dart_dotenv.dart';
+import 'package:mongo_dart/mongo_dart.dart';
 import 'package:shelf/shelf.dart';
 import 'package:shelf_cors_headers/shelf_cors_headers.dart';
 import 'package:shelf/shelf_io.dart' as shelf_io;
@@ -70,6 +71,7 @@ Future main() async {
     ..post('/auth/login', AuthHandler.login)
     ..get('/users/me', UserHandler.getMe)
     ..get('/users/<id>', UserHandler.getUser)
+    ..get('/stats/top_players', UserHandler.getTopPlayers)
     ..get('/ustats/me', UserHandler.getMyStats)
     ..get('/ustats/<id>', UserHandler.getStats)
     ..get('/groups/all', GameHandler.allGroupIds)

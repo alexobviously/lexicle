@@ -1,4 +1,5 @@
 import 'package:common/common.dart';
+import 'package:mongo_dart/mongo_dart.dart';
 import 'package:shelf/shelf.dart';
 import 'package:validators/validators.dart';
 
@@ -65,7 +66,26 @@ class UserHandler {
         tokenData: result.tokenData,
       );
     } catch (e, s) {
-      print('exception in getMe: $e\n$s');
+      print('exception in getMyStats: $e\n$s');
+      return HttpUtils.invalidRequestResponse();
+    }
+  }
+
+  static Future<Response> getTopPlayers(Request request) async {
+    try {
+      final result = await db().getAll<User>(
+          selector: where
+              .lt('${UserFields.rating}.${UserFields.deviation}', 300)
+              .sortBy('${UserFields.rating}.${UserFields.rating}', descending: true)
+              // .skip(1)
+              .limit(20));
+      return HttpUtils.buildResponse(
+        data: {
+          'users': result.map((e) => e.toMap()).toList(),
+        },
+      );
+    } catch (e, s) {
+      print('exception in getTopPlayers: $e\n$s');
       return HttpUtils.invalidRequestResponse();
     }
   }
