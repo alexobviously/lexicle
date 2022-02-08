@@ -5,4 +5,5 @@ class Routes {
   static const groups = '/groups';
   static const settings = '/settings';
   static const dict = '/dict';
+  static const topPlayers = '/top_players';
 }

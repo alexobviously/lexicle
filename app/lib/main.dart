@@ -16,6 +16,7 @@ import 'package:word_game/views/home/home_view.dart';
 import 'package:word_game/views/settings_view.dart';
 import 'package:word_game/views/solo_view.dart';
 import 'package:word_game/services/service_locator.dart';
+import 'package:word_game/views/top_players_view.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -80,6 +81,7 @@ class MyApp extends StatelessWidget {
           Routes.groups: (ctx) => const GroupsView(),
           Routes.settings: (ctx) => const SettingsView(),
           Routes.dict: (ctx) => const DictSearchView(),
+          Routes.topPlayers: (ctx) => const TopPlayersView(),
         },
       ),
     );

@@ -78,6 +78,9 @@ class ApiClient {
   static Future<Result<bool>> validateWord(String word) =>
       getAndUnwrap('/dict/$word', unwrapper: (data) => data['valid']);
 
+  static Future<Result<List<User>>> getTopPlayers() async => getAndUnwrap('/stats/top_players',
+      unwrapper: (data) => data['users'].map<User>((e) => User.fromJson(e)).toList());
+
   static Map<Type, String Function(String)> getEndpoints = {
     Game: (id) => '/games/$id',
     GameGroup: (id) => '/groups/$id',

@@ -3,42 +3,29 @@ import 'package:flutter/material.dart';
 
 /// Retrieves an `Entity` from a `Store`, and constructs a `FutureBuilder`.
 /// Can take either an [id] and a [store], or an explicit [future].
-class EntityFutureBuilder<T extends Entity> extends StatefulWidget {
-  final String? id;
-  final EntityStore<T>? store;
+class ResultFutureBuilder<T> extends StatefulWidget {
   final Future<Result<T>>? future;
   final Widget loadingWidget;
   final Widget Function(String) errorWidget;
   final Widget Function(T) resultWidget;
 
-  const EntityFutureBuilder({
+  const ResultFutureBuilder({
     Key? key,
-    this.id,
-    this.store,
     this.future,
     required this.loadingWidget,
     required this.errorWidget,
     required this.resultWidget,
-  })  : assert((id != null && store != null) || future != null),
-        super(key: key);
+  }) : super(key: key);
 
   @override
-  State<EntityFutureBuilder<T>> createState() => _EntityFutureBuilderState<T>();
+  State<ResultFutureBuilder<T>> createState() => _ResultFutureBuilderState<T>();
 }
 
-class _EntityFutureBuilderState<T extends Entity> extends State<EntityFutureBuilder<T>> {
-  late final Future<Result<T>> _future;
-
-  @override
-  void initState() {
-    super.initState();
-    _future = widget.future ?? widget.store!.get(widget.id!);
-  }
-
+class _ResultFutureBuilderState<T> extends State<ResultFutureBuilder<T>> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<Result<T>>(
-      future: _future,
+      future: widget.future,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return widget.loadingWidget;

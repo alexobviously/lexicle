@@ -4,6 +4,7 @@ import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:word_game/app/colours.dart';
+import 'package:word_game/app/routes.dart';
 import 'package:word_game/cubits/game_group_manager.dart';
 import 'package:word_game/services/service_locator.dart';
 import 'package:word_game/ui/game_creator.dart';
@@ -19,14 +20,9 @@ class GroupsView extends StatefulWidget {
 }
 
 class _GroupsViewState extends State<GroupsView> {
-  TextEditingController nameController = TextEditingController();
-
   @override
   void initState() {
     final cubit = BlocProvider.of<GameGroupManager>(context);
-    setState(() {
-      nameController.text = cubit.player;
-    });
     cubit.refresh();
     super.initState();
   }
@@ -47,29 +43,17 @@ class _GroupsViewState extends State<GroupsView> {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        // Expanded(
-                        //   child: NeumorphicTextField(
-                        //     controller: nameController,
-                        //     enabled: state.joined.isEmpty,
-                        //     onClear: state.joined.isEmpty && auth().state.name.isNotEmpty
-                        //         ? () {
-                        //             auth().setName('');
-                        //             setState(() => nameController.text = '');
-                        //           }
-                        //         : null,
-                        //   ),
-                        // ),
-                        // NeumorphicButton(
-                        //   onPressed: state.joined.isEmpty ? () => auth().setName(nameController.text) : null,
-                        //   child: const Icon(MdiIcons.keyboardReturn),
-                        // ),
-                        // Container(width: 10),
                         NeumorphicButton(
                           onPressed: () => state.working ? null : cubit.refresh(),
                           child: state.working
                               ? SpinKitFadingCircle(size: 24, color: Colors.black87)
                               : const Icon(MdiIcons.refresh),
+                        ),
+                        NeumorphicButton(
+                          onPressed: () => Navigator.of(context).pushNamed(Routes.topPlayers),
+                          child: const Icon(MdiIcons.podium),
                         ),
                       ],
                     ),
