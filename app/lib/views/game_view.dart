@@ -11,18 +11,18 @@ import 'package:word_game/ui/game_keyboard.dart';
 import 'package:word_game/ui/standard_scaffold.dart';
 import 'package:word_game/ui/word_row.dart';
 
-import 'post_game_panel.dart';
+import '../ui/post_game_panel.dart';
 
-class GamePage extends StatefulWidget {
+class GameView extends StatefulWidget {
   final GameController game;
   final String? title;
-  const GamePage({Key? key, required this.game, this.title}) : super(key: key);
+  const GameView({Key? key, required this.game, this.title}) : super(key: key);
 
   @override
-  _GamePageState createState() => _GamePageState();
+  _GameViewState createState() => _GameViewState();
 }
 
-class _GamePageState extends State<GamePage> {
+class _GameViewState extends State<GameView> {
   GameController get game => widget.game;
 
   int? endTime;

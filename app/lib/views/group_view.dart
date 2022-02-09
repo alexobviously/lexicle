@@ -17,7 +17,7 @@ import 'package:word_game/services/service_locator.dart';
 import 'package:word_game/ui/entity_future_builder.dart';
 import 'package:word_game/ui/game_clock.dart';
 import 'package:word_game/ui/game_overview.dart';
-import 'package:word_game/ui/game_page.dart';
+import 'package:word_game/views/game_view.dart';
 import 'package:word_game/ui/standard_scaffold.dart';
 import 'package:word_game/ui/username_link.dart';
 
@@ -270,7 +270,7 @@ class _GroupViewState extends State<GroupView> {
                         ),
                         onTap: () => Navigator.of(context).push(
                           MaterialPageRoute(
-                            builder: (context) => GamePage(game: e, title: '${u.username}\'s game'),
+                            builder: (context) => GameView(game: e, title: '${u.username}\'s game'),
                           ),
                         ),
                       ),
