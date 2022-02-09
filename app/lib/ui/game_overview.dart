@@ -41,69 +41,68 @@ class _GameOverviewState extends State<GameOverview> {
 
   @override
   Widget build(BuildContext context) {
-    return Neumorphic(
-      padding: const EdgeInsets.symmetric(horizontal: 6.0),
-      style: NeumorphicStyle(
-        depth: -10,
-        color: widget.game.state.gameFinished
-            ? widget.game.state.solved
-                ? Colours.correct.withAlpha(100)
-                : Colours.wrong.withAlpha(150)
-            : null,
-      ),
-      child: BlocBuilder<GameController, Game>(
+    return BlocBuilder<GameController, Game>(
         bloc: widget.game,
         builder: (context, state) {
-          return ListView(
-            controller: _controller,
-            children: [
-              Container(height: 10),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  if (widget.header != null)
-                    Padding(
-                      padding: const EdgeInsets.only(left: 7.0),
-                      child: widget.header!,
-                    ),
-                  Spacer(),
-                  if (widget.onRemove != null)
-                    Padding(
-                      padding: const EdgeInsets.only(right: 7.0),
-                      child: IconButton(
-                        icon: Icon(MdiIcons.closeThick),
-                        iconSize: 14.0,
-                        onPressed: widget.onRemove,
-                        padding: EdgeInsets.zero,
-                        constraints: BoxConstraints(),
+          return Neumorphic(
+            padding: const EdgeInsets.symmetric(horizontal: 6.0),
+            style: NeumorphicStyle(
+              depth: -10,
+              color: widget.game.state.gameFinished
+                  ? widget.game.state.solved
+                      ? Colours.correct.withAlpha(100)
+                      : Colours.wrong.withAlpha(150)
+                  : null,
+            ),
+            child: ListView(
+              controller: _controller,
+              children: [
+                Container(height: 10),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    if (widget.header != null)
+                      Padding(
+                        padding: const EdgeInsets.only(left: 7.0),
+                        child: widget.header!,
                       ),
-                    ),
-                ],
-              ),
-              ...state.guesses
-                  .map(
-                    (e) => FittedBox(
-                      child: WordRow(
-                        length: state.length,
-                        content: e.content,
-                        correct: e.correct,
-                        semiCorrect: e.semiCorrect,
-                        finalised: e.finalised,
-                        shape: NeumorphicShape.convex,
-                        surfaceIntensity: 0.15,
+                    Spacer(),
+                    if (widget.onRemove != null)
+                      Padding(
+                        padding: const EdgeInsets.only(right: 7.0),
+                        child: IconButton(
+                          icon: Icon(MdiIcons.closeThick),
+                          iconSize: 14.0,
+                          onPressed: widget.onRemove,
+                          padding: EdgeInsets.zero,
+                          constraints: BoxConstraints(),
+                        ),
                       ),
-                    ),
-                  )
-                  .toList(),
-              if (!state.gameFinished)
-                FittedBox(
-                  child: WordRow(length: state.length, content: state.word),
+                  ],
                 ),
-              Container(height: 10),
-            ],
+                ...state.guesses
+                    .map(
+                      (e) => FittedBox(
+                        child: WordRow(
+                          length: state.length,
+                          content: e.content,
+                          correct: e.correct,
+                          semiCorrect: e.semiCorrect,
+                          finalised: e.finalised,
+                          shape: NeumorphicShape.convex,
+                          surfaceIntensity: 0.15,
+                        ),
+                      ),
+                    )
+                    .toList(),
+                if (!state.gameFinished)
+                  FittedBox(
+                    child: WordRow(length: state.length, content: state.word),
+                  ),
+                Container(height: 10),
+              ],
+            ),
           );
-        },
-      ),
-    );
+        });
   }
 }
