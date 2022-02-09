@@ -47,21 +47,21 @@ class _HomeViewState extends State<HomeView> {
                 ),
                 Container(height: 20),
                 NeumorphicButton(
-                  onPressed: () => Navigator.of(context).pushNamed(Routes.solo),
-                  style: NeumorphicStyle(
-                    shape: NeumorphicShape.flat,
-                    boxShape: NeumorphicBoxShape.roundRect(BorderRadius.circular(16)),
-                  ),
-                  child: Text('Play Offline', style: textTheme.headline6),
-                ),
-                Container(height: 20),
-                NeumorphicButton(
                   onPressed: () => Navigator.of(context).pushNamed(state.loggedIn ? Routes.groups : Routes.auth),
                   style: NeumorphicStyle(
                     shape: NeumorphicShape.flat,
                     boxShape: NeumorphicBoxShape.roundRect(BorderRadius.circular(16)),
                   ),
                   child: Text(state.loggedIn ? 'Play Online' : 'Login', style: textTheme.headline6),
+                ),
+                Container(height: 20),
+                NeumorphicButton(
+                  onPressed: () => Navigator.of(context).pushNamed(Routes.solo),
+                  style: NeumorphicStyle(
+                    shape: NeumorphicShape.flat,
+                    boxShape: NeumorphicBoxShape.roundRect(BorderRadius.circular(16)),
+                  ),
+                  child: Text('Practice', style: textTheme.headline6),
                 ),
                 Container(height: 20),
                 NeumorphicButton(
