@@ -58,6 +58,7 @@ class _StatsViewState extends State<StatsView> {
                 ),
                 errorWidget: (_) => Icon(Icons.error),
                 resultWidget: (u) {
+                  if (u.gamesTotal == 0) return Text('No games played yet!');
                   int _length(int index) => u.guessCounts.keys.toList()[index];
 
                   return Column(
