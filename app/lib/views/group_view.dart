@@ -375,10 +375,15 @@ class _GroupViewState extends State<GroupView> {
 
     Color? _standingColour(Standing st) {
       if (!finished) return null;
-      int i = standings.indexOf(st);
-      if (i == 0) return Colours.gold.lighten();
-      if (i == 1) return Colours.silver.lighten(0.05);
-      if (i == 2) return Colours.bronze.lighten();
+      if (st.guesses == standings[0].guesses) {
+        return Colours.gold.lighten();
+      }
+      if (st.guesses == standings[1].guesses) {
+        return Colours.silver.lighten(0.05);
+      }
+      if (standings.length > 2 && st.guesses == standings[2].guesses) {
+        return Colours.bronze.lighten();
+      }
       return null;
     }
 

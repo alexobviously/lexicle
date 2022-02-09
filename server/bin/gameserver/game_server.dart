@@ -240,7 +240,8 @@ class GameServer with ReadyManager {
       Map<int, Map<int, int>> _gcAll = Map.from(stats.guessCounts);
       _gcAll[group.config.wordLength] = _guessCounts;
       Map<int, int>? _wins;
-      if (group.standings.first.player == player) {
+      // it counts as a win for all players tied for first
+      if (group.standings.first.player == player || group.standings.first.guesses == group.playerGuesses(player)) {
         _wins = Map.from(stats.wins);
         _wins[wordLength] = (_wins[wordLength] ?? 0) + 1;
       }
