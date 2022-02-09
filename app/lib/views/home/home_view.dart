@@ -2,8 +2,12 @@ import 'package:common/common.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:version/version.dart';
+import 'package:word_game/app/colours.dart';
 import 'package:word_game/app/routes.dart';
 import 'package:word_game/cubits/auth_controller.dart';
+import 'package:word_game/cubits/server_meta_cubit.dart';
+import 'package:word_game/model/server_meta.dart';
 import 'package:word_game/services/service_locator.dart';
 import 'package:word_game/ui/standard_scaffold.dart';
 import 'package:word_game/views/home/user_details.dart';
@@ -87,14 +91,33 @@ class _HomeViewState extends State<HomeView> {
       future: PackageInfo.fromPlatform(),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          return Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text('Version ${snapshot.data!.version}'),
-              ),
-            ],
+          return BlocBuilder<ServerMetaCubit, ServerMeta>(
+            builder: (context, meta) {
+              Version localVersion = Version.parse(snapshot.data!.version);
+              bool updateAvailable = meta.loaded && localVersion < Version.parse(meta.appCurrentVersion);
+              bool updateNeeded = meta.loaded && localVersion < Version.parse(meta.appMinVersion);
+              return Container(
+                color: updateNeeded
+                    ? Colours.invalid.lighten(0.1)
+                    : updateAvailable
+                        ? Colours.victory
+                        : null,
+                child: Row(
+                  children: [
+                    if (updateAvailable || updateNeeded)
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(updateNeeded ? 'Update required' : 'Update available'),
+                      ),
+                    Spacer(),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text('Version $localVersion'),
+                    ),
+                  ],
+                ),
+              );
+            },
           );
         } else {
           return Text('Version...');

@@ -7,6 +7,7 @@ import 'package:word_game/app/routes.dart';
 import 'package:word_game/cubits/auth_controller.dart';
 import 'package:word_game/cubits/game_group_manager.dart';
 import 'package:word_game/cubits/local_game_manager.dart';
+import 'package:word_game/cubits/server_meta_cubit.dart';
 import 'package:word_game/services/api_client.dart';
 import 'package:word_game/services/api_service.dart';
 import 'package:word_game/views/auth/auth_view.dart';
@@ -51,6 +52,9 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider<GameGroupManager>(
           create: (_) => GameGroupManager(),
+        ),
+        BlocProvider<ServerMetaCubit>(
+          create: (_) => ServerMetaCubit(),
         ),
       ],
       child: NeumorphicApp(

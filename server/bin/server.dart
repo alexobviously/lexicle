@@ -63,6 +63,7 @@ Future main() async {
     ..get('/hello', _echoRequest)
     ..get('/', StatusHandler.serverStatus)
     ..get('/status', StatusHandler.serverStatus)
+    ..get('/meta', StatusHandler.meta)
     ..get('/dict/<w>', DictionaryHandler.validateWord)
     ..get('/ws', gameServerHandler())
     ..post('/auth/register', AuthHandler.register)

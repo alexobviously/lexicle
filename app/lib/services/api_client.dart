@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:common/common.dart';
 import 'package:word_game/model/api_response.dart';
 import 'package:rest_client/rest_client.dart' as rc;
+import 'package:word_game/model/server_meta.dart';
 import 'package:word_game/services/service_locator.dart';
 
 typedef Unwrapper<T> = T Function(Map<String, dynamic> data);
@@ -10,6 +11,7 @@ typedef Unwrapper<T> = T Function(Map<String, dynamic> data);
 class ApiClient {
   static String host = 'https://word-w7y24cao7q-ew.a.run.app'; //'http://localhost:8080';
 
+  static Future<ApiResult<ServerMeta>> getMeta() async => getAndUnwrap('/meta', unwrapper: unwrapServerMeta);
   static Future<ApiResult<User>> getUser(String id) => getAndUnwrap('/users/$id', unwrapper: unwrapUser);
   static Future<ApiResult<User>> getMe() => getAndUnwrap('/users/me', unwrapper: unwrapUser, needAuth: true);
   static Future<ApiResult<UserStats>> getMyStats() =>
@@ -206,4 +208,5 @@ class ApiClient {
   static Game unwrapGame(Map<String, dynamic> data) => Game.fromJson(data['game']);
   static User unwrapUser(Map<String, dynamic> data) => User.fromJson(data['user']);
   static UserStats unwrapUserStats(Map<String, dynamic> data) => UserStats.fromJson(data['stats']);
+  static ServerMeta unwrapServerMeta(Map<String, dynamic> data) => ServerMeta.fromJson(data);
 }
