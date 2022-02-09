@@ -12,6 +12,7 @@ import 'handlers/dictionary_handler.dart';
 import 'handlers/game_handler.dart';
 import 'handlers/game_server_handler.dart';
 import 'handlers/status_handler.dart';
+import 'handlers/team_handler.dart';
 import 'handlers/user_handler.dart';
 import 'services/environment.dart';
 import 'services/mongo_service.dart';
@@ -84,7 +85,10 @@ Future main() async {
     ..get('/games/all', GameHandler.allGameIds)
     ..get('/games/active', GameHandler.allActiveGameIds)
     ..get('/games/<id>', GameHandler.getGame)
-    ..post('/games/<id>/guess', GameHandler.makeGuess);
+    ..post('/games/<id>/guess', GameHandler.makeGuess)
+    ..get('/teams/all', TeamHandler.getAllTeams)
+    ..post('/teams/create', TeamHandler.createTeam)
+    ..get('/teams/<id>', TeamHandler.getTeam);
 
   final cascade = Cascade().add(_router);
 

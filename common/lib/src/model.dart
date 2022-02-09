@@ -8,6 +8,7 @@ export 'model/game_stub.dart';
 export 'model/rating.dart';
 export 'model/result.dart';
 export 'model/standing.dart';
+export 'model/team.dart';
 export 'model/user.dart';
 export 'model/user_stats.dart';
 export 'model/word_data.dart';

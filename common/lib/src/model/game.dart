@@ -1,11 +1,11 @@
-// ignore_for_file: unnecessary_this
-
 import 'package:common/common.dart';
 import 'package:mongo_dart/mongo_dart.dart';
 
 class Game implements Entity {
   @override
   final String id;
+  @override
+  final int timestamp;
   final String answer;
   final String player;
   final String creator;
@@ -41,6 +41,7 @@ class Game implements Entity {
 
   Game({
     String? id,
+    int? timestamp,
     required this.answer,
     required this.player,
     String? creator,
@@ -51,8 +52,9 @@ class Game implements Entity {
     this.endTime,
     this.endReason,
     this.penalty = 0,
-  })  : this.id = id ?? ObjectId().id.hexString,
-        this.creator = creator ?? player;
+  })  : id = id ?? ObjectId().id.hexString,
+        timestamp = timestamp ?? nowMs(),
+        creator = creator ?? player;
 
   factory Game.initial(String player, int length, {String? creator, String? id, int? endTime}) => Game(
         answer: '*' * length,
@@ -69,6 +71,7 @@ class Game implements Entity {
   factory Game.fromJson(Map<String, dynamic> doc) {
     return Game(
       id: parseObjectId(doc[Fields.id]),
+      timestamp: doc[Fields.timestamp] ?? nowMs(),
       answer: doc[GameFields.answer],
       player: doc[GameFields.player],
       creator: doc[GameFields.creator],
@@ -84,6 +87,7 @@ class Game implements Entity {
   Map<String, dynamic> toMap({bool hideAnswer = false}) {
     return {
       Fields.id: parseObjectId(id),
+      Fields.timestamp: timestamp,
       GameFields.answer: hideAnswer ? ('*' * answer.length) : answer,
       GameFields.player: player,
       GameFields.creator: creator,

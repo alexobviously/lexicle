@@ -7,6 +7,9 @@ class EntityStore<T extends Entity> {
   Map<String, T> items = {};
   Set<String> cache = {};
 
+  int lastGotAll = 0;
+  static const getAllInterval = 120000; // 2 minutes, for now
+
   Future<Result<T>> get(String id, [bool forceUpdate = false]) async {
     if (!forceUpdate && items.containsKey(id)) return Result.ok(items[id]!);
 
@@ -23,6 +26,20 @@ class EntityStore<T extends Entity> {
     return results.map((e) => e.object).where((e) => e != null).map((e) => e!).toList();
   }
 
+  /// Use with caution.
+  Future<List<T>> getAll() async {
+    if (lastGotAll > nowMs() - getAllInterval) {
+      return getAllCached();
+    }
+    final all = await db.getAll<T>();
+    for (T e in all) {
+      onGet(e);
+    }
+    print(all.length);
+    lastGotAll = nowMs();
+    return all;
+  }
+
   Future<Result<T>> getByField(String field, dynamic value) async {
     Result<T> result = await db.getByField<T>(field, value);
     if (result.ok) onGet(result.object!);
@@ -32,15 +49,6 @@ class EntityStore<T extends Entity> {
   Future<void> onGet(T entity) async {
     items[entity.id] = entity;
   }
-
-  // Future<List<T>> getMultiple(List<String> ids) async {
-  //   List<T> _items = [];
-  //   for (String id in ids) {
-  //     Result<T> result = await get(id);
-  //     if (result.ok) _items.add(result.object!);
-  //   }
-  //   return _items;
-  // }
 
   List<T> getAllCached() => items.values.toList();
 

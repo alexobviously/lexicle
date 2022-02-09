@@ -17,6 +17,7 @@ extension GameGroupCopyWith on GameGroup {
     String? id,
     List<String>? players,
     int? state,
+    int? timestamp,
     String? title,
     Map<String, String>? words,
   }) {
@@ -30,6 +31,7 @@ extension GameGroupCopyWith on GameGroup {
       id: id ?? this.id,
       players: players ?? this.players,
       state: state ?? this.state,
+      timestamp: timestamp ?? this.timestamp,
       title: title ?? this.title,
       words: words ?? this.words,
     );

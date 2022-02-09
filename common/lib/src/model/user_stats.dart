@@ -1,5 +1,3 @@
-// ignore_for_file: unnecessary_this
-
 import 'package:common/common.dart';
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:mongo_dart/mongo_dart.dart';
@@ -10,6 +8,8 @@ part 'user_stats.g.dart';
 class UserStats implements Entity {
   @override
   final String id;
+  @override
+  final int timestamp;
   final Map<int, int> numGroups;
   final Map<int, int> numGames;
   final Map<int, int> wins;
@@ -22,12 +22,14 @@ class UserStats implements Entity {
 
   UserStats({
     String? id,
+    int? timestamp,
     this.numGroups = const {},
     this.numGames = const {},
     this.guessCounts = const {},
     this.words = const [],
     this.wins = const {},
-  }) : this.id = id ?? ObjectId().id.hexString;
+  })  : id = id ?? ObjectId().id.hexString,
+        timestamp = timestamp ?? nowMs();
 
   factory UserStats.fromJson(Map<String, dynamic> doc) {
     // this is fucking cursed, I fucking hate this
@@ -40,6 +42,7 @@ class UserStats implements Entity {
 
     return UserStats(
       id: doc[Fields.id],
+      timestamp: doc[Fields.timestamp] ?? nowMs(),
       numGroups: intifyMapKeys(doc[StatsFields.numGroups].cast<String, int>()),
       numGames: intifyMapKeys(doc[StatsFields.numGames].cast<String, int>()),
       guessCounts: z,
@@ -48,8 +51,9 @@ class UserStats implements Entity {
     );
   }
 
-  Map<String, dynamic> toMap() => {
+  Map<String, dynamic> toMap({bool includeTimestamp = false}) => {
         Fields.id: id,
+        if (includeTimestamp) Fields.timestamp: timestamp,
         StatsFields.numGroups: stringifyMapKeys(numGroups),
         StatsFields.numGames: stringifyMapKeys(numGames),
         StatsFields.guessCounts: stringifyMapKeys(guessCounts.map((k, v) => MapEntry(k, stringifyMapKeys(v)))),
@@ -58,7 +62,7 @@ class UserStats implements Entity {
       };
 
   @override
-  Map<String, dynamic> export() => toMap();
+  Map<String, dynamic> export() => toMap(includeTimestamp: true);
 }
 
 class WordDifficulty {

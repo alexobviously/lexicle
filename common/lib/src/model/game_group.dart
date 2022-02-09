@@ -8,12 +8,14 @@ part 'game_group.g.dart';
 class GameGroup implements Entity {
   @override
   final String id;
+  @override
+  final int timestamp;
   final String title;
   final GameConfig config;
   final String creator;
   final String? code;
   final int state;
-  late final int created;
+  late final int created; // TODO: DEPRECATED, REMOVE
   final int? endTime;
 
   /// A list of player IDs.
@@ -80,6 +82,7 @@ class GameGroup implements Entity {
 
   GameGroup({
     required this.id,
+    int? timestamp,
     required this.title,
     required this.config,
     required this.creator,
@@ -90,13 +93,15 @@ class GameGroup implements Entity {
     this.games = const {},
     int? created,
     this.endTime,
-  }) : assert(players.contains(creator)) {
-    this.created = created ?? DateTime.now().millisecondsSinceEpoch;
+  })  : assert(players.contains(creator)),
+        timestamp = timestamp ?? nowMs() {
+    this.created = created ?? nowMs();
   }
 
   factory GameGroup.fromJson(Map<String, dynamic> doc) {
     return GameGroup(
       id: parseObjectId(doc[Fields.id])!,
+      timestamp: doc[Fields.timestamp] ?? nowMs(),
       title: doc[GroupFields.title],
       config: GameConfig.fromJson(doc[GroupFields.config]),
       creator: doc[GroupFields.creator],
@@ -116,6 +121,7 @@ class GameGroup implements Entity {
   Map<String, dynamic> toMap({bool hideAnswers = false}) {
     return {
       Fields.id: parseObjectId(id),
+      Fields.timestamp: timestamp,
       GroupFields.title: title,
       GroupFields.config: config.toMap(),
       GroupFields.creator: creator,

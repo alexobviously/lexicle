@@ -1,5 +1,6 @@
 class Fields {
   static const id = 'id';
+  static const timestamp = 'ts';
 }
 
 class GameFields {
@@ -56,6 +57,7 @@ class UserFields {
   static const password = 'p';
   static const rating = 'r';
   static const deviation = 'd';
+  static const team = 't';
 }
 
 class StatsFields {
@@ -64,6 +66,12 @@ class StatsFields {
   static const guessCounts = 'c';
   static const words = 'w';
   static const wins = 'q';
+}
+
+class TeamFields {
+  static const name = 'n';
+  static const leader = 'l';
+  static const members = 'm';
 }
 
 class EndReasons {

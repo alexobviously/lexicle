@@ -1,20 +1,24 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'auth_data.dart';
+part of 'team.dart';
 
 // **************************************************************************
 // CopyWithGenerator
 // **************************************************************************
 
-extension AuthDataCopyWith on AuthData {
-  AuthData copyWith({
+extension TeamCopyWith on Team {
+  Team copyWith({
     String? id,
-    String? password,
+    String? leader,
+    List<String>? members,
+    String? name,
     int? timestamp,
   }) {
-    return AuthData(
+    return Team(
       id: id ?? this.id,
-      password: password ?? this.password,
+      leader: leader ?? this.leader,
+      members: members ?? this.members,
+      name: name ?? this.name,
       timestamp: timestamp ?? this.timestamp,
     );
   }
