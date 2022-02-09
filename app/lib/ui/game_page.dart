@@ -1,8 +1,12 @@
+import 'dart:async';
+import 'dart:math';
+
 import 'package:common/common.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:word_game/app/colours.dart';
+import 'package:word_game/ui/game_clock.dart';
 import 'package:word_game/ui/game_keyboard.dart';
 import 'package:word_game/ui/standard_scaffold.dart';
 import 'package:word_game/ui/word_row.dart';
@@ -21,6 +25,32 @@ class GamePage extends StatefulWidget {
 class _GamePageState extends State<GamePage> {
   GameController get game => widget.game;
 
+  int? endTime;
+  int? timeLeft;
+  Timer? timer;
+
+  @override
+  void initState() {
+    _initTimer();
+    game.stream.map((e) => e.endTime).distinct().listen((_) => _initTimer());
+    widget.game.numRowsStream.listen((_) => _scrollDown());
+    WidgetsBinding.instance!.addPostFrameCallback((_) => _scrollDown(Duration(milliseconds: 750)));
+    super.initState();
+  }
+
+  void _initTimer() {
+    timer?.cancel();
+    if (game.state.endTime != null) {
+      endTime = game.state.endTime;
+      timer = Timer.periodic(Duration(seconds: 1), (_) => _setTimeLeft());
+    }
+  }
+
+  void _setTimeLeft() {
+    if (endTime == null) return;
+    setState(() => timeLeft = max(endTime! - DateTime.now().millisecondsSinceEpoch, 0));
+  }
+
   final ScrollController _controller = ScrollController();
 
   void _scrollDown([Duration duration = const Duration(milliseconds: 250)]) {
@@ -34,13 +64,6 @@ class _GamePageState extends State<GamePage> {
         );
       },
     );
-  }
-
-  @override
-  void initState() {
-    widget.game.numRowsStream.listen((_) => _scrollDown());
-    WidgetsBinding.instance!.addPostFrameCallback((_) => _scrollDown(Duration(milliseconds: 750)));
-    super.initState();
   }
 
   void _onEnter() => game.enter();
@@ -68,6 +91,7 @@ class _GamePageState extends State<GamePage> {
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
+                    if (timeLeft != null) GameClock(timeLeft!),
                     Expanded(
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 4.0),

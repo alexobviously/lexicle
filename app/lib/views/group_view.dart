@@ -15,6 +15,7 @@ import 'package:word_game/app/colours.dart';
 import 'package:word_game/cubits/game_group_controller.dart';
 import 'package:word_game/services/service_locator.dart';
 import 'package:word_game/ui/entity_future_builder.dart';
+import 'package:word_game/ui/game_clock.dart';
 import 'package:word_game/ui/game_overview.dart';
 import 'package:word_game/ui/game_page.dart';
 import 'package:word_game/ui/standard_scaffold.dart';
@@ -177,7 +178,7 @@ class _GroupViewState extends State<GroupView> {
                     ],
                   ),
                 ),
-                if (group.config.timeLimit != null) _clock(context, group.config.timeLimit!, true),
+                if (group.config.timeLimit != null) GameClock(group.config.timeLimit!, fullDetail: true),
               ],
             ),
           ),
@@ -238,7 +239,7 @@ class _GroupViewState extends State<GroupView> {
         return Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            if (timeLeft != null) _clock(context, timeLeft!),
+            if (timeLeft != null) GameClock(timeLeft!),
             Text(
               'Standings',
               style: textTheme.headline5,
@@ -447,30 +448,6 @@ class _GroupViewState extends State<GroupView> {
               ),
             )
             .toList(),
-      ],
-    );
-  }
-
-  String _formatTime(Duration duration, [bool fullDetail = false]) {
-    String _pad(int n) => n.toString().padLeft(2, "0");
-    String output = '';
-    if (fullDetail || duration.inHours > 0) output = '${_pad(duration.inHours)}:';
-    output = '$output${_pad(duration.inMinutes.remainder(60))}';
-    if (fullDetail || duration.inHours == 0) output = '$output:${_pad(duration.inSeconds.remainder(60))}';
-    return output;
-  }
-
-  Widget _clock(BuildContext context, int time, [bool fullDetail = false]) {
-    final duration = Duration(milliseconds: time);
-
-    return Row(
-      children: [
-        Icon(MdiIcons.clockOutline),
-        Container(width: 4),
-        Text(
-          _formatTime(duration, fullDetail),
-          style: Theme.of(context).textTheme.headline6,
-        ),
       ],
     );
   }
