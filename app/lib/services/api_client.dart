@@ -83,11 +83,24 @@ class ApiClient {
   static Future<Result<List<User>>> getTopPlayers() async => getAndUnwrap('/stats/top_players',
       unwrapper: (data) => data['users'].map<User>((e) => User.fromJson(e)).toList());
 
+  static Future<ApiResult<User>> joinTeam(String id) async => postAndUnwrap(
+        '/teams/$id/join',
+        unwrapper: unwrapUser,
+        needAuth: true,
+      );
+
+  static Future<ApiResult<User>> leaveTeam() async => postAndUnwrap(
+        '/teams/leave',
+        unwrapper: unwrapUser,
+        needAuth: true,
+      );
+
   static Map<Type, String Function(String)> getEndpoints = {
     Game: (id) => '/games/$id',
     GameGroup: (id) => '/groups/$id',
     User: (id) => '/users/$id',
     UserStats: (id) => '/ustats/$id',
+    Team: (id) => '/teams/$id',
   };
 
   static Map<Type, Function(Map<String, dynamic>)> unwrappers = {
@@ -95,6 +108,7 @@ class ApiClient {
     GameGroup: unwrapGameGroup,
     User: unwrapUser,
     UserStats: unwrapUserStats,
+    Team: unwrapTeam,
     AuthData: AuthData.fromJson, // not used
   };
 
@@ -208,5 +222,6 @@ class ApiClient {
   static Game unwrapGame(Map<String, dynamic> data) => Game.fromJson(data['game']);
   static User unwrapUser(Map<String, dynamic> data) => User.fromJson(data['user']);
   static UserStats unwrapUserStats(Map<String, dynamic> data) => UserStats.fromJson(data['stats']);
+  static Team unwrapTeam(Map<String, dynamic> data) => Team.fromJson(data['team']);
   static ServerMeta unwrapServerMeta(Map<String, dynamic> data) => ServerMeta.fromJson(data);
 }

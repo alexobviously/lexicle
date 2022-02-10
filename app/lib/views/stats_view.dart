@@ -8,6 +8,7 @@ import 'package:word_game/app/colours.dart';
 import 'package:word_game/services/service_locator.dart';
 import 'package:word_game/ui/entity_future_builder.dart';
 import 'package:word_game/ui/standard_scaffold.dart';
+import 'package:word_game/views/team_view.dart';
 
 class StatsView extends StatefulWidget {
   final String id;
@@ -45,6 +46,7 @@ class _StatsViewState extends State<StatsView> {
                   children: [
                     Text(u.username, style: textTheme.headline4),
                     Text('Rating: ${u.rating.rating.toStringAsFixed(1)} ± ${u.rating.deviation.toStringAsFixed(0)}'),
+                    if (u.team != null) _team(context, u.team!),
                   ],
                 ),
               ),
@@ -207,5 +209,25 @@ class _StatsViewState extends State<StatsView> {
                   ),
                 ))
             .toList());
+  }
+
+  Widget _team(BuildContext context, String id) {
+    return EntityFutureBuilder<Team>(
+      id: id,
+      store: teamStore(),
+      loadingWidget: Container(),
+      errorWidget: (_) => Icon(Icons.error),
+      resultWidget: (team) => InkWell(
+        child: Text(
+          team.name,
+          style: Theme.of(context).textTheme.headline6!.copyWith(color: Colours.correct.darken(0.4)),
+        ),
+        onTap: () => Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => TeamView(id),
+          ),
+        ),
+      ),
+    );
   }
 }

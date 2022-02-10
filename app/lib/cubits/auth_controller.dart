@@ -90,6 +90,30 @@ class AuthController extends Cubit<AuthState> {
     }
   }
 
+  Future<Result<bool>> joinTeam(String id) async {
+    if (userId == null) return Result.error('unauthorised');
+    final result = await ApiClient.joinTeam(id);
+    if (result.ok) {
+      emit(state.copyWith(user: result.object!));
+      userStore().set(result.object!);
+      return Result.ok(true);
+    } else {
+      return Result.error(result.error!);
+    }
+  }
+
+  Future<Result<bool>> leaveTeam() async {
+    if (userId == null) return Result.error('unauthorised');
+    final result = await ApiClient.leaveTeam();
+    if (result.ok) {
+      emit(state.copyWith(user: result.object!));
+      userStore().set(result.object!);
+      return Result.ok(true);
+    } else {
+      return Result.error(result.error!);
+    }
+  }
+
   String? get token => state.token;
   bool get hasToken => state.hasToken;
   bool get loggedIn => state.loggedIn;

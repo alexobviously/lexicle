@@ -14,6 +14,7 @@ DatabaseService db() => getIt.get<DatabaseService>();
 FlutterSecureStorage storage() => getIt.get<FlutterSecureStorage>();
 AppUserStore userStore() => getIt.get<AppUserStore>();
 AppUserStatsStore ustatsStore() => getIt.get<AppUserStatsStore>();
+TeamStore teamStore() => getIt.get<TeamStore>();
 
 Future<void> setUpServiceLocator({required DatabaseService db}) async {
   getIt.registerSingleton<FlutterSecureStorage>(FlutterSecureStorage(
@@ -24,4 +25,5 @@ Future<void> setUpServiceLocator({required DatabaseService db}) async {
   getIt.registerSingleton<AuthController>(AuthController());
   getIt.registerSingleton<AppUserStore>(AppUserStore(db));
   getIt.registerSingleton<AppUserStatsStore>(AppUserStatsStore(db));
+  getIt.registerSingleton<TeamStore>(TeamStore(db));
 }
