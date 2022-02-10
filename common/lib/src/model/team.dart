@@ -41,4 +41,7 @@ class Team implements Entity {
 
   @override
   Map<String, dynamic> export() => toMap();
+
+  Team addMember(String id) => copyWith(members: List.from(members)..add(id));
+  Team removeMember(String id) => copyWith(members: List.from(members)..remove(id));
 }

@@ -88,7 +88,9 @@ Future main() async {
     ..post('/games/<id>/guess', GameHandler.makeGuess)
     ..get('/teams/all', TeamHandler.getAllTeams)
     ..post('/teams/create', TeamHandler.createTeam)
-    ..get('/teams/<id>', TeamHandler.getTeam);
+    ..get('/teams/<id>', TeamHandler.getTeam)
+    ..post('/teams/<id>/join', TeamHandler.joinTeam)
+    ..post('/teams/leave', TeamHandler.leaveTeam);
 
   final cascade = Cascade().add(_router);
 

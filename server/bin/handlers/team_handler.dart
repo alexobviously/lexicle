@@ -63,4 +63,74 @@ class TeamHandler {
       return HttpUtils.invalidRequestResponse();
     }
   }
+
+  static Future<Response> joinTeam(Request request, String id) async {
+    try {
+      final authResult = await authenticateRequest(request);
+      if (!authResult.ok) return authResult.errorResponse;
+
+      User user = authResult.user!;
+      if (user.team != null) return HttpUtils.buildErrorResponse('already_in_team');
+
+      final result = await teamStore().get(id);
+      if (!result.ok) return HttpUtils.buildErrorResponse(result.error!);
+      Team team = result.object!;
+
+      final wResult = await teamStore().write(team.addMember(user.id));
+      if (!wResult.ok) return HttpUtils.buildErrorResponse(result.error!);
+
+      user = user.copyWith(team: team.id);
+      await userStore().write(user);
+
+      return HttpUtils.buildResponse(
+        data: {
+          'user': user.toMap(),
+        },
+      );
+    } catch (e, s) {
+      print('exception in joinTeam: $e\n$s');
+      return HttpUtils.invalidRequestResponse();
+    }
+  }
+
+  static Future<Response> leaveTeam(Request request) async {
+    try {
+      final authResult = await authenticateRequest(request);
+      if (!authResult.ok) return authResult.errorResponse;
+
+      User user = authResult.user!;
+      if (user.team == null) return HttpUtils.buildErrorResponse('not_in_team');
+
+      final result = await teamStore().get(user.team!);
+      if (!result.ok) return HttpUtils.buildErrorResponse(result.error!);
+      Team team = result.object!;
+
+      if (team.leader == user.id) {
+        if (team.members.length == 1) {
+          final dResult = await teamStore().delete(team);
+          if (!dResult.ok) return HttpUtils.buildErrorResponse(result.error!);
+        } else {
+          final wResult = await teamStore().write(
+            team.copyWith(leader: team.members[1]).removeMember(user.id),
+          );
+          if (!wResult.ok) return HttpUtils.buildErrorResponse(result.error!);
+        }
+      } else {
+        final wResult = await teamStore().write(team.removeMember(user.id));
+        if (!wResult.ok) return HttpUtils.buildErrorResponse(result.error!);
+      }
+
+      user = user.copyWithNull(team: true);
+      await userStore().write(user);
+
+      return HttpUtils.buildResponse(
+        data: {
+          'user': user.toMap(),
+        },
+      );
+    } catch (e, s) {
+      print('exception in leaveTeam: $e\n$s');
+      return HttpUtils.invalidRequestResponse();
+    }
+  }
 }
