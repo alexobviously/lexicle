@@ -199,7 +199,14 @@ class _GroupViewState extends State<GroupView> {
                 title: UsernameLink(
                   innerKey: ValueKey('lobby_${group.id}_$player'),
                   id: player,
-                  content: (context, u) => Text('[${u.rating.rating.toStringAsFixed(0)}] ${u.username}'),
+                  content: (context, u) => Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('[${u.rating.rating.toStringAsFixed(0)}] ${u.username}'),
+                      if (u.team != null) _team(context, u.team!),
+                    ],
+                  ),
                 ),
                 trailing: Text(ready ? 'Ready' : 'Not Ready'),
               );
@@ -409,16 +416,31 @@ class _GroupViewState extends State<GroupView> {
               (e) => Container(
                 width: width,
                 height: 48,
-                padding: const EdgeInsets.all(8.0),
+                padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: finished ? 0.0 : 8.0),
                 color: _standingColour(e),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     SizedBox(
                       width: 100,
-                      child: UsernameLink(
-                        innerKey: ValueKey('standings_${state.id}_${finished}_${e.player}'),
-                        id: e.player,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          UsernameLink(
+                              innerKey: ValueKey('standings_${state.id}_${finished}_${e.player}'),
+                              id: e.player,
+                              content: finished
+                                  ? (context, u) => Column(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(u.username, style: textTheme.headline6),
+                                          if (u.team != null) _team(context, u.team!),
+                                        ],
+                                      )
+                                  : null),
+                        ],
                       ),
                     ),
                     Text('${e.guesses}', style: textTheme.headline6),
@@ -433,7 +455,7 @@ class _GroupViewState extends State<GroupView> {
                             .playerGamesSorted(e.player)
                             .reversed
                             .map((g) => Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 2.0),
+                                  padding: EdgeInsets.symmetric(horizontal: 2.0, vertical: finished ? 8.0 : 0.0),
                                   child: Container(
                                     width: 32,
                                     height: 32,
@@ -454,6 +476,19 @@ class _GroupViewState extends State<GroupView> {
             )
             .toList(),
       ],
+    );
+  }
+
+  Widget _team(BuildContext context, String id) {
+    return EntityFutureBuilder<Team>(
+      id: id,
+      store: teamStore(),
+      loadingWidget: Container(),
+      errorWidget: (_) => Icon(Icons.error),
+      resultWidget: (team) => Text(
+        team.name,
+        style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Colours.correct.darken(0.4)),
+      ),
     );
   }
 }
