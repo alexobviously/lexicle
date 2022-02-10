@@ -7,6 +7,7 @@ import 'package:word_game/app/colours.dart';
 import 'package:word_game/app/routes.dart';
 import 'package:word_game/cubits/game_group_manager.dart';
 import 'package:word_game/services/service_locator.dart';
+import 'package:word_game/services/sound_service.dart';
 import 'package:word_game/ui/game_creator.dart';
 import 'package:word_game/ui/neumorphic_text_field.dart';
 import 'package:word_game/ui/standard_scaffold.dart';
@@ -26,6 +27,11 @@ class _GroupsViewState extends State<GroupsView> {
     cubit.refresh();
     super.initState();
   }
+
+  void _onCreate(bool ok) => ok ? sound().play(Sound.clickUp) : null;
+  void _onJoin(bool ok) => _onCreate(ok);
+  void _onDelete(bool ok) => ok ? sound().play(Sound.clickDown) : null;
+  void _onLeave(bool ok) => _onDelete(ok);
 
   @override
   Widget build(BuildContext context) {
@@ -92,11 +98,11 @@ class _GroupsViewState extends State<GroupsView> {
                                   ),
                                   onPressed: () {
                                     if (isCreator) {
-                                      cubit.deleteGroup(g.id);
+                                      cubit.deleteGroup(g.id).then(_onDelete);
                                     } else if (joined) {
-                                      cubit.leaveGroup(g.id);
+                                      cubit.leaveGroup(g.id).then(_onLeave);
                                     } else {
-                                      cubit.joinGroup(g.id);
+                                      cubit.joinGroup(g.id).then(_onJoin);
                                     }
                                   },
                                   child: SizedBox(
@@ -119,7 +125,7 @@ class _GroupsViewState extends State<GroupsView> {
                   GameCreator(
                     showTitle: true,
                     showTimeLimit: true,
-                    onCreate: (cfg) => cubit.createGroup(cfg.title, cfg.config),
+                    onCreate: (cfg) => cubit.createGroup(cfg.title, cfg.config).then(_onCreate),
                   )
                 ],
               );

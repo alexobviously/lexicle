@@ -14,6 +14,7 @@ import 'package:validators/validators.dart';
 import 'package:word_game/app/colours.dart';
 import 'package:word_game/cubits/game_group_controller.dart';
 import 'package:word_game/services/service_locator.dart';
+import 'package:word_game/services/sound_service.dart';
 import 'package:word_game/ui/entity_future_builder.dart';
 import 'package:word_game/ui/game_clock.dart';
 import 'package:word_game/ui/game_overview.dart';
@@ -40,6 +41,10 @@ class _GroupViewState extends State<GroupView> {
   int? timeLeft;
   Timer? timer;
 
+  late int _gameState;
+  late int _playerCount;
+  late int _wordCount;
+
   @override
   void initState() {
     if (controller.state.group.words.containsKey(auth().userId)) {
@@ -59,7 +64,13 @@ class _GroupViewState extends State<GroupView> {
       );
     });
     _initTimer();
+    _gameState = controller.state.group.state;
+    _playerCount = controller.state.group.players.length;
+    _wordCount = controller.state.group.words.length;
     controller.stream.map((e) => e.group.endTime).distinct().listen((_) => _initTimer());
+    controller.stream.map((e) => e.group.state).distinct().listen(_onGameState);
+    controller.stream.map((e) => e.group.players.length).distinct().listen(_onPlayerCount);
+    controller.stream.map((e) => e.group.words.length).distinct().listen(_onWordCount);
     super.initState();
   }
 
@@ -84,12 +95,47 @@ class _GroupViewState extends State<GroupView> {
 
   void _submitWord() async {
     final state = controller.state.group;
-    if (!isAlpha(wordController.text) || wordController.text.length != state.config.wordLength) return;
+    if (!isAlpha(wordController.text) || wordController.text.length != state.config.wordLength) {
+      sound().play(Sound.bad);
+      return;
+    }
 
     final _result = await controller.setWord(wordController.text);
     if (!_result.ok) {
       setState(() => invalidWord = true);
+      sound().play(Sound.bad);
+    } else {
+      sound().play(Sound.good);
     }
+    HapticFeedback.mediumImpact();
+  }
+
+  void _onGameState(int state) {
+    if (state == _gameState) return;
+    if (state == MatchState.playing) sound().play(Sound.clickUp);
+    if (state == MatchState.finished) {
+      final st = controller.state.group.standings;
+      final guesses = controller.state.group.playerGuesses(auth().userId!);
+      if (st.first.guesses == guesses) {
+        // todo: win sound
+        sound().play(Sound.clickDown);
+      } else {
+        // todo: finish sound
+        sound().play(Sound.clickUp);
+      }
+    }
+    _gameState = state;
+  }
+
+  void _onPlayerCount(int n) {
+    if (n > _playerCount) sound().play(Sound.clickUp);
+    if (n < _playerCount) sound().play(Sound.clickDown);
+    _playerCount = n;
+  }
+
+  void _onWordCount(int n) {
+    if (n > _wordCount) sound().play(Sound.good);
+    _wordCount = n;
   }
 
   @override

@@ -16,6 +16,10 @@ class SoundService with ReadyManager {
   @override
   void initialise() async {
     sounds[Sound.pop] = await _load('pop.wav');
+    sounds[Sound.clickUp] = await _load('up.wav');
+    sounds[Sound.clickDown] = await _load('down.wav');
+    sounds[Sound.good] = await _load('good.wav');
+    sounds[Sound.bad] = await _load('bad.wav');
     setReady();
   }
 
@@ -24,4 +28,8 @@ class SoundService with ReadyManager {
 
 enum Sound {
   pop,
+  clickUp,
+  clickDown,
+  good,
+  bad,
 }

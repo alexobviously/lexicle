@@ -84,12 +84,14 @@ class GameGroupController extends Cubit<GameGroupState> {
     }
   }
 
-  void start() async {
+  Future<bool> start() async {
     final _result = await ApiClient.startGroup(id);
     if (_result.ok) {
       emit(state.copyWith(group: _result.object!));
       _checkGames();
+      return true;
     }
+    return false;
   }
 
   Future<Result<GameGroup>> setWord(String word) async {
