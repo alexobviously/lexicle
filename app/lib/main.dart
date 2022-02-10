@@ -10,6 +10,7 @@ import 'package:word_game/cubits/local_game_manager.dart';
 import 'package:word_game/cubits/server_meta_cubit.dart';
 import 'package:word_game/services/api_client.dart';
 import 'package:word_game/services/api_service.dart';
+import 'package:word_game/views/about_view.dart';
 import 'package:word_game/views/auth/auth_view.dart';
 import 'package:word_game/views/dict_search_view.dart';
 import 'package:word_game/views/groups_view.dart';
@@ -87,6 +88,7 @@ class MyApp extends StatelessWidget {
           Routes.settings: (ctx) => const SettingsView(),
           Routes.dict: (ctx) => const DictSearchView(),
           Routes.topPlayers: (ctx) => const TopPlayersView(),
+          Routes.about: (ctx) => const AboutView(),
         },
       ),
     );

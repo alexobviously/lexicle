@@ -32,58 +32,75 @@ class _HomeViewState extends State<HomeView> {
       showBackButton: false,
       body: Center(
         child: SafeArea(
-          child: BlocBuilder<AuthController, AuthState>(builder: (context, state) {
-            return Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: const AnimatedLogo(),
-                ),
-                Container(height: 30),
-                BlocBuilder<AuthController, AuthState>(
-                  builder: (context, state) {
-                    if (state.loggedIn) {
-                      return UserDetails(
-                        user: state.user!,
-                        stats: state.stats ?? UserStats(id: state.userId!),
-                      );
-                    } else {
-                      return Container();
-                    }
-                  },
-                ),
-                Container(height: 20),
-                NeumorphicButton(
-                  onPressed: () => Navigator.of(context).pushNamed(state.loggedIn ? Routes.groups : Routes.auth),
-                  style: NeumorphicStyle(
-                    shape: NeumorphicShape.flat,
-                    boxShape: NeumorphicBoxShape.roundRect(BorderRadius.circular(16)),
+          child: Stack(
+            children: [
+              BlocBuilder<AuthController, AuthState>(
+                builder: (context, state) {
+                  return Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: const AnimatedLogo(),
+                      ),
+                      Container(height: 30),
+                      BlocBuilder<AuthController, AuthState>(
+                        builder: (context, state) {
+                          if (state.loggedIn) {
+                            return UserDetails(
+                              user: state.user!,
+                              stats: state.stats ?? UserStats(id: state.userId!),
+                            );
+                          } else {
+                            return Container();
+                          }
+                        },
+                      ),
+                      Container(height: 20),
+                      NeumorphicButton(
+                        onPressed: () => Navigator.of(context).pushNamed(state.loggedIn ? Routes.groups : Routes.auth),
+                        style: NeumorphicStyle(
+                          shape: NeumorphicShape.flat,
+                          boxShape: NeumorphicBoxShape.roundRect(BorderRadius.circular(16)),
+                        ),
+                        child: Text(state.loggedIn ? 'Play Online' : 'Login', style: textTheme.headline6),
+                      ),
+                      Container(height: 20),
+                      NeumorphicButton(
+                        onPressed: () => Navigator.of(context).pushNamed(Routes.solo),
+                        style: NeumorphicStyle(
+                          shape: NeumorphicShape.flat,
+                          boxShape: NeumorphicBoxShape.roundRect(BorderRadius.circular(16)),
+                        ),
+                        child: Text('Practice', style: textTheme.headline6),
+                      ),
+                      Container(height: 20),
+                      NeumorphicButton(
+                        onPressed: () => Navigator.of(context).pushNamed(Routes.dict),
+                        style: NeumorphicStyle(
+                          shape: NeumorphicShape.flat,
+                          boxShape: NeumorphicBoxShape.roundRect(BorderRadius.circular(16)),
+                        ),
+                        child: Text('Dictionary', style: textTheme.headline6),
+                      ),
+                      Spacer(),
+                      _version(),
+                    ],
+                  );
+                },
+              ),
+              Positioned(
+                bottom: 32,
+                right: 16,
+                child: SizedBox(
+                  width: 64,
+                  child: GestureDetector(
+                    onTap: () => Navigator.of(context).pushNamed(Routes.about),
+                    child: Image.asset('assets/images/logo.png'),
                   ),
-                  child: Text(state.loggedIn ? 'Play Online' : 'Login', style: textTheme.headline6),
                 ),
-                Container(height: 20),
-                NeumorphicButton(
-                  onPressed: () => Navigator.of(context).pushNamed(Routes.solo),
-                  style: NeumorphicStyle(
-                    shape: NeumorphicShape.flat,
-                    boxShape: NeumorphicBoxShape.roundRect(BorderRadius.circular(16)),
-                  ),
-                  child: Text('Practice', style: textTheme.headline6),
-                ),
-                Container(height: 20),
-                NeumorphicButton(
-                  onPressed: () => Navigator.of(context).pushNamed(Routes.dict),
-                  style: NeumorphicStyle(
-                    shape: NeumorphicShape.flat,
-                    boxShape: NeumorphicBoxShape.roundRect(BorderRadius.circular(16)),
-                  ),
-                  child: Text('Dictionary', style: textTheme.headline6),
-                ),
-                Spacer(),
-                _version(),
-              ],
-            );
-          }),
+              ),
+            ],
+          ),
         ),
       ),
     );

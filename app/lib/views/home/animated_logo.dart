@@ -40,7 +40,7 @@ class _AnimatedLogoState extends State<AnimatedLogo> {
         semi.add(r.nextInt(7));
       }
     }
-    setState(() {});
+    if (mounted) setState(() {});
   }
 
   @override
