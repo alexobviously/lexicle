@@ -24,7 +24,10 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
               if (canGoBack)
                 GestureDetector(
                   onTap: () => Navigator.of(context).pop(),
-                  child: Icon(MdiIcons.chevronLeft),
+                  child: Icon(
+                    MdiIcons.chevronLeft,
+                    size: 30,
+                  ),
                 ),
               Spacer(),
               if (title != null)
