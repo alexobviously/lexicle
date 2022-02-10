@@ -1,6 +1,7 @@
 import 'package:common/common.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:version/version.dart';
 import 'package:word_game/app/colours.dart';
@@ -10,6 +11,8 @@ import 'package:word_game/cubits/server_meta_cubit.dart';
 import 'package:word_game/model/server_meta.dart';
 import 'package:word_game/services/service_locator.dart';
 import 'package:word_game/ui/standard_scaffold.dart';
+import 'package:word_game/ui/word_row.dart';
+import 'package:word_game/views/home/animated_logo.dart';
 import 'package:word_game/views/home/user_details.dart';
 
 class HomeView extends StatefulWidget {
@@ -31,10 +34,9 @@ class _HomeViewState extends State<HomeView> {
           child: BlocBuilder<AuthController, AuthState>(builder: (context, state) {
             return Column(
               children: [
-                Text(
-                  'Lexicle',
-                  style: textTheme.headline3,
-                  textAlign: TextAlign.center,
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: const AnimatedLogo(),
                 ),
                 Container(height: 30),
                 BlocBuilder<AuthController, AuthState>(

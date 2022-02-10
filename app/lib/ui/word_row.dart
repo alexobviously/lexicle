@@ -13,6 +13,7 @@ class WordRow extends StatelessWidget {
   final double? borderWidth;
   final NeumorphicShape shape;
   final double surfaceIntensity;
+  final TextStyle? textStyle;
   const WordRow({
     Key? key,
     required this.length,
@@ -26,6 +27,7 @@ class WordRow extends StatelessWidget {
     this.borderWidth,
     this.shape = NeumorphicShape.flat,
     this.surfaceIntensity = 0.25,
+    this.textStyle,
   })  : assert(content.length <= length),
         super(key: key);
 
@@ -78,7 +80,7 @@ class WordRow extends StatelessWidget {
           child: Center(
             child: Text(
               letter,
-              style: Theme.of(context).textTheme.headline4,
+              style: textStyle ?? Theme.of(context).textTheme.headline4,
             ),
           ),
         ),

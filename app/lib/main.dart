@@ -58,7 +58,7 @@ class MyApp extends StatelessWidget {
         ),
       ],
       child: NeumorphicApp(
-        title: 'CS:WO',
+        title: 'Lexicle',
         debugShowCheckedModeBanner: false,
         themeMode: ThemeMode.light, // dark is so ugly
         theme: NeumorphicThemeData(
