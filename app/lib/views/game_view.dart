@@ -6,6 +6,8 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:word_game/app/colours.dart';
+import 'package:word_game/services/service_locator.dart';
+import 'package:word_game/services/sound_service.dart';
 import 'package:word_game/ui/game_clock.dart';
 import 'package:word_game/ui/game_keyboard.dart';
 import 'package:word_game/ui/standard_scaffold.dart';
@@ -66,7 +68,12 @@ class _GameViewState extends State<GameView> {
     );
   }
 
-  void _onEnter() => game.enter();
+  void _onEnter() async {
+    bool ok = await game.enter();
+    if (ok) {
+      sound().play(Sound.pop);
+    }
+  }
 
   void _onBackspace() {
     _scrollDown();
