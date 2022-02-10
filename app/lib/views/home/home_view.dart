@@ -28,6 +28,7 @@ class _HomeViewState extends State<HomeView> {
     final theme = Theme.of(context);
     final textTheme = theme.textTheme;
     return StandardScaffold(
+      showAppBar: false,
       showBackButton: false,
       body: Center(
         child: SafeArea(
