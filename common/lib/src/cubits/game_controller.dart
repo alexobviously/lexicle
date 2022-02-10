@@ -59,8 +59,8 @@ class GameController extends Cubit<Game> {
     emit(state.copyWith(current: WordData.current(state.word.substring(0, state.word.length - 1))));
   }
 
-  void enter() async {
-    if (state.gameFinished) return;
+  Future<bool> enter() async {
+    if (state.gameFinished) return false;
     final _result = await mediator.validateWord(state.word);
     if (!_result.valid) {
       emit(state.copyWithInvalid());
@@ -72,6 +72,7 @@ class GameController extends Cubit<Game> {
         endReason: endReason,
       ));
     }
+    return true;
   }
 
   Future<Result<WordValidationResult>> makeGuess(String word) async {

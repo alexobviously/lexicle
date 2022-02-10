@@ -25,6 +25,7 @@ void main() async {
   await loadEnv();
   await setUpServiceLocator(db: ApiService());
   await dictionary().ready;
+  await sound().ready;
   runApp(const MyApp());
 }
 
