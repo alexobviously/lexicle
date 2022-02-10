@@ -94,7 +94,7 @@ class _GameViewState extends State<GameView> {
                     if (timeLeft != null) GameClock(timeLeft!),
                     Expanded(
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                        padding: const EdgeInsets.all(4.0),
                         child: Neumorphic(
                           padding: const EdgeInsets.symmetric(horizontal: 4.0),
                           duration: const Duration(milliseconds: 2000),
