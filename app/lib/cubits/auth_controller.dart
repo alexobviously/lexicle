@@ -16,6 +16,7 @@ class AuthController extends Cubit<AuthState> {
       final _result = await ApiClient.getMe();
       if (_result.ok) {
         emit(state.copyWith(user: _result.object!, working: false));
+        refreshUserStats();
       } else {
         emit(AuthState.initial());
         storage().delete(key: 'token');
