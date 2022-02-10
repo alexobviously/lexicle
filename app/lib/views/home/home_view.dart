@@ -14,6 +14,7 @@ import 'package:word_game/ui/standard_scaffold.dart';
 import 'package:word_game/ui/word_row.dart';
 import 'package:word_game/views/home/animated_logo.dart';
 import 'package:word_game/views/home/user_details.dart';
+import 'package:word_game/views/home/word_row_button.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({Key? key}) : super(key: key);
@@ -56,9 +57,18 @@ class _HomeViewState extends State<HomeView> {
                         },
                       ),
                       Container(height: 20),
+                      // this is cool but idk
+                      // SizedBox(
+                      //   width: MediaQuery.of(context).size.width * 0.5,
+                      //   child: WordRowButton(
+                      //     onTap: () => Navigator.of(context).pushNamed(state.loggedIn ? Routes.groups : Routes.auth),
+                      //     text: 'Login',
+                      //   ),
+                      // ),
                       NeumorphicButton(
                         onPressed: () => Navigator.of(context).pushNamed(state.loggedIn ? Routes.groups : Routes.auth),
                         style: NeumorphicStyle(
+                          depth: 2,
                           shape: NeumorphicShape.flat,
                           boxShape: NeumorphicBoxShape.roundRect(BorderRadius.circular(16)),
                         ),
@@ -68,6 +78,7 @@ class _HomeViewState extends State<HomeView> {
                       NeumorphicButton(
                         onPressed: () => Navigator.of(context).pushNamed(Routes.solo),
                         style: NeumorphicStyle(
+                          depth: 2,
                           shape: NeumorphicShape.flat,
                           boxShape: NeumorphicBoxShape.roundRect(BorderRadius.circular(16)),
                         ),
@@ -77,6 +88,7 @@ class _HomeViewState extends State<HomeView> {
                       NeumorphicButton(
                         onPressed: () => Navigator.of(context).pushNamed(Routes.dict),
                         style: NeumorphicStyle(
+                          depth: 2,
                           shape: NeumorphicShape.flat,
                           boxShape: NeumorphicBoxShape.roundRect(BorderRadius.circular(16)),
                         ),

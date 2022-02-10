@@ -14,6 +14,8 @@ class WordRow extends StatelessWidget {
   final NeumorphicShape shape;
   final double surfaceIntensity;
   final TextStyle? textStyle;
+  final bool correctOnTop;
+  final Duration? animationDuration;
   const WordRow({
     Key? key,
     required this.length,
@@ -28,6 +30,8 @@ class WordRow extends StatelessWidget {
     this.shape = NeumorphicShape.flat,
     this.surfaceIntensity = 0.25,
     this.textStyle,
+    this.correctOnTop = false,
+    this.animationDuration,
   })  : assert(content.length <= length),
         super(key: key);
 
@@ -38,7 +42,7 @@ class WordRow extends StatelessWidget {
     for (int i = 0; i < length; i++) {
       Color? c;
       if (finalised) {
-        if (semiCorrect.contains(i)) {
+        if (semiCorrect.contains(i) && (!correctOnTop || !correct.contains(i))) {
           c = Colours.semiCorrect;
         } else if (correct.contains(i)) {
           c = Colours.correct;
@@ -61,7 +65,7 @@ class WordRow extends StatelessWidget {
         width: 60,
         height: 80,
         child: Neumorphic(
-          duration: Duration(milliseconds: valid ? 1000 : 250),
+          duration: animationDuration ?? Duration(milliseconds: valid ? 1000 : 250),
           padding: const EdgeInsets.all(12.0),
           style: NeumorphicStyle(
             surfaceIntensity: surfaceIntensity,

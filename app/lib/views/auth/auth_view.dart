@@ -52,11 +52,11 @@ class _AuthViewState extends State<AuthView> {
         }
       },
       child: StandardScaffold(
-        showBackButton: false,
         body: Center(
           child: SafeArea(
             child: Column(
               children: [
+                Container(height: 8.0),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 32.0),
                   child: NeumorphicToggle(
