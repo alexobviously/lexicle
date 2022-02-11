@@ -33,7 +33,7 @@ class _HomeViewState extends State<HomeView> {
         child: SafeArea(
           child: Stack(
             children: [
-              BlocBuilder<AppLinkHandler, String?>(
+              BlocBuilder<AppLinkHandler, AppLinkData>(
                 builder: (context, link) {
                   return Text('AppLink: $link');
                 },

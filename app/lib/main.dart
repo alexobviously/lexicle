@@ -48,7 +48,7 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider<AppLinkHandler>(
-          lazy: true,
+          lazy: false,
           create: (_) => AppLinkHandler(),
         ),
         BlocProvider<AuthController>(
