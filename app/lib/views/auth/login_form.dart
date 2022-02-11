@@ -6,7 +6,7 @@ import 'package:word_game/services/service_locator.dart';
 import 'package:word_game/ui/neumorphic_text_field.dart';
 
 class LoginForm extends StatefulWidget {
-  LoginForm({Key? key}) : super(key: key);
+  const LoginForm({Key? key}) : super(key: key);
 
   @override
   State<LoginForm> createState() => _LoginFormState();

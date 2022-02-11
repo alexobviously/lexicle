@@ -35,6 +35,7 @@ class _GroupViewState extends State<GroupView> {
   TextEditingController wordController = TextEditingController();
   final _scrollControllerGroup = LinkedScrollControllerGroup();
   List<ScrollController> _scrollControllers = [];
+  final PageController _pageController = PageController();
   bool invalidWord = false;
 
   int? endTime;
@@ -44,6 +45,8 @@ class _GroupViewState extends State<GroupView> {
   late int _gameState;
   late int _playerCount;
   late int _wordCount;
+
+  int _resultsTab = 0;
 
   @override
   void initState() {
@@ -85,6 +88,7 @@ class _GroupViewState extends State<GroupView> {
   @override
   void dispose() {
     timer?.cancel();
+    _pageController.dispose();
     super.dispose();
   }
 
@@ -137,6 +141,8 @@ class _GroupViewState extends State<GroupView> {
     if (n > _wordCount) sound().play(Sound.good);
     _wordCount = n;
   }
+
+  void _setResultsTab(int t) => setState(() => _resultsTab = t);
 
   @override
   Widget build(BuildContext context) {
@@ -303,38 +309,7 @@ class _GroupViewState extends State<GroupView> {
                 child: _standings(context, state.group, c.maxWidth),
               ),
             ),
-            GridView.count(
-              // controller: _controller,
-              shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
-              children: gcs
-                  .map(
-                    (e) => EntityFutureBuilder<User>(
-                      key: ValueKey('mpgo_${e.state.id}_${e.state.creator}'),
-                      id: e.state.creator,
-                      store: userStore(),
-                      loadingWidget: SpinKitCubeGrid(size: 128, color: Colours.semiCorrect),
-                      errorWidget: (_) => Icon(Icons.error),
-                      resultWidget: (u) => GestureDetector(
-                        child: GameOverview(
-                          e,
-                          header: Text(u.username),
-                          key: ValueKey('go_${e.state.id}'),
-                        ),
-                        onTap: () => Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => GameView(game: e, title: '${u.username}\'s game'),
-                          ),
-                        ),
-                      ),
-                    ),
-                  )
-                  .toList(),
-              crossAxisCount: 2,
-              crossAxisSpacing: 16,
-              mainAxisSpacing: 16,
-              childAspectRatio: 3 / 4,
-            ),
+            _games(context, gcs),
             Container(height: 64),
             _created(context, state.group),
           ],
@@ -346,6 +321,7 @@ class _GroupViewState extends State<GroupView> {
   Widget _resultsView(BuildContext context, GameGroupState state) {
     final theme = Theme.of(context);
     final textTheme = theme.textTheme;
+    List<GameController> gcs = state.games.entries.map((e) => e.value).toList();
     return SingleChildScrollView(
       child: LayoutBuilder(builder: (context, c) {
         return Column(
@@ -363,19 +339,51 @@ class _GroupViewState extends State<GroupView> {
               ),
             ),
             Container(height: 32),
-            Text(
-              'Answers',
-              style: textTheme.headline5,
-            ),
-            SizedBox(
-              width: c.maxWidth,
-              child: FittedBox(
-                child: _answers(context, state.group, c.maxWidth),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: NeumorphicToggle(
+                selectedIndex: _resultsTab,
+                displayForegroundOnlyIfSelected: true,
+                children: [
+                  _toggleElement(context, 'Answers'),
+                  _toggleElement(context, 'Games'),
+                ],
+                thumb: Neumorphic(
+                  style: NeumorphicStyle(
+                    boxShape: NeumorphicBoxShape.roundRect(BorderRadius.all(Radius.circular(12))),
+                  ),
+                ),
+                onChanged: _setResultsTab,
               ),
+            ),
+            Container(height: 16),
+            // TODO: make this smoother - a PageView would be ideal but it doesn't work in a Scrollable
+            AnimatedSwitcher(
+              duration: Duration(milliseconds: 50),
+              child: _resultsTab == 0
+                  ? SizedBox(
+                      width: c.maxWidth,
+                      child: FittedBox(
+                        child: _answers(context, state.group, c.maxWidth),
+                      ),
+                    )
+                  : _games(context, gcs),
             ),
           ],
         );
       }),
+    );
+  }
+
+  ToggleElement _toggleElement(BuildContext context, String text) {
+    final _style = Theme.of(context).textTheme.headline5;
+    return ToggleElement(
+      foreground: Center(
+          child: Text(
+        text,
+        style: _style!.copyWith(fontWeight: FontWeight.bold),
+      )),
+      background: Center(child: Text(text, style: _style)),
     );
   }
 
@@ -418,6 +426,41 @@ class _GroupViewState extends State<GroupView> {
           ),
         ),
       ],
+    );
+  }
+
+  Widget _games(BuildContext context, List<GameController> gcs) {
+    return GridView.count(
+      // controller: _controller,
+      shrinkWrap: true,
+      physics: NeverScrollableScrollPhysics(),
+      children: gcs
+          .map(
+            (e) => EntityFutureBuilder<User>(
+              key: ValueKey('mpgo_${e.state.id}_${e.state.creator}'),
+              id: e.state.creator,
+              store: userStore(),
+              loadingWidget: SpinKitCubeGrid(size: 128, color: Colours.semiCorrect),
+              errorWidget: (_) => Icon(Icons.error),
+              resultWidget: (u) => GestureDetector(
+                child: GameOverview(
+                  e,
+                  header: Text(u.username),
+                  key: ValueKey('go_${e.state.id}'),
+                ),
+                onTap: () => Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => GameView(game: e, title: '${u.username}\'s game'),
+                  ),
+                ),
+              ),
+            ),
+          )
+          .toList(),
+      crossAxisCount: 2,
+      crossAxisSpacing: 16,
+      mainAxisSpacing: 16,
+      childAspectRatio: 3 / 4,
     );
   }
 
