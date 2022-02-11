@@ -1,11 +1,39 @@
 import 'dart:convert';
-
 import 'package:shelf/shelf.dart';
 
+import 'auth_utils.dart';
+
 class HttpUtils {
-  static Response buildResponse({Map<String, dynamic>? data, String? error, List<String> warnings = const []}) {
+  static Response buildResponse({
+    Map<String, dynamic>? data,
+    String? error,
+    List<String> warnings = const [],
+    TokenData? tokenData,
+  }) {
     data ??= {};
+    warnings = List.from(warnings); // because the default const value isn't growable
     String status = 'ok';
+
+    // handle token data
+    if (tokenData != null) {
+      switch (tokenData.status) {
+        case TokenStatus.expired:
+          error ??= 'expired_token';
+          break;
+        case TokenStatus.invalid:
+          error ??= 'invalid_token';
+          break;
+        case TokenStatus.old:
+          warnings.add('old_token');
+          continue issued;
+        issued:
+        case TokenStatus.issued:
+          data.addAll(tokenData.toMap());
+          break;
+        case TokenStatus.ok:
+          break;
+      }
+    }
 
     if (error != null) {
       status = 'error';
@@ -26,8 +54,8 @@ class HttpUtils {
     );
   }
 
-  static Response buildErrorResponse(String error, [List<String> warnings = const []]) =>
-      buildResponse(error: error, warnings: warnings);
+  static Response buildErrorResponse(String error, {List<String> warnings = const [], TokenData? tokenData}) =>
+      buildResponse(error: error, warnings: warnings, tokenData: tokenData);
 
   static Response invalidRequestResponse() => buildResponse(error: 'invalid_request');
 

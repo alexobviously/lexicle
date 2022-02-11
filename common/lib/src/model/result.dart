@@ -21,3 +21,29 @@ class Result<T> {
     return 'Result($str)';
   }
 }
+
+class ApiResult<T> extends Result<T> {
+  final String? token;
+  final int? expiry;
+
+  ApiResult({
+    T? object,
+    String? error,
+    List<String> warnings = const [],
+    this.token,
+    this.expiry,
+  }) : super(object: object, error: error, warnings: warnings);
+
+  factory ApiResult.error(String error, [List<String> warnings = const []]) =>
+      ApiResult(error: error, warnings: warnings);
+  factory ApiResult.ok(T object, {String? token, int? expiry, List<String> warnings = const []}) =>
+      ApiResult(object: object, token: token, expiry: expiry, warnings: warnings);
+
+  @override
+  String toString() {
+    String str = ok ? 'ok, $object' : 'error, $error';
+    if (warnings.isNotEmpty) str = '$str, $warnings';
+    if (token != null) str = '$str, $token';
+    return 'ApiResult($str)';
+  }
+}

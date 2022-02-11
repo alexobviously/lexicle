@@ -5,13 +5,18 @@ import 'package:copy_with_extension/copy_with_extension.dart';
 part 'game_group.g.dart';
 
 @CopyWith()
-class GameGroup {
+class GameGroup implements Entity {
+  @override
   final String id;
+  @override
+  final int timestamp;
   final String title;
   final GameConfig config;
   final String creator;
   final String? code;
   final int state;
+  late final int created; // TODO: DEPRECATED, REMOVE
+  final int? endTime;
 
   /// A list of player IDs.
   final List<String> players;
@@ -22,6 +27,7 @@ class GameGroup {
   /// Map player IDs to all of the games they currently have.
   final Map<String, List<GameStub>> games;
 
+  bool get started => state > MatchState.lobby;
   bool get finished => state >= MatchState.finished;
   bool get canBegin => state == MatchState.lobby && words.length == players.length && players.length > 1;
   Map<String, String> get hiddenWords => words.map((k, v) => MapEntry(k, '*' * v.length));
@@ -52,25 +58,31 @@ class GameGroup {
   List<GameStub> playerGamesSorted(String player) {
     if (!games.containsKey(player)) return [];
     List<GameStub> _games = games[player]!;
-    Map<int, GameStub> _mapping = {};
-    for (int i = 0; i < standings.length; i++) {
-      if (standings[i].player == player) {
-        _mapping[i] = GameStub.blank();
+    List<GameStub> _sorted = [];
+    for (Standing s in standings) {
+      String p = s.player;
+      if (p == player) {
+        _sorted.add(GameStub.blank());
       } else {
-        int index = players.indexOf(standings[i].player);
-        if (index == -1) {
-          _mapping[i] = GameStub.blank();
-        } else {
-          if (index > players.indexOf(player)) index--;
-          _mapping[i] = _games[index];
-        }
+        _sorted.add(_games.firstWhereOrNull((e) => e.creator == p) ?? GameStub.blank());
       }
     }
-    return _mapping.entries.map((e) => e.value).toList();
+    return _sorted;
+  }
+
+  double wordDifficulty(String player) {
+    int total = 0;
+    for (MapEntry<String, List<GameStub>> gl in games.entries) {
+      if (gl.key == player) continue;
+      GameStub? g = gl.value.firstWhereOrNull((e) => e.creator == player);
+      if (g != null) total += g.guesses;
+    }
+    return total / (players.length - 1);
   }
 
   GameGroup({
     required this.id,
+    int? timestamp,
     required this.title,
     required this.config,
     required this.creator,
@@ -79,51 +91,55 @@ class GameGroup {
     this.players = const [],
     this.words = const {},
     this.games = const {},
-  }) : assert(players.contains(creator));
-
-  static const String __id = 'id';
-  static const String __title = 't';
-  static const String __config = 'c';
-  static const String __creator = 'x';
-  static const String __code = 'q';
-  static const String __state = 's';
-  static const String __players = 'p';
-  static const String __words = 'w';
-  static const String __games = 'g';
+    int? created,
+    this.endTime,
+  })  : assert(players.contains(creator)),
+        timestamp = timestamp ?? nowMs() {
+    this.created = created ?? nowMs();
+  }
 
   factory GameGroup.fromJson(Map<String, dynamic> doc) {
     return GameGroup(
-      id: parseObjectId(doc[__id])!,
-      title: doc[__title],
-      config: GameConfig.fromJson(doc[__config]),
-      creator: doc[__creator],
-      code: doc[__code],
-      state: doc[__state],
-      players: coerceList<String>(doc[__players] ?? []),
-      words: (doc[__words] ?? {}).map<String, String>((k, v) => MapEntry(k.toString(), v.toString())),
+      id: parseObjectId(doc[Fields.id])!,
+      timestamp: doc[Fields.timestamp] ?? nowMs(),
+      title: doc[GroupFields.title],
+      config: GameConfig.fromJson(doc[GroupFields.config]),
+      creator: doc[GroupFields.creator],
+      code: doc[GroupFields.code],
+      state: doc[GroupFields.state],
+      players: coerceList<String>(doc[GroupFields.players] ?? []),
+      words: (doc[GroupFields.words] ?? {}).map<String, String>((k, v) => MapEntry(k.toString(), v.toString())),
       games: {
-        for (MapEntry entry in (doc[__games] ?? {}).entries)
+        for (MapEntry entry in (doc[GroupFields.games] ?? {}).entries)
           entry.key: mapList<GameStub>(entry.value, (e) => GameStub.fromJson(e)),
       },
+      created: doc[GroupFields.created],
+      endTime: doc[GroupFields.endTime],
     );
   }
 
   Map<String, dynamic> toMap({bool hideAnswers = false}) {
     return {
-      __id: parseObjectId(id),
-      __title: title,
-      __config: config.toMap(),
-      __creator: creator,
-      if (code != null) __code: code,
-      __state: state,
-      __players: players,
-      __words: hideAnswers ? hiddenWords : words,
-      __games: {
+      Fields.id: parseObjectId(id),
+      Fields.timestamp: timestamp,
+      GroupFields.title: title,
+      GroupFields.config: config.toMap(),
+      GroupFields.creator: creator,
+      if (code != null) GroupFields.code: code,
+      GroupFields.state: state,
+      GroupFields.players: players,
+      GroupFields.words: hideAnswers ? hiddenWords : words,
+      GroupFields.games: {
         for (MapEntry<String, List<GameStub>> entry in games.entries)
           entry.key: mapList<Map<String, dynamic>>(entry.value, (e) => e.toMap()),
       },
+      GroupFields.created: created,
+      if (endTime != null) GroupFields.endTime: endTime,
     };
   }
+
+  @override
+  Map<String, dynamic> export() => toMap();
 
   GameGroup updateGameStub(String player, GameStub stub) {
     Map<String, List<GameStub>> _games = Map.from(games);

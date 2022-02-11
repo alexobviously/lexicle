@@ -1,7 +1,9 @@
+import 'dart:async';
+
 import 'package:bloc/bloc.dart';
 import 'package:common/common.dart';
+import 'package:rxdart/rxdart.dart';
 
-import '../mediators/server_mediator.dart';
 import '../services/service_locator.dart';
 
 class GameGroupController extends Cubit<GameGroup> {
@@ -10,6 +12,18 @@ class GameGroupController extends Cubit<GameGroup> {
   String get id => state.id;
   Map<String, dynamic> toMap({bool hideAnswers = true}) => state.toMap(hideAnswers: hideAnswers);
   List<String> get unreadyPlayers => state.players.where((e) => !state.words.containsKey(e)).toList();
+  GameConfig get config => state.config;
+
+  BehaviorSubject<int> highestGuessStream = BehaviorSubject()..add(0);
+
+  void onGameUpdate(Game g) {
+    // we keep track of the highest guess count in every game to
+    // calculate the penalty for timed-out games
+    if (g.guesses.length > highestGuessStream.value) {
+      print('set highest guess to ${g.guesses.length}');
+      highestGuessStream.add(g.guesses.length);
+    }
+  }
 
   Result<bool> addPlayer(String id) {
     if (state.players.contains(id)) return Result.error('already_in_group');
@@ -49,10 +63,16 @@ class GameGroupController extends Cubit<GameGroup> {
     return Result.ok(true);
   }
 
-  void start(Map<String, List<GameStub>> games) {
+  int? getEndTime() => config.timeLimit != null
+      ? DateTime.now().add(Duration(milliseconds: config.timeLimit!)).millisecondsSinceEpoch
+      : null;
+
+  void start(Map<String, List<GameStub>> games, int? endTime) {
+    endTime ??= getEndTime();
     emit(state.copyWith(
       state: MatchState.playing,
       games: games,
+      endTime: endTime,
     ));
   }
 

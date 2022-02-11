@@ -4,11 +4,14 @@ import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:word_game/app/colours.dart';
+import 'package:word_game/app/routes.dart';
 import 'package:word_game/cubits/game_group_manager.dart';
 import 'package:word_game/services/service_locator.dart';
+import 'package:word_game/services/sound_service.dart';
 import 'package:word_game/ui/game_creator.dart';
+import 'package:word_game/ui/neumorphic_text_field.dart';
 import 'package:word_game/ui/standard_scaffold.dart';
-import 'package:word_game/views/group_view.dart';
+import 'package:word_game/views/group/group_view.dart';
 
 class GroupsView extends StatefulWidget {
   const GroupsView({Key? key}) : super(key: key);
@@ -18,17 +21,17 @@ class GroupsView extends StatefulWidget {
 }
 
 class _GroupsViewState extends State<GroupsView> {
-  TextEditingController nameController = TextEditingController();
-
   @override
   void initState() {
     final cubit = BlocProvider.of<GameGroupManager>(context);
-    setState(() {
-      nameController.text = cubit.player;
-    });
     cubit.refresh();
     super.initState();
   }
+
+  void _onCreate(bool ok) => ok ? sound().play(Sound.clickUp) : null;
+  void _onJoin(bool ok) => _onCreate(ok);
+  void _onDelete(bool ok) => ok ? sound().play(Sound.clickDown) : null;
+  void _onLeave(bool ok) => _onDelete(ok);
 
   @override
   Widget build(BuildContext context) {
@@ -46,40 +49,17 @@ class _GroupsViewState extends State<GroupsView> {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        Expanded(
-                          child: Neumorphic(
-                            style: NeumorphicStyle(
-                              depth: -2,
-                            ),
-                            padding: EdgeInsets.symmetric(horizontal: 16.0),
-                            child: TextField(
-                              enabled: state.joined.isEmpty,
-                              controller: nameController,
-                              decoration: InputDecoration(
-                                suffixIcon: state.joined.isEmpty && auth().state.name.isNotEmpty
-                                    ? IconButton(
-                                        onPressed: () {
-                                          auth().setName('');
-                                          setState(() => nameController.text = '');
-                                        },
-                                        icon: Icon(Icons.clear),
-                                      )
-                                    : null,
-                              ),
-                            ),
-                          ),
-                        ),
-                        NeumorphicButton(
-                          onPressed: state.joined.isEmpty ? () => auth().setName(nameController.text) : null,
-                          child: const Icon(MdiIcons.keyboardReturn),
-                        ),
-                        Container(width: 10),
                         NeumorphicButton(
                           onPressed: () => state.working ? null : cubit.refresh(),
                           child: state.working
                               ? SpinKitFadingCircle(size: 24, color: Colors.black87)
                               : const Icon(MdiIcons.refresh),
+                        ),
+                        NeumorphicButton(
+                          onPressed: () => Navigator.of(context).pushNamed(Routes.topPlayers),
+                          child: const Icon(MdiIcons.podium),
                         ),
                       ],
                     ),
@@ -90,11 +70,12 @@ class _GroupsViewState extends State<GroupsView> {
                       // shrinkWrap: true,
                       itemCount: state.groups.length,
                       itemBuilder: (context, i) {
-                        GameGroup g = state.groups.entries.toList()[i].value;
-                        bool isCreator = g.creator == auth().state.name;
+                        GameGroup g = state.groups.entries.toList().reversed.toList()[i].value;
+                        bool isCreator = g.creator == auth().userId;
                         Color? tileColour = i % 2 == 0 ? Colours.wrong : null;
                         bool joined = state.joined.contains(g.id);
                         if (joined) tileColour = Colours.semiCorrect;
+                        if (g.finished) tileColour = Colours.victory;
                         return ListTile(
                           title: Text(g.title),
                           tileColor: tileColour,
@@ -109,7 +90,7 @@ class _GroupsViewState extends State<GroupsView> {
                             padding: const EdgeInsets.all(8.0),
                             child: Text('${g.players.length}', style: textTheme.headline5, textAlign: TextAlign.center),
                           ),
-                          trailing: auth().state.name.isNotEmpty
+                          trailing: !g.started
                               ? NeumorphicButton(
                                   style: NeumorphicStyle(
                                     color: tileColour,
@@ -117,11 +98,11 @@ class _GroupsViewState extends State<GroupsView> {
                                   ),
                                   onPressed: () {
                                     if (isCreator) {
-                                      cubit.deleteGroup(g.id);
+                                      cubit.deleteGroup(g.id).then(_onDelete);
                                     } else if (joined) {
-                                      cubit.leaveGroup(g.id);
+                                      cubit.leaveGroup(g.id).then(_onLeave);
                                     } else {
-                                      cubit.joinGroup(g.id);
+                                      cubit.joinGroup(g.id).then(_onJoin);
                                     }
                                   },
                                   child: SizedBox(
@@ -142,7 +123,9 @@ class _GroupsViewState extends State<GroupsView> {
                     ),
                   ),
                   GameCreator(
-                    onCreate: (cfg) => cubit.createGroup(cfg),
+                    showTitle: true,
+                    showTimeLimit: true,
+                    onCreate: (cfg) => cubit.createGroup(cfg.title, cfg.config).then(_onCreate),
                   )
                 ],
               );

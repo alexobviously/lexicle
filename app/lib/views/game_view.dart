@@ -1,26 +1,57 @@
+import 'dart:async';
+import 'dart:math';
+
 import 'package:common/common.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:word_game/app/colours.dart';
+import 'package:word_game/services/service_locator.dart';
+import 'package:word_game/services/sound_service.dart';
+import 'package:word_game/ui/game_clock.dart';
 import 'package:word_game/ui/game_keyboard.dart';
 import 'package:word_game/ui/standard_scaffold.dart';
 import 'package:word_game/ui/word_row.dart';
 
-import '../game_end.dart';
+import '../ui/post_game_panel.dart';
 
-class GamePage extends StatefulWidget {
+class GameView extends StatefulWidget {
   final GameController game;
   final String? title;
-  const GamePage({Key? key, required this.game, this.title}) : super(key: key);
+  const GameView({Key? key, required this.game, this.title}) : super(key: key);
 
   @override
-  _GamePageState createState() => _GamePageState();
+  _GameViewState createState() => _GameViewState();
 }
 
-class _GamePageState extends State<GamePage> {
+class _GameViewState extends State<GameView> {
   GameController get game => widget.game;
+
+  int? endTime;
+  int? timeLeft;
+  Timer? timer;
+
+  @override
+  void initState() {
+    _initTimer();
+    game.stream.map((e) => e.endTime).distinct().listen((_) => _initTimer());
+    widget.game.numRowsStream.listen((_) => _scrollDown());
+    WidgetsBinding.instance!.addPostFrameCallback((_) => _scrollDown(Duration(milliseconds: 750)));
+    super.initState();
+  }
+
+  void _initTimer() {
+    timer?.cancel();
+    if (game.state.endTime != null) {
+      endTime = game.state.endTime;
+      timer = Timer.periodic(Duration(seconds: 1), (_) => _setTimeLeft());
+    }
+  }
+
+  void _setTimeLeft() {
+    if (endTime == null) return;
+    setState(() => timeLeft = max(endTime! - DateTime.now().millisecondsSinceEpoch, 0));
+  }
 
   final ScrollController _controller = ScrollController();
 
@@ -37,14 +68,12 @@ class _GamePageState extends State<GamePage> {
     );
   }
 
-  @override
-  void initState() {
-    widget.game.numRowsStream.listen((_) => _scrollDown());
-    WidgetsBinding.instance!.addPostFrameCallback((_) => _scrollDown(Duration(milliseconds: 750)));
-    super.initState();
+  void _onEnter() async {
+    bool ok = await game.enter();
+    if (ok) {
+      sound().play(Sound.pop);
+    }
   }
-
-  void _onEnter() => game.enter();
 
   void _onBackspace() {
     _scrollDown();
@@ -69,17 +98,22 @@ class _GamePageState extends State<GamePage> {
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
+                    if (timeLeft != null) GameClock(timeLeft!),
                     Expanded(
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                        padding: const EdgeInsets.all(4.0),
                         child: Neumorphic(
                           padding: const EdgeInsets.symmetric(horizontal: 4.0),
                           duration: const Duration(milliseconds: 2000),
                           style: NeumorphicStyle(
                             depth: -10,
-                            color: state.gameFinished ? Colours.correct.withAlpha(100) : null,
-                            border: state.gameFinished
-                                ? NeumorphicBorder(color: Colours.correct, width: 2.0)
+                            color: state.gameFinished
+                                ? state.endReason == EndReasons.solved
+                                    ? Colours.correct.withAlpha(100)
+                                    : Colours.wrong.withAlpha(150)
+                                : null,
+                            border: state.solved
+                                ? NeumorphicBorder(color: Colours.correct, width: 1.0)
                                 : const NeumorphicBorder.none(),
                           ),
                           child: SingleChildScrollView(
@@ -98,7 +132,7 @@ class _GamePageState extends State<GamePage> {
                                           semiCorrect: e.semiCorrect,
                                           finalised: e.finalised,
                                           shape: NeumorphicShape.convex,
-                                          surfaceIntensity: e.isCorrect ? 0.4 : 0.25,
+                                          surfaceIntensity: e.solved ? 0.4 : 0.25,
                                         ),
                                       ),
                                     )
@@ -140,8 +174,9 @@ class _GamePageState extends State<GamePage> {
                           ),
                           secondChild: SizedBox(
                             width: MediaQuery.of(context).size.width - 16.0,
-                            child: GameEnd(
+                            child: PostGamePanel(
                               guesses: state.guesses.length,
+                              reason: state.endReason,
                             ),
                           ),
                           crossFadeState: !state.gameFinished ? CrossFadeState.showFirst : CrossFadeState.showSecond,

@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:common/common.dart';
-import 'package:validators/validators.dart';
 import 'package:word_game/cubits/auth_controller.dart';
 import 'package:word_game/cubits/game_group_controller.dart';
 import 'package:word_game/services/api_client.dart';
@@ -11,7 +10,7 @@ import 'package:word_game/services/service_locator.dart';
 class GameGroupManager extends Cubit<GroupManagerState> {
   Map<String, GameGroupController> groupControllers = {};
   Map<String, StreamSubscription> streams = {};
-  String get player => auth().state.name;
+  String get player => auth().userId!;
   GameGroupManager() : super(GroupManagerState.initial()) {
     init();
   }
@@ -36,7 +35,6 @@ class GameGroupManager extends Cubit<GroupManagerState> {
   }
 
   void _onTimerEvent(Timer t) {
-    print('on timer event');
     refresh();
   }
 
@@ -59,9 +57,7 @@ class GameGroupManager extends Cubit<GroupManagerState> {
 
   void refresh() async {
     emit(state.copyWith(working: true));
-    print('refreshing groups');
     final _result = await ApiClient.allGroups();
-    print('groups: $_result');
     if (!_result.ok || isClosed) return;
     final groupList = _result.object!;
     for (final g in groupList) {
@@ -93,34 +89,38 @@ class GameGroupManager extends Cubit<GroupManagerState> {
     return Result.ok(g);
   }
 
-  void joinGroup(String id) async {
+  Future<bool> joinGroup(String id) async {
     final _result = await ApiClient.joinGroup(id, player);
-    if (!_result.ok) return;
+    if (!_result.ok) return false;
     GameGroup g = _result.object!;
     _updateGroup(g);
+    return true;
   }
 
-  void leaveGroup(String id) async {
+  Future<bool> leaveGroup(String id) async {
     final _result = await ApiClient.leaveGroup(id, player);
-    if (!_result.ok) return;
+    if (!_result.ok) return false;
     GameGroup g = _result.object!;
     print(g.players);
     _updateGroup(g);
+    return true;
   }
 
-  void deleteGroup(String id) async {
+  Future<bool> deleteGroup(String id) async {
     final _result = await ApiClient.deleteGroup(id, player);
-    if (!_result.ok) return;
+    if (!_result.ok) return false;
     emit(state.copyWith(
       groups: Map.from(state.groups)..remove(id),
       joined: List.from(state.joined)..remove(id),
     ));
+    return true;
   }
 
-  void createGroup(GameConfig config) async {
-    final _result = await ApiClient.createGroup(player, config);
-    if (!_result.ok) return;
+  Future<bool> createGroup(String title, GameConfig config) async {
+    final _result = await ApiClient.createGroup(player, title, config);
+    if (!_result.ok) return false;
     _updateGroup(_result.object!);
+    return true;
   }
 }
 

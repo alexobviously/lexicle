@@ -14,7 +14,7 @@ class WordData {
   List<String> get semiCorrectLetters => semiCorrect.map((e) => content[e]).toList();
   List<String> get wrongLetters =>
       content.split('')..removeWhere((e) => correctLetters.contains(e) || semiCorrectLetters.contains(e));
-  bool get isCorrect => content.length == correct.length;
+  bool get solved => content.length == correct.length;
 
   const WordData({
     this.content = '',
@@ -25,24 +25,19 @@ class WordData {
   factory WordData.current(String content) => WordData(content: content);
   factory WordData.blank() => const WordData();
 
-  static const __content = 'w';
-  static const __correct = 'c';
-  static const __semiCorrect = 's';
-  static const __finalised = 'f';
-
   factory WordData.fromJson(Map<String, dynamic> doc) => WordData(
-        content: doc[__content],
-        correct: coerceList<int>(doc[__correct] ?? []),
-        semiCorrect: coerceList<int>(doc[__semiCorrect] ?? []),
-        finalised: doc['finalised'] as bool? ?? true,
+        content: doc[WordFields.content],
+        correct: coerceList<int>(doc[WordFields.correct] ?? []),
+        semiCorrect: coerceList<int>(doc[WordFields.semiCorrect] ?? []),
+        finalised: doc[WordFields.finalised] as bool? ?? true,
       );
 
   Map<String, dynamic> toMap({bool showFinalised = false}) {
     return {
-      __content: content,
-      __correct: correct,
-      __semiCorrect: semiCorrect,
-      if (showFinalised) __finalised: finalised,
+      WordFields.content: content,
+      WordFields.correct: correct,
+      WordFields.semiCorrect: semiCorrect,
+      if (showFinalised) WordFields.finalised: finalised,
     };
   }
 

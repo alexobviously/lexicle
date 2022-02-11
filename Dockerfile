@@ -24,6 +24,7 @@ FROM scratch
 COPY --from=build /runtime/ /
 COPY --from=build /app/server/bin/server /app/bin/
 COPY --from=build /app/server/dictionary/ /dictionary/
+COPY --from=build /app/server/pubspec.yaml /
 
 # Start server.
 EXPOSE 8080

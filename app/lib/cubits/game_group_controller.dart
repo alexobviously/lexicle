@@ -8,21 +8,37 @@ import '../services/service_locator.dart';
 
 class GameGroupController extends Cubit<GameGroupState> {
   GameGroupController(GameGroupState initial) : super(initial) {
+    init();
     startTimer(); // hmm
   }
 
   Timer? timer;
+  StreamSubscription<bool>? finishedSub;
 
   String get id => state.group.id;
-  String get player => auth().state.name;
+  String get player => auth().userId!;
   Map<String, dynamic> toMap({bool hideAnswers = true}) => state.group.toMap(hideAnswers: hideAnswers);
   List<String> get unreadyPlayers => state.group.players.where((e) => !state.group.words.containsKey(e)).toList();
+
+  void init() {
+    finishedSub = stream.map((e) => e.group.finished).distinct().listen((fin) {
+      if (fin) {
+        _onFinished();
+      }
+    });
+  }
 
   void startTimer() => timer = Timer.periodic(Duration(milliseconds: 5000), _onTimerEvent);
 
   void _onTimerEvent(Timer t) {
-    print('on timer event');
     refresh();
+  }
+
+  void _onFinished() {
+    auth().refresh();
+    List<String> others = List.from(state.group.players)..remove(player);
+    userStore().getMultiple(others, true);
+    ustatsStore().getMultiple(others, true);
   }
 
   @override
@@ -68,12 +84,14 @@ class GameGroupController extends Cubit<GameGroupState> {
     }
   }
 
-  void start() async {
+  Future<bool> start() async {
     final _result = await ApiClient.startGroup(id);
     if (_result.ok) {
       emit(state.copyWith(group: _result.object!));
       _checkGames();
+      return true;
     }
+    return false;
   }
 
   Future<Result<GameGroup>> setWord(String word) async {

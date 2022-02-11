@@ -1,8 +1,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.word_game">
+    package="com.jauska.lexicle">
     <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.INTERNET" />
    <application
-        android:label="word_game"
+        android:label="Lexicle"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
