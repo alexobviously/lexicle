@@ -5,6 +5,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:version/version.dart';
 import 'package:word_game/app/colours.dart';
 import 'package:word_game/app/routes.dart';
+import 'package:word_game/cubits/app_link_handler.dart';
 import 'package:word_game/cubits/auth_controller.dart';
 import 'package:word_game/cubits/server_meta_cubit.dart';
 import 'package:word_game/model/server_meta.dart';
@@ -32,6 +33,11 @@ class _HomeViewState extends State<HomeView> {
         child: SafeArea(
           child: Stack(
             children: [
+              BlocBuilder<AppLinkHandler, String?>(
+                builder: (context, link) {
+                  return Text('AppLink: $link');
+                },
+              ),
               BlocBuilder<AuthController, AuthState>(
                 builder: (context, state) {
                   return Column(

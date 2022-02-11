@@ -16,9 +16,9 @@ class AppDictionary extends Dictionary {
   }
 
   Future<void> loadDictionary(String path, DictionaryType dict) async {
-    print('%% [${elapsed}ms] loading dictionary ${dict.name}');
+    // print('%% [${elapsed}ms] loading dictionary ${dict.name}');
     String data = await rootBundle.loadString(path);
-    print('%% [${elapsed}ms] dict file loaded: ${data.substring(0, 50)}...');
+    // print('%% [${elapsed}ms] dict file loaded: ${data.substring(0, 50)}...');
     parseDictionary(data, dict);
   }
 }

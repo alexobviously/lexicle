@@ -4,6 +4,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:word_game/app/routes.dart';
+import 'package:word_game/cubits/app_link_handler.dart';
 import 'package:word_game/cubits/auth_controller.dart';
 import 'package:word_game/cubits/game_group_manager.dart';
 import 'package:word_game/cubits/local_game_manager.dart';
@@ -46,6 +47,10 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
+        BlocProvider<AppLinkHandler>(
+          lazy: true,
+          create: (_) => AppLinkHandler(),
+        ),
         BlocProvider<AuthController>(
           create: (_) => auth(),
         ),
