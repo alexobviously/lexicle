@@ -1,14 +1,14 @@
 import 'package:common/common.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:go_router/go_router.dart';
 import 'package:word_game/app/colours.dart';
+import 'package:word_game/app/router.dart';
 import 'package:word_game/cubits/auth_controller.dart';
 import 'package:word_game/services/service_locator.dart';
 import 'package:word_game/ui/entity_future_builder.dart';
 import 'package:word_game/ui/standard_scaffold.dart';
-import 'package:word_game/views/stats_view.dart';
 
 class TeamView extends StatefulWidget {
   final String id;
@@ -129,11 +129,7 @@ class _TeamViewState extends State<TeamView> {
                         loadingWidget: SpinKitCircle(size: 16, color: Colours.victory),
                         errorWidget: (_) => Icon(Icons.error),
                         resultWidget: (user) => InkWell(
-                          onTap: () => Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) => ProfileView(id: user.id),
-                            ),
-                          ),
+                          onTap: () => context.push(Routes.user(user.id)),
                           child: Container(
                             color: _rowColour(i),
                             child: Padding(

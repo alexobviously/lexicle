@@ -2,13 +2,14 @@ import 'package:common/common.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:go_router/go_router.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:word_game/app/colours.dart';
+import 'package:word_game/app/router.dart';
 import 'package:word_game/cubits/game_group_manager.dart';
 import 'package:word_game/services/api_client.dart';
 import 'package:word_game/ui/result_future_builder.dart';
 import 'package:word_game/ui/standard_scaffold.dart';
-import 'package:word_game/views/stats_view.dart';
 
 class TopPlayersView extends StatefulWidget {
   const TopPlayersView({Key? key}) : super(key: key);
@@ -69,11 +70,7 @@ class _TopPlayersViewState extends State<TopPlayersView> {
                       itemBuilder: (context, i) {
                         User u = users[i];
                         return InkWell(
-                          onTap: () => Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) => ProfileView(id: u.id),
-                            ),
-                          ),
+                          onTap: () => context.push(Routes.user(u.id)),
                           child: Container(
                             color: _rowColour(i),
                             child: Padding(

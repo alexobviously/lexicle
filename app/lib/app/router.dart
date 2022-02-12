@@ -6,6 +6,7 @@ import 'package:word_game/views/groups_view.dart';
 import 'package:word_game/views/home/home_view.dart';
 import 'package:word_game/views/settings_view.dart';
 import 'package:word_game/views/solo_view.dart';
+import 'package:word_game/views/profile_view.dart';
 import 'package:word_game/views/top_players_view.dart';
 
 class Routes {
@@ -17,6 +18,8 @@ class Routes {
   static const dict = '/dict';
   static const topPlayers = '/top_players';
   static const about = '/about';
+  static const users = '/users';
+  static user(String id) => '$users/$id';
 }
 
 GoRouter buildRouter() {
@@ -53,6 +56,12 @@ GoRouter buildRouter() {
       GoRoute(
         path: Routes.about,
         builder: (_, __) => AboutView(),
+      ),
+      GoRoute(
+        path: Routes.user(':id'),
+        builder: (context, state) {
+          return ProfileView(id: state.params['id'] ?? '');
+        },
       ),
     ],
   );
