@@ -4,7 +4,6 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:word_game/app/router.dart';
-import 'package:word_game/app/routes.dart';
 import 'package:word_game/cubits/auth_controller.dart';
 import 'package:word_game/cubits/game_group_manager.dart';
 import 'package:word_game/cubits/local_game_manager.dart';
@@ -12,15 +11,7 @@ import 'package:word_game/cubits/server_meta_cubit.dart';
 import 'package:word_game/extensions/neumorphic_extensions.dart';
 import 'package:word_game/services/api_client.dart';
 import 'package:word_game/services/api_service.dart';
-import 'package:word_game/views/about_view.dart';
-import 'package:word_game/views/auth/auth_view.dart';
-import 'package:word_game/views/dict_search_view.dart';
-import 'package:word_game/views/groups_view.dart';
-import 'package:word_game/views/home/home_view.dart';
-import 'package:word_game/views/settings_view.dart';
-import 'package:word_game/views/solo_view.dart';
 import 'package:word_game/services/service_locator.dart';
-import 'package:word_game/views/top_players_view.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

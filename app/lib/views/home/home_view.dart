@@ -4,7 +4,7 @@ import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:version/version.dart';
 import 'package:word_game/app/colours.dart';
-import 'package:word_game/app/routes.dart';
+import 'package:word_game/app/router.dart';
 import 'package:word_game/cubits/auth_controller.dart';
 import 'package:word_game/cubits/server_meta_cubit.dart';
 import 'package:word_game/model/server_meta.dart';
@@ -64,7 +64,7 @@ class _HomeViewState extends State<HomeView> {
                       //   ),
                       // ),
                       NeumorphicButton(
-                        onPressed: () => Navigator.of(context).pushNamed(state.loggedIn ? Routes.groups : Routes.auth),
+                        onPressed: () => context.push(state.loggedIn ? Routes.groups : Routes.auth),
                         style: NeumorphicStyle(
                           depth: 2,
                           shape: NeumorphicShape.flat,
@@ -74,7 +74,7 @@ class _HomeViewState extends State<HomeView> {
                       ),
                       Container(height: 20),
                       NeumorphicButton(
-                        onPressed: () => Navigator.of(context).pushNamed(Routes.solo),
+                        onPressed: () => context.push(Routes.solo),
                         style: NeumorphicStyle(
                           depth: 2,
                           shape: NeumorphicShape.flat,
@@ -84,7 +84,7 @@ class _HomeViewState extends State<HomeView> {
                       ),
                       Container(height: 20),
                       NeumorphicButton(
-                        onPressed: () => Navigator.of(context).pushNamed(Routes.dict),
+                        onPressed: () => context.push(Routes.dict),
                         style: NeumorphicStyle(
                           depth: 2,
                           shape: NeumorphicShape.flat,

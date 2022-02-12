@@ -1,6 +1,6 @@
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:word_game/app/routes.dart';
+import 'package:word_game/app/router.dart';
 import 'package:go_router/go_router.dart';
 
 class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
