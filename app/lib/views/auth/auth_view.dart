@@ -1,7 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
-import 'package:package_info_plus/package_info_plus.dart';
-import 'package:word_game/app/routes.dart';
+import 'package:go_router/go_router.dart';
+import 'package:word_game/app/router.dart';
 import 'package:word_game/cubits/auth_controller.dart';
 import 'package:word_game/ui/standard_scaffold.dart';
 import 'package:word_game/views/auth/login_form.dart';
@@ -45,7 +45,7 @@ class _AuthViewState extends State<AuthView> {
     return BlocListener<AuthController, AuthState>(
       listener: (context, state) {
         if (state.loggedIn) {
-          Navigator.of(context).pushNamedAndRemoveUntil(Routes.home, (route) => false);
+          context.go(Routes.home);
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
             content: Text('Logged in!'),
           ));

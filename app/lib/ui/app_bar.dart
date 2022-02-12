@@ -1,6 +1,6 @@
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:word_game/app/routes.dart';
+import 'package:go_router/go_router.dart';
 
 class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String? title;
@@ -9,7 +9,8 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-    bool canGoBack = showBackButton && Navigator.of(context).canPop();
+    bool canGoBack =
+        showBackButton && (GoRouter.of(context).navigator?.canPop() ?? false); //Navigator.of(context).canPop();
     return Container(
       decoration: BoxDecoration(
         border: Border(bottom: BorderSide(color: Colors.black12)),
@@ -23,7 +24,7 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
             children: [
               if (canGoBack)
                 GestureDetector(
-                  onTap: () => Navigator.of(context).pop(),
+                  onTap: () => context.pop(),
                   child: Icon(
                     MdiIcons.chevronLeft,
                     size: 30,

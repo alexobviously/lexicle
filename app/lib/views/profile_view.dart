@@ -1,24 +1,25 @@
 import 'dart:math';
 
 import 'package:common/common.dart';
+import 'package:go_router/go_router.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:word_game/app/colours.dart';
+import 'package:word_game/app/router.dart';
 import 'package:word_game/services/service_locator.dart';
 import 'package:word_game/ui/entity_future_builder.dart';
 import 'package:word_game/ui/standard_scaffold.dart';
-import 'package:word_game/views/team_view.dart';
 
-class StatsView extends StatefulWidget {
+class ProfileView extends StatefulWidget {
   final String id;
-  const StatsView({required this.id, Key? key}) : super(key: key);
+  const ProfileView({required this.id, Key? key}) : super(key: key);
 
   @override
-  State<StatsView> createState() => _StatsViewState();
+  State<ProfileView> createState() => _ProfileViewState();
 }
 
-class _StatsViewState extends State<StatsView> {
+class _ProfileViewState extends State<ProfileView> {
   int lengthIndex = 0;
 
   void setLengthIndex(int x) => setState(() => lengthIndex = x);
@@ -222,11 +223,7 @@ class _StatsViewState extends State<StatsView> {
           team.name,
           style: Theme.of(context).textTheme.headline6!.copyWith(color: Colours.correct.darken(0.4)),
         ),
-        onTap: () => Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => TeamView(id),
-          ),
-        ),
+        onTap: () => context.push(Routes.team(id)),
       ),
     );
   }

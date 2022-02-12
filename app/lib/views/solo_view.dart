@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:go_router/go_router.dart';
+import 'package:word_game/app/router.dart';
 import 'package:word_game/cubits/local_game_manager.dart';
 import 'package:word_game/ui/game_creator.dart';
 import 'package:word_game/ui/game_overview.dart';
@@ -61,9 +63,11 @@ class _SoloViewState extends State<SoloView> {
                                     onRemove: () => gameManager.removeGame(e.state.id),
                                     key: ValueKey('go_${e.state.id}'),
                                   ),
-                                  onTap: () => Navigator.of(context).push(
-                                    MaterialPageRoute(
-                                      builder: (context) => GameView(game: e, title: '${e.state.length} letter game'),
+                                  onTap: () => context.push(
+                                    Routes.game(e.state.id),
+                                    extra: GameRouteData(
+                                      game: e,
+                                      title: '${e.state.length} letter game',
                                     ),
                                   ),
                                 ))

@@ -15,17 +15,24 @@ import 'package:word_game/ui/word_row.dart';
 
 import '../ui/post_game_panel.dart';
 
-class GameView extends StatefulWidget {
+// eventually it would be nice to dynamically get games too, when there's a GameStore
+class GameRouteData {
   final GameController game;
   final String? title;
-  const GameView({Key? key, required this.game, this.title}) : super(key: key);
+  GameRouteData({required this.game, this.title});
+}
+
+class GameView extends StatefulWidget {
+  final String id;
+  final GameRouteData data;
+  const GameView({Key? key, required this.id, required this.data}) : super(key: key);
 
   @override
   _GameViewState createState() => _GameViewState();
 }
 
 class _GameViewState extends State<GameView> {
-  GameController get game => widget.game;
+  GameController get game => widget.data.game;
 
   int? endTime;
   int? timeLeft;
@@ -35,7 +42,7 @@ class _GameViewState extends State<GameView> {
   void initState() {
     _initTimer();
     game.stream.map((e) => e.endTime).distinct().listen((_) => _initTimer());
-    widget.game.numRowsStream.listen((_) => _scrollDown());
+    game.numRowsStream.listen((_) => _scrollDown());
     WidgetsBinding.instance!.addPostFrameCallback((_) => _scrollDown(Duration(milliseconds: 750)));
     super.initState();
   }
@@ -89,7 +96,7 @@ class _GameViewState extends State<GameView> {
   @override
   Widget build(BuildContext context) {
     return StandardScaffold(
-      title: widget.title,
+      title: widget.data.title,
       body: Center(
         child: SafeArea(
           child: BlocBuilder<GameController, Game>(

@@ -1,7 +1,8 @@
 import 'package:common/common.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:go_router/go_router.dart';
+import 'package:word_game/app/router.dart';
 import 'package:word_game/services/service_locator.dart';
-import 'package:word_game/views/stats_view.dart';
 
 class UserDetails extends StatelessWidget {
   final User user;
@@ -12,11 +13,7 @@ class UserDetails extends StatelessWidget {
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
     return GestureDetector(
-      onTap: () => Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (context) => StatsView(id: user.id),
-        ),
-      ),
+      onTap: () => context.push(Routes.user(user.id)),
       child: SizedBox(
         width: MediaQuery.of(context).size.width * 0.95,
         child: Neumorphic(

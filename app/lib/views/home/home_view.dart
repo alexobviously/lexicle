@@ -1,20 +1,18 @@
 import 'package:common/common.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:version/version.dart';
 import 'package:word_game/app/colours.dart';
-import 'package:word_game/app/routes.dart';
+import 'package:word_game/app/router.dart';
 import 'package:word_game/cubits/auth_controller.dart';
 import 'package:word_game/cubits/server_meta_cubit.dart';
 import 'package:word_game/model/server_meta.dart';
-import 'package:word_game/services/service_locator.dart';
 import 'package:word_game/ui/standard_scaffold.dart';
-import 'package:word_game/ui/word_row.dart';
 import 'package:word_game/views/home/animated_logo.dart';
 import 'package:word_game/views/home/user_details.dart';
-import 'package:word_game/views/home/word_row_button.dart';
+import 'package:word_game/ui/word_row_button.dart';
+import 'package:go_router/go_router.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({Key? key}) : super(key: key);
@@ -66,7 +64,7 @@ class _HomeViewState extends State<HomeView> {
                       //   ),
                       // ),
                       NeumorphicButton(
-                        onPressed: () => Navigator.of(context).pushNamed(state.loggedIn ? Routes.groups : Routes.auth),
+                        onPressed: () => context.push(state.loggedIn ? Routes.groups : Routes.auth),
                         style: NeumorphicStyle(
                           depth: 2,
                           shape: NeumorphicShape.flat,
@@ -76,7 +74,7 @@ class _HomeViewState extends State<HomeView> {
                       ),
                       Container(height: 20),
                       NeumorphicButton(
-                        onPressed: () => Navigator.of(context).pushNamed(Routes.solo),
+                        onPressed: () => context.push(Routes.solo),
                         style: NeumorphicStyle(
                           depth: 2,
                           shape: NeumorphicShape.flat,
@@ -86,7 +84,7 @@ class _HomeViewState extends State<HomeView> {
                       ),
                       Container(height: 20),
                       NeumorphicButton(
-                        onPressed: () => Navigator.of(context).pushNamed(Routes.dict),
+                        onPressed: () => context.push(Routes.dict),
                         style: NeumorphicStyle(
                           depth: 2,
                           shape: NeumorphicShape.flat,
@@ -106,7 +104,7 @@ class _HomeViewState extends State<HomeView> {
                 child: SizedBox(
                   width: 64,
                   child: GestureDetector(
-                    onTap: () => Navigator.of(context).pushNamed(Routes.about),
+                    onTap: () => context.push(Routes.about),
                     child: Image.asset('assets/images/logo.png'),
                   ),
                 ),

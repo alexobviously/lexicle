@@ -2,14 +2,15 @@ import 'package:common/common.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:go_router/go_router.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:word_game/app/colours.dart';
-import 'package:word_game/app/routes.dart';
+import 'package:word_game/app/router.dart';
 import 'package:word_game/cubits/game_group_manager.dart';
 import 'package:word_game/services/service_locator.dart';
 import 'package:word_game/services/sound_service.dart';
+import 'package:word_game/ui/game_clock.dart';
 import 'package:word_game/ui/game_creator.dart';
-import 'package:word_game/ui/neumorphic_text_field.dart';
 import 'package:word_game/ui/standard_scaffold.dart';
 import 'package:word_game/views/group/group_view.dart';
 
@@ -58,7 +59,7 @@ class _GroupsViewState extends State<GroupsView> {
                               : const Icon(MdiIcons.refresh),
                         ),
                         NeumorphicButton(
-                          onPressed: () => Navigator.of(context).pushNamed(Routes.topPlayers),
+                          onPressed: () => context.push(Routes.topPlayers),
                           child: const Icon(MdiIcons.podium),
                         ),
                       ],
@@ -77,14 +78,26 @@ class _GroupsViewState extends State<GroupsView> {
                         if (joined) tileColour = Colours.semiCorrect;
                         if (g.finished) tileColour = Colours.victory;
                         return ListTile(
-                          title: Text(g.title),
+                          title: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(g.title),
+                              Row(
+                                children: [
+                                  if (g.config.timeLimit != null)
+                                    GameClock(
+                                      g.config.timeLimit!,
+                                      fullDetail: true,
+                                      textStyle: textTheme.bodyText1,
+                                      iconSize: 16,
+                                    ),
+                                ],
+                              ),
+                            ],
+                          ),
                           tileColor: tileColour,
                           onTap: joined
-                              ? () => Navigator.of(context).push(
-                                    MaterialPageRoute(
-                                      builder: (context) => GroupView(cubit.getControllerForGroup(g)),
-                                    ),
-                                  )
+                              ? () => context.push(Routes.group(g.id), extra: cubit.getControllerForGroup(g))
                               : null,
                           leading: Padding(
                             padding: const EdgeInsets.all(8.0),
