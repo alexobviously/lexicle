@@ -8,6 +8,7 @@ import 'package:word_game/cubits/auth_controller.dart';
 import 'package:word_game/cubits/game_group_manager.dart';
 import 'package:word_game/cubits/local_game_manager.dart';
 import 'package:word_game/cubits/server_meta_cubit.dart';
+import 'package:word_game/extensions/neumorphic_extensions.dart';
 import 'package:word_game/services/api_client.dart';
 import 'package:word_game/services/api_service.dart';
 import 'package:word_game/views/about_view.dart';
@@ -44,6 +45,15 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final _theme = NeumorphicThemeData(
+      baseColor: const Color(0xFFEEEEEE),
+      lightSource: LightSource.topLeft,
+      depth: 10,
+      textTheme: GoogleFonts.dmSansTextTheme(),
+      appBarTheme: appBarTheme,
+      boxShape: NeumorphicBoxShape.roundRect(BorderRadius.circular(25.0)),
+    );
+
     return MultiBlocProvider(
       providers: [
         BlocProvider<AuthController>(
@@ -59,37 +69,30 @@ class MyApp extends StatelessWidget {
           create: (_) => ServerMetaCubit(),
         ),
       ],
-      child: NeumorphicApp(
-        title: 'Lexicle',
-        debugShowCheckedModeBanner: false,
-        themeMode: ThemeMode.light, // dark is so ugly
-        theme: NeumorphicThemeData(
-          baseColor: const Color(0xFFEEEEEE),
-          lightSource: LightSource.topLeft,
-          depth: 10,
-          textTheme: GoogleFonts.dmSansTextTheme(),
-          appBarTheme: appBarTheme,
-          boxShape: NeumorphicBoxShape.roundRect(BorderRadius.circular(25.0)),
+      child: NeumorphicTheme(
+        theme: _theme,
+        child: Builder(
+          builder: (context) => IconTheme(
+            data: NeumorphicTheme.currentTheme(context).iconTheme,
+            child: MaterialApp(
+              title: 'Lexicle',
+              theme: _theme.materialTheme,
+              themeMode: ThemeMode.light,
+              debugShowCheckedModeBanner: false,
+              initialRoute: Routes.home,
+              routes: {
+                Routes.home: (ctx) => const HomeView(),
+                Routes.auth: (ctx) => const AuthView(),
+                Routes.solo: (ctx) => const SoloView(),
+                Routes.groups: (ctx) => const GroupsView(),
+                Routes.settings: (ctx) => const SettingsView(),
+                Routes.dict: (ctx) => const DictSearchView(),
+                Routes.topPlayers: (ctx) => const TopPlayersView(),
+                Routes.about: (ctx) => const AboutView(),
+              },
+            ),
+          ),
         ),
-        // darkTheme: NeumorphicThemeData(
-        //   baseColor: const Color(0xFF3E3E3E),
-        //   lightSource: LightSource.topLeft,
-        //   depth: 6,
-        //   textTheme: GoogleFonts.dmSansTextTheme(),
-        //   appBarTheme: appBarTheme,
-        //   boxShape: NeumorphicBoxShape.roundRect(BorderRadius.circular(25.0)),
-        // ),
-        initialRoute: Routes.home,
-        routes: {
-          Routes.home: (ctx) => const HomeView(),
-          Routes.auth: (ctx) => const AuthView(),
-          Routes.solo: (ctx) => const SoloView(),
-          Routes.groups: (ctx) => const GroupsView(),
-          Routes.settings: (ctx) => const SettingsView(),
-          Routes.dict: (ctx) => const DictSearchView(),
-          Routes.topPlayers: (ctx) => const TopPlayersView(),
-          Routes.about: (ctx) => const AboutView(),
-        },
       ),
     );
   }
