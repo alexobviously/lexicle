@@ -5,11 +5,12 @@ import 'package:bloc/bloc.dart';
 
 class AppLinkHandler extends Cubit<AppLinkData> {
   late AppLinks _appLinks;
-  AppLinkHandler() : super(AppLinkData.none()) {
-    init();
+  AppLinkHandler(String? initialLink) : super(AppLinkData.none()) {
+    print('INIT APPLINKHANDLER WITH $initialLink');
+    init(initialLink);
   }
 
-  void init() async {
+  void init(String? initialLink) async {
     print('init AppLinkHandler');
     _appLinks = AppLinks(
       onAppLink: (Uri uri, String stringUri) {
@@ -19,17 +20,20 @@ class AppLinkHandler extends Cubit<AppLinkData> {
       },
     );
 
-    print('#### get initial pre');
-    final appLink = await _appLinks.getInitialAppLink();
-    if (appLink != null && appLink.hasFragment && appLink.fragment != '/') {
-      print('getInitialAppLink: ${appLink.toString()}');
-      // openAppLink(appLink);
-      _handleLink(appLink.toString());
-    }
-    print('#### get initial post');
+    if (initialLink != null) _handleLink(initialLink);
+
+    // print('#### get initial pre');
+    // final appLink = await _appLinks.getInitialAppLink();
+    // if (appLink != null && appLink.hasFragment && appLink.fragment != '/') {
+    //   print('getInitialAppLink: ${appLink.toString()}');
+    //   // openAppLink(appLink);
+    //   _handleLink(appLink.toString());
+    // }
+    // print('#### get initial post');
   }
 
   void _handleLink(String link) {
+    print('### HANDLE LINK $link');
     List<String> parts = link.split('/');
     String data = parts.removeLast();
     String type = parts.removeLast();

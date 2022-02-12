@@ -1,3 +1,4 @@
+import 'package:app_links/app_links.dart';
 import 'package:common/common.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
@@ -12,7 +13,6 @@ import 'package:word_game/model/server_meta.dart';
 import 'package:word_game/ui/standard_scaffold.dart';
 import 'package:word_game/views/home/animated_logo.dart';
 import 'package:word_game/views/home/user_details.dart';
-import 'package:word_game/ui/word_row_button.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({Key? key}) : super(key: key);

@@ -22,6 +22,7 @@ class StandardScaffold extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocListener<AppLinkHandler, AppLinkData>(
       listener: (context, link) {
+        print('### BLOC LISTENER $link');
         if (link.hasLink) {
           print(link);
           WidgetsBinding.instance!.addPostFrameCallback((_) {

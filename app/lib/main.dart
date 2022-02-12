@@ -1,3 +1,4 @@
+import 'package:app_links/app_links.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -40,17 +41,46 @@ Future<void> loadEnv() async {
   }
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  final _navigatorKey = GlobalKey<NavigatorState>();
+  late AppLinks _appLinks;
+
+  @override
+  void initState() {
+    initDeepLinks();
+    super.initState();
+  }
+
+  void initDeepLinks() async {
+    _appLinks = AppLinks(
+      onAppLink: (Uri uri, String link) {
+        print('onAppLink: $link');
+        _handleAppLink(link);
+      },
+    );
+
+    final appLink = await _appLinks.getInitialAppLinkString();
+    if (appLink != null) {
+      print('getInitialAppLink: ${appLink.toString()}');
+      _handleAppLink(appLink);
+    }
+  }
+
+  void _handleAppLink(String link) {
+    _navigatorKey.currentState?.pushNamed(link);
+  }
 
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider<AppLinkHandler>(
-          lazy: false,
-          create: (_) => AppLinkHandler(),
-        ),
         BlocProvider<AuthController>(
           create: (_) => auth(),
         ),
