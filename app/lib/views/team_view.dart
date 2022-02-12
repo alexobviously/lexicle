@@ -131,7 +131,7 @@ class _TeamViewState extends State<TeamView> {
                         resultWidget: (user) => InkWell(
                           onTap: () => Navigator.of(context).push(
                             MaterialPageRoute(
-                              builder: (context) => StatsView(id: user.id),
+                              builder: (context) => ProfileView(id: user.id),
                             ),
                           ),
                           child: Container(

@@ -71,7 +71,7 @@ class _TopPlayersViewState extends State<TopPlayersView> {
                         return InkWell(
                           onTap: () => Navigator.of(context).push(
                             MaterialPageRoute(
-                              builder: (context) => StatsView(id: u.id),
+                              builder: (context) => ProfileView(id: u.id),
                             ),
                           ),
                           child: Container(

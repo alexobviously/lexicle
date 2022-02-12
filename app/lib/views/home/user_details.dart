@@ -14,7 +14,7 @@ class UserDetails extends StatelessWidget {
     return GestureDetector(
       onTap: () => Navigator.of(context).push(
         MaterialPageRoute(
-          builder: (context) => StatsView(id: user.id),
+          builder: (context) => ProfileView(id: user.id),
         ),
       ),
       child: SizedBox(

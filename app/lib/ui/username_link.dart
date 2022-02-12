@@ -31,7 +31,7 @@ class UsernameLink extends StatelessWidget {
       resultWidget: (u) => InkWell(
         onTap: () => Navigator.of(context).push(
           MaterialPageRoute(
-            builder: (context) => StatsView(id: id),
+            builder: (context) => ProfileView(id: id),
           ),
         ),
         child: content(context, u),
