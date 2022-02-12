@@ -9,6 +9,7 @@ import 'package:word_game/app/router.dart';
 import 'package:word_game/cubits/game_group_manager.dart';
 import 'package:word_game/services/service_locator.dart';
 import 'package:word_game/services/sound_service.dart';
+import 'package:word_game/ui/game_clock.dart';
 import 'package:word_game/ui/game_creator.dart';
 import 'package:word_game/ui/standard_scaffold.dart';
 import 'package:word_game/views/group/group_view.dart';
@@ -77,7 +78,23 @@ class _GroupsViewState extends State<GroupsView> {
                         if (joined) tileColour = Colours.semiCorrect;
                         if (g.finished) tileColour = Colours.victory;
                         return ListTile(
-                          title: Text(g.title),
+                          title: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(g.title),
+                              Row(
+                                children: [
+                                  if (g.config.timeLimit != null)
+                                    GameClock(
+                                      g.config.timeLimit!,
+                                      fullDetail: true,
+                                      textStyle: textTheme.bodyText1,
+                                      iconSize: 16,
+                                    ),
+                                ],
+                              ),
+                            ],
+                          ),
                           tileColor: tileColour,
                           onTap: joined
                               ? () => context.push(Routes.group(g.id), extra: cubit.getControllerForGroup(g))

@@ -4,7 +4,15 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 class GameClock extends StatelessWidget {
   final int time;
   final bool fullDetail;
-  const GameClock(this.time, {Key? key, this.fullDetail = false}) : super(key: key);
+  final TextStyle? textStyle;
+  final double? iconSize;
+  const GameClock(
+    this.time, {
+    Key? key,
+    this.fullDetail = false,
+    this.textStyle,
+    this.iconSize,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -12,11 +20,15 @@ class GameClock extends StatelessWidget {
 
     return Row(
       children: [
-        Icon(MdiIcons.clockOutline),
+        Icon(
+          MdiIcons.clockOutline,
+          size: iconSize,
+          color: Colors.black87,
+        ),
         Container(width: 4),
         Text(
           _formatTime(duration, fullDetail),
-          style: Theme.of(context).textTheme.headline6,
+          style: textStyle ?? Theme.of(context).textTheme.headline6,
         ),
       ],
     );
