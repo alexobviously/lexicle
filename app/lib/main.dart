@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:word_game/app/router.dart';
 import 'package:word_game/app/routes.dart';
 import 'package:word_game/cubits/auth_controller.dart';
 import 'package:word_game/cubits/game_group_manager.dart';
@@ -54,6 +55,8 @@ class MyApp extends StatelessWidget {
       boxShape: NeumorphicBoxShape.roundRect(BorderRadius.circular(25.0)),
     );
 
+    final _router = buildRouter();
+
     return MultiBlocProvider(
       providers: [
         BlocProvider<AuthController>(
@@ -74,22 +77,24 @@ class MyApp extends StatelessWidget {
         child: Builder(
           builder: (context) => IconTheme(
             data: NeumorphicTheme.currentTheme(context).iconTheme,
-            child: MaterialApp(
+            child: MaterialApp.router(
               title: 'Lexicle',
               theme: _theme.materialTheme,
               themeMode: ThemeMode.light,
               debugShowCheckedModeBanner: false,
-              initialRoute: Routes.home,
-              routes: {
-                Routes.home: (ctx) => const HomeView(),
-                Routes.auth: (ctx) => const AuthView(),
-                Routes.solo: (ctx) => const SoloView(),
-                Routes.groups: (ctx) => const GroupsView(),
-                Routes.settings: (ctx) => const SettingsView(),
-                Routes.dict: (ctx) => const DictSearchView(),
-                Routes.topPlayers: (ctx) => const TopPlayersView(),
-                Routes.about: (ctx) => const AboutView(),
-              },
+              routeInformationParser: _router.routeInformationParser,
+              routerDelegate: _router.routerDelegate,
+              // initialRoute: Routes.home,
+              // routes: {
+              //   Routes.home: (ctx) => const HomeView(),
+              //   Routes.auth: (ctx) => const AuthView(),
+              //   Routes.solo: (ctx) => const SoloView(),
+              //   Routes.groups: (ctx) => const GroupsView(),
+              //   Routes.settings: (ctx) => const SettingsView(),
+              //   Routes.dict: (ctx) => const DictSearchView(),
+              //   Routes.topPlayers: (ctx) => const TopPlayersView(),
+              //   Routes.about: (ctx) => const AboutView(),
+              // },
             ),
           ),
         ),

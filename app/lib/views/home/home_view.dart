@@ -12,6 +12,7 @@ import 'package:word_game/ui/standard_scaffold.dart';
 import 'package:word_game/views/home/animated_logo.dart';
 import 'package:word_game/views/home/user_details.dart';
 import 'package:word_game/ui/word_row_button.dart';
+import 'package:go_router/go_router.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({Key? key}) : super(key: key);
@@ -103,7 +104,7 @@ class _HomeViewState extends State<HomeView> {
                 child: SizedBox(
                   width: 64,
                   child: GestureDetector(
-                    onTap: () => Navigator.of(context).pushNamed(Routes.about),
+                    onTap: () => context.push(Routes.about),
                     child: Image.asset('assets/images/logo.png'),
                   ),
                 ),
