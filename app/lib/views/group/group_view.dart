@@ -8,10 +8,12 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:go_router/go_router.dart';
 import 'package:linked_scroll_controller/linked_scroll_controller.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:validators/validators.dart';
 import 'package:word_game/app/colours.dart';
+import 'package:word_game/app/router.dart';
 import 'package:word_game/cubits/game_group_controller.dart';
 import 'package:word_game/services/service_locator.dart';
 import 'package:word_game/services/sound_service.dart';
@@ -23,8 +25,11 @@ import 'package:word_game/ui/standard_scaffold.dart';
 import 'package:word_game/ui/username_link.dart';
 
 class GroupView extends StatefulWidget {
+  // right now a controller must be passed in extras, but eventually I'd like to be able to retrieve
+  // groups from demand by id if no controller is provided
+  final String id;
   final GameGroupController controller;
-  const GroupView(this.controller, {Key? key}) : super(key: key);
+  const GroupView({required this.id, required this.controller, Key? key}) : super(key: key);
 
   @override
   State<GroupView> createState() => _GroupViewState();
@@ -448,9 +453,11 @@ class _GroupViewState extends State<GroupView> {
                   header: Text(u.username),
                   key: ValueKey('go_${e.state.id}'),
                 ),
-                onTap: () => Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => GameView(game: e, title: '${u.username}\'s game'),
+                onTap: () => context.push(
+                  Routes.game(e.state.id),
+                  extra: GameRouteData(
+                    game: e,
+                    title: '${u.username}\'s game',
                   ),
                 ),
               ),

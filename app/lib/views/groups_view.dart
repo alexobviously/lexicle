@@ -80,11 +80,7 @@ class _GroupsViewState extends State<GroupsView> {
                           title: Text(g.title),
                           tileColor: tileColour,
                           onTap: joined
-                              ? () => Navigator.of(context).push(
-                                    MaterialPageRoute(
-                                      builder: (context) => GroupView(cubit.getControllerForGroup(g)),
-                                    ),
-                                  )
+                              ? () => context.push(Routes.group(g.id), extra: cubit.getControllerForGroup(g))
                               : null,
                           leading: Padding(
                             padding: const EdgeInsets.all(8.0),

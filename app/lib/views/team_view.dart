@@ -30,7 +30,7 @@ class _TeamViewState extends State<TeamView> {
 
   void _refresh([bool canPop = false]) {
     if (canPop && members != null && members == 1) {
-      Navigator.of(context).pop();
+      context.pop();
     } else if (mounted) {
       setState(() {
         future = teamStore().get(widget.id, true);
