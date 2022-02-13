@@ -84,7 +84,7 @@ class Game implements Entity {
     );
   }
 
-  Map<String, dynamic> toMap({bool hideAnswer = false}) {
+  Map<String, dynamic> toMap({bool hideAnswer = false, bool hideGuesses = false}) {
     return {
       Fields.id: parseObjectId(id),
       Fields.timestamp: timestamp,

@@ -203,14 +203,22 @@ class GameHandler {
 
   static Future<Response> getGame(Request request, String id) async {
     try {
-      final _result = gameServer().getGameController(id);
-      if (!_result.ok) {
-        return HttpUtils.buildErrorResponse(_result.error!);
-      } else {
-        return HttpUtils.buildResponse(data: {
-          'game': _result.object!.toMap(hideAnswer: true),
-        });
+      final result = gameServer().getGameController(id);
+      if (!result.ok) {
+        final result2 = await gameStore().get(id);
+        if (result2.ok) {
+          return HttpUtils.buildResponse(
+            data: {'game': result.object!.toMap()},
+          );
+        }
+        return HttpUtils.buildErrorResponse(result.error!);
       }
+      final authResult = await authenticateRequest(request);
+      bool hideGuesses = !authResult.hasUser ||
+          (authResult.user!.id != result.object!.state.player && authResult.user!.id != result.object!.state.creator);
+      return HttpUtils.buildResponse(data: {
+        'game': result.object!.toMap(hideAnswer: true, hideGuesses: hideGuesses),
+      });
     } catch (e, s) {
       print('exception in getGame: $e\n$s');
       return HttpUtils.invalidRequestResponse();

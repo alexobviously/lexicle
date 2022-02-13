@@ -155,6 +155,7 @@ class AuthResult {
   final User? user;
   String? error;
   bool get ok => error == null && (tokenData?.valid ?? false);
+  bool get hasUser => user != null;
   Response get errorResponse => HttpUtils.buildErrorResponse(error ?? '', tokenData: tokenData);
 
   AuthResult({this.tokenData, this.user, this.error});
