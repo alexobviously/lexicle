@@ -86,10 +86,11 @@ Future<AuthResult> authenticateRequest(Request request, {bool needAdmin = false,
   String id = tokenData.subject!;
   if (!isMongoId(id)) return AuthResult.error('invalid_token');
   if (predicate != null && !predicate(id)) {
-    return AuthResult.error('authorised');
+    return AuthResult.error('unauthorised');
   }
   final _result = await userStore().get(id);
   if (!_result.ok) return AuthResult.error(_result.error!);
+  if (needAdmin && !_result.object!.isAdmin) return AuthResult.error('unauthorised');
   return AuthResult.ok(tokenData, _result.object!);
 }
 

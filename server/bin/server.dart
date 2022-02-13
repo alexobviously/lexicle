@@ -7,6 +7,7 @@ import 'package:shelf/shelf_io.dart' as shelf_io;
 import 'package:shelf_router/shelf_router.dart' as shelf_router;
 import 'package:yaml/yaml.dart';
 
+import 'handlers/admin_handler.dart';
 import 'handlers/auth_handler.dart';
 import 'handlers/dictionary_handler.dart';
 import 'handlers/game_handler.dart';
@@ -90,7 +91,8 @@ Future main() async {
     ..post('/teams/create', TeamHandler.createTeam)
     ..get('/teams/<id>', TeamHandler.getTeam)
     ..post('/teams/<id>/join', TeamHandler.joinTeam)
-    ..post('/teams/leave', TeamHandler.leaveTeam);
+    ..post('/teams/leave', TeamHandler.leaveTeam)
+    ..post('/admin/reset_pw', AdminHandler.resetPassword);
 
   final cascade = Cascade().add(_router);
 

@@ -58,6 +58,7 @@ class UserFields {
   static const rating = 'r';
   static const deviation = 'd';
   static const team = 't';
+  static const permissions = 'e';
 }
 
 class StatsFields {
