@@ -1,5 +1,4 @@
 import 'package:common/common.dart';
-import 'package:common/src/model/standing.dart';
 import 'package:copy_with_extension/copy_with_extension.dart';
 
 part 'game_group.g.dart';

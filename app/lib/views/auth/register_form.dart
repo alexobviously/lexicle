@@ -1,8 +1,6 @@
 import 'package:common/common.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:word_game/services/api_client.dart';
 import 'package:word_game/services/service_locator.dart';
 import 'package:word_game/ui/neumorphic_text_field.dart';
 
