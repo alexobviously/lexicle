@@ -638,11 +638,13 @@ packages:
     source: hosted
     version: "2.2.0"
   soundpool_macos:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
-      name: soundpool_macos
-      url: "https://pub.dartlang.org"
-    source: hosted
+      path: soundpool_macos
+      ref: HEAD
+      resolved-ref: e29b926bea1ab394d56d7a5c459932a9030769be
+      url: "https://github.com/YDA93/soundpool.git"
+    source: git
     version: "2.1.3"
   soundpool_platform_interface:
     dependency: transitive
@@ -652,11 +654,13 @@ packages:
     source: hosted
     version: "2.1.0"
   soundpool_web:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
-      name: soundpool_web
-      url: "https://pub.dartlang.org"
-    source: hosted
+      path: soundpool_web
+      ref: HEAD
+      resolved-ref: e29b926bea1ab394d56d7a5c459932a9030769be
+      url: "https://github.com/YDA93/soundpool.git"
+    source: git
     version: "2.1.0"
   source_span:
     dependency: transitive
