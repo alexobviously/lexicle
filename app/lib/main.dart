@@ -38,6 +38,8 @@ class MyApp extends StatelessWidget {
   final _appKey = GlobalKey();
   final _router = buildRouter();
 
+  final _themeMode = ThemeMode.light; // change this to system if you want to try dark hell
+
   @override
   Widget build(BuildContext context) {
     final _theme = NeumorphicThemeData(
@@ -45,6 +47,18 @@ class MyApp extends StatelessWidget {
       lightSource: LightSource.topLeft,
       depth: 10,
       textTheme: GoogleFonts.dmSansTextTheme(),
+      appBarTheme: appBarTheme,
+      boxShape: NeumorphicBoxShape.roundRect(BorderRadius.circular(25.0)),
+    );
+    final _darkTheme = NeumorphicThemeData(
+      baseColor: const Color(0xFF252525),
+      lightSource: LightSource.bottomRight,
+      depth: 2,
+      textTheme: GoogleFonts.dmSansTextTheme().apply(
+        displayColor: Colors.black87,
+        bodyColor: Colors.white70,
+      ),
+      defaultTextColor: Colors.white24,
       appBarTheme: appBarTheme,
       boxShape: NeumorphicBoxShape.roundRect(BorderRadius.circular(25.0)),
     );
@@ -66,6 +80,8 @@ class MyApp extends StatelessWidget {
       ],
       child: NeumorphicTheme(
         theme: _theme,
+        darkTheme: _darkTheme,
+        themeMode: _themeMode,
         child: Builder(
           builder: (context) => IconTheme(
             data: NeumorphicTheme.currentTheme(context).iconTheme,
@@ -73,7 +89,8 @@ class MyApp extends StatelessWidget {
               key: _appKey,
               title: 'Lexicle',
               theme: _theme.materialTheme,
-              themeMode: ThemeMode.light,
+              darkTheme: _darkTheme.materialTheme,
+              themeMode: _themeMode,
               debugShowCheckedModeBanner: false,
               routeInformationParser: _router.routeInformationParser,
               routerDelegate: _router.routerDelegate,
