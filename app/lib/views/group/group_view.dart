@@ -17,6 +17,7 @@ import 'package:word_game/app/router.dart';
 import 'package:word_game/cubits/game_group_controller.dart';
 import 'package:word_game/services/service_locator.dart';
 import 'package:word_game/services/sound_service.dart';
+import 'package:word_game/ui/confirmation_dialog.dart';
 import 'package:word_game/ui/entity_future_builder.dart';
 import 'package:word_game/ui/game_clock.dart';
 import 'package:word_game/ui/game_overview.dart';
@@ -149,6 +150,18 @@ class _GroupViewState extends State<GroupView> {
 
   void _setResultsTab(int t) => setState(() => _resultsTab = t);
 
+  void _kickPlayer(User player) async {
+    final ok = await showConfirmationDialog(
+      context,
+      title: 'Kick ${player.username}',
+      body: 'Are you sure?',
+      positiveText: 'Kick',
+    );
+    if (ok) {
+      controller.kickPlayer(player.id);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return StandardScaffold(
@@ -267,13 +280,15 @@ class _GroupViewState extends State<GroupView> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       if (isCreator)
-                        InkWell(
-                          onTap: () => controller.kickPlayer(player),
-                          child: Padding(
-                            padding: const EdgeInsets.only(right: 8.0),
-                            child: Icon(MdiIcons.close),
-                          ),
-                        ),
+                        player != auth().userId
+                            ? InkWell(
+                                onTap: () => _kickPlayer(u),
+                                child: Padding(
+                                  padding: const EdgeInsets.only(right: 8.0),
+                                  child: Icon(MdiIcons.close),
+                                ),
+                              )
+                            : SizedBox(width: 32),
                       Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.start,
