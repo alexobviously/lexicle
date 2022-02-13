@@ -12,7 +12,7 @@ import 'package:word_game/services/service_locator.dart';
 import 'package:word_game/services/sound_service.dart';
 import 'package:word_game/ui/entity_future_builder.dart';
 import 'package:word_game/ui/game_clock.dart';
-import 'package:word_game/ui/game_keyboard.dart';
+import 'package:word_game/ui/keyboard/game_keyboard.dart';
 import 'package:word_game/ui/standard_scaffold.dart';
 import 'package:word_game/ui/word_row.dart';
 

@@ -4,7 +4,7 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:word_game/app/colours.dart';
 import 'package:word_game/cubits/dict_search_controller.dart';
 import 'package:word_game/ui/dict_word_row.dart';
-import 'package:word_game/ui/game_keyboard.dart';
+import 'package:word_game/ui/keyboard/game_keyboard.dart';
 import 'package:word_game/ui/standard_scaffold.dart';
 import 'package:word_game/ui/word_row.dart';
 

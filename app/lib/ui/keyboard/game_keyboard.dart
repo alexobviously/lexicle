@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:word_game/app/colours.dart';
+import 'package:word_game/ui/keyboard/key_button.dart';
 
 class GameKeyboard extends StatelessWidget {
   static const rows = ['qwertyuiop', 'asdfghjkl', 'zxcvbnm'];
@@ -80,20 +81,38 @@ class GameKeyboard extends StatelessWidget {
   }
 
   Widget _key(BuildContext context, String letter, {Color? colour}) {
+    return KeyButton(
+      child: Text(
+        letter,
+        style: Theme.of(context).textTheme.headline4,
+      ),
+      onTap: () => _onTap(letter),
+    );
     // return Padding(
     //   padding: const EdgeInsets.all(6.0),
-    //   child: Container(
-    //     width: 50,
-    //     height: 75,
-    //     // padding: const EdgeInsets.all(12.0),
-    //     child: NeumorphicButton(
-    //       onPressed: () => _onTap(letter),
-    //       // duration: const Duration(milliseconds: 1000),
-    //       style: NeumorphicStyle(
+    //   child: GestureDetector(
+    //     onTap: () => _onTap(letter),
+    //     child: AnimatedContainer(
+    //       duration: const Duration(milliseconds: 1000),
+    //       width: 50,
+    //       height: 75,
+    //       padding: const EdgeInsets.all(12.0),
+    //       decoration: BoxDecoration(
     //         color: colour ?? Colors.grey[300],
-    //         boxShape: NeumorphicBoxShape.roundRect(BorderRadius.circular(6.0)),
-    //         depth: 4.0,
-    //         intensity: 0.6,
+    //         borderRadius: BorderRadius.circular(6.0),
+    //         // shape: BoxShape.circle,
+    //         boxShadow: [
+    //           BoxShadow(
+    //             color: Colors.grey.shade500,
+    //             offset: const Offset(2, 2),
+    //             blurRadius: 10.0,
+    //           ),
+    //           const BoxShadow(
+    //             color: Colors.white,
+    //             offset: Offset(-2, -2),
+    //             blurRadius: 10.0,
+    //           ),
+    //         ],
     //       ),
     //       child: Center(
     //         child: Text(
@@ -104,41 +123,6 @@ class GameKeyboard extends StatelessWidget {
     //     ),
     //   ),
     // );
-    return Padding(
-      padding: const EdgeInsets.all(6.0),
-      child: GestureDetector(
-        onTap: () => _onTap(letter),
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 1000),
-          width: 50,
-          height: 75,
-          padding: const EdgeInsets.all(12.0),
-          decoration: BoxDecoration(
-            color: colour ?? Colors.grey[300],
-            borderRadius: BorderRadius.circular(6.0),
-            // shape: BoxShape.circle,
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey.shade500,
-                offset: const Offset(2, 2),
-                blurRadius: 10.0,
-              ),
-              const BoxShadow(
-                color: Colors.white,
-                offset: Offset(-2, -2),
-                blurRadius: 10.0,
-              ),
-            ],
-          ),
-          child: Center(
-            child: Text(
-              letter,
-              style: Theme.of(context).textTheme.headline4,
-            ),
-          ),
-        ),
-      ),
-    );
   }
 
   Widget _enterKey(BuildContext context) {
