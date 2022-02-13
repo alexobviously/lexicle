@@ -589,7 +589,8 @@ class _GroupViewState extends State<GroupView> {
                             .map((g) => Padding(
                                   padding: EdgeInsets.symmetric(horizontal: 2.0, vertical: finished ? 8.0 : 0.0),
                                   child: GestureDetector(
-                                    onTap: () => context.push(Routes.game(g.id)),
+                                    // TODO: navigate to your own games if it's you
+                                    onTap: e.player != auth().userId ? () => context.push(Routes.game(g.id)) : null,
                                     child: Container(
                                       width: 32,
                                       height: 32,

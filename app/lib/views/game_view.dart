@@ -10,6 +10,7 @@ import 'package:word_game/app/colours.dart';
 import 'package:word_game/cubits/observer_game_controller.dart';
 import 'package:word_game/services/service_locator.dart';
 import 'package:word_game/services/sound_service.dart';
+import 'package:word_game/ui/entity_future_builder.dart';
 import 'package:word_game/ui/game_clock.dart';
 import 'package:word_game/ui/game_keyboard.dart';
 import 'package:word_game/ui/standard_scaffold.dart';
@@ -40,6 +41,8 @@ class _GameViewState extends State<GameView> {
   int? endTime;
   int? timeLeft;
   Timer? timer;
+
+  bool get isObserving => game is ObserverGameController;
 
   @override
   void initState() {
@@ -145,9 +148,11 @@ class _GameViewState extends State<GameView> {
             return BlocBuilder<BaseGameController, Game>(
                 bloc: game!,
                 builder: (context, state) {
+                  print('!! isObserving: $isObserving');
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
+                      if (isObserving) _observerBox(context, state),
                       if (timeLeft != null) GameClock(timeLeft!),
                       Expanded(
                         child: Padding(
@@ -242,5 +247,45 @@ class _GameViewState extends State<GameView> {
         ),
       ),
     );
+  }
+
+  Widget _observerBox(BuildContext context, Game game) {
+    return LayoutBuilder(builder: (context, constraints) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 4.0),
+        child: SizedBox(
+          width: constraints.maxWidth * 0.95,
+          child: Neumorphic(
+            style: NeumorphicStyle(depth: -2),
+            padding: const EdgeInsets.all(16.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    EntityFutureBuilder<User>(
+                      id: game.player,
+                      store: userStore(),
+                      loadingWidget: SpinKitCircle(color: Colours.victory, size: 16),
+                      errorWidget: (_) => Icon(Icons.error),
+                      resultWidget: (u) => Text('Observing ${u.username}'),
+                    ),
+                    EntityFutureBuilder<User>(
+                      id: game.creator,
+                      store: userStore(),
+                      loadingWidget: SpinKitCircle(color: Colours.victory, size: 16),
+                      errorWidget: (_) => Icon(Icons.error),
+                      resultWidget: (u) => Text('${u.username}\'s game'),
+                    ),
+                  ],
+                ),
+                Text('${game.guesses.length}', style: Theme.of(context).textTheme.headline5),
+              ],
+            ),
+          ),
+        ),
+      );
+    });
   }
 }
