@@ -35,7 +35,11 @@ dependencies:
   material_design_icons_flutter: ^5.0.6595
   mongo_dart: ^0.7.4
   package_info_plus: ^1.3.0
-  soundpool: ^2.2.0
+  soundpool:
+    git:
+      url: https://github.com/ukasz123/soundpool.git
+      ref: master
+      path: soundpool
   rest_client: ^2.0.1+6
   url_launcher: ^6.0.19
   validators: ^3.0.0
@@ -50,13 +54,15 @@ dev_dependencies:
 dependency_overrides:
   soundpool_macos:
     git:
-      url: https://github.com/YDA93/soundpool.git
+      url: https://github.com/ukasz123/soundpool.git
+      ref: master
       path: soundpool_macos
   soundpool_web:
     git:
-      url: https://github.com/YDA93/soundpool.git
+      url: https://github.com/ukasz123/soundpool.git
+      ref: master
       path: soundpool_web
-      
+
 flutter:
   uses-material-design: true
 
