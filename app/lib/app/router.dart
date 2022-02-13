@@ -37,35 +37,35 @@ GoRouter buildRouter() {
     routes: [
       GoRoute(
         path: Routes.home,
-        builder: (_, __) => HomeView(),
+        builder: (_, __) => const HomeView(),
       ),
       GoRoute(
         path: Routes.auth,
-        builder: (_, __) => AuthView(),
+        builder: (_, __) => const AuthView(),
       ),
       GoRoute(
         path: Routes.solo,
-        builder: (_, __) => SoloView(),
+        builder: (_, __) => const SoloView(),
       ),
       GoRoute(
         path: Routes.groups,
-        builder: (_, __) => GroupsView(),
+        builder: (_, __) => const GroupsView(),
       ),
       GoRoute(
         path: Routes.settings,
-        builder: (_, __) => SettingsView(),
+        builder: (_, __) => const SettingsView(),
       ),
       GoRoute(
         path: Routes.dict,
-        builder: (_, __) => DictSearchView(),
+        builder: (_, __) => const DictSearchView(),
       ),
       GoRoute(
         path: Routes.topPlayers,
-        builder: (_, __) => TopPlayersView(),
+        builder: (_, __) => const TopPlayersView(),
       ),
       GoRoute(
         path: Routes.about,
-        builder: (_, __) => AboutView(),
+        builder: (_, __) => const AboutView(),
       ),
       GoRoute(
         path: Routes.user(':id'),

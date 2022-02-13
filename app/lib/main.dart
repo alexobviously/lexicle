@@ -20,7 +20,7 @@ void main() async {
   await setUpServiceLocator(db: ApiService());
   await dictionary().ready;
   await sound().ready;
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
 Future<void> loadEnv() async {
@@ -33,7 +33,10 @@ Future<void> loadEnv() async {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  MyApp({Key? key}) : super(key: key);
+
+  final _appKey = GlobalKey();
+  final _router = buildRouter();
 
   @override
   Widget build(BuildContext context) {
@@ -45,8 +48,6 @@ class MyApp extends StatelessWidget {
       appBarTheme: appBarTheme,
       boxShape: NeumorphicBoxShape.roundRect(BorderRadius.circular(25.0)),
     );
-
-    final _router = buildRouter();
 
     return MultiBlocProvider(
       providers: [
@@ -69,23 +70,13 @@ class MyApp extends StatelessWidget {
           builder: (context) => IconTheme(
             data: NeumorphicTheme.currentTheme(context).iconTheme,
             child: MaterialApp.router(
+              key: _appKey,
               title: 'Lexicle',
               theme: _theme.materialTheme,
               themeMode: ThemeMode.light,
               debugShowCheckedModeBanner: false,
               routeInformationParser: _router.routeInformationParser,
               routerDelegate: _router.routerDelegate,
-              // initialRoute: Routes.home,
-              // routes: {
-              //   Routes.home: (ctx) => const HomeView(),
-              //   Routes.auth: (ctx) => const AuthView(),
-              //   Routes.solo: (ctx) => const SoloView(),
-              //   Routes.groups: (ctx) => const GroupsView(),
-              //   Routes.settings: (ctx) => const SettingsView(),
-              //   Routes.dict: (ctx) => const DictSearchView(),
-              //   Routes.topPlayers: (ctx) => const TopPlayersView(),
-              //   Routes.about: (ctx) => const AboutView(),
-              // },
             ),
           ),
         ),
