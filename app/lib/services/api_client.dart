@@ -44,6 +44,12 @@ class ApiClient {
         unwrapper: (_) => true,
         needAuth: true,
       );
+  static Future<ApiResult<GameGroup>> kickPlayer(String group, String player) async => postAndUnwrap(
+        '/groups/$group/kick',
+        body: {GameFields.player: player},
+        unwrapper: unwrapGameGroup,
+        needAuth: true,
+      );
   static Future<Result<GameGroup>> startGroup(String id) =>
       postAndUnwrap('/groups/$id/start', unwrapper: unwrapGameGroup, needAuth: true);
   static Future<Result<GameGroup>> setWord(String group, String player, String word) => postAndUnwrap(

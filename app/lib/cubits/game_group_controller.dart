@@ -105,6 +105,17 @@ class GameGroupController extends Cubit<GameGroupState> {
     }
     return _result;
   }
+
+  Future<Result<GameGroup>> kickPlayer(String player) async {
+    if (state.group.state > MatchState.lobby) return Result.error('group_started');
+    if (state.group.creator != auth().userId) return Result.error('unauthorised');
+    if (!state.group.players.contains(player)) return Result.error('not_in_group');
+    final result = await ApiClient.kickPlayer(state.group.id, player);
+    if (result.ok) {
+      emit(state.copyWith(group: result.object!));
+    }
+    return result;
+  }
 }
 
 class GameGroupState {

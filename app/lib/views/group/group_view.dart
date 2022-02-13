@@ -184,8 +184,7 @@ class _GroupViewState extends State<GroupView> {
     );
   }
 
-  Widget _lobbyView(BuildContext context, GameGroup group) {
-    final isCreator = auth().userId == group.creator;
+  Widget _setWordBox(BuildContext context, GameGroup group) {
     final theme = Theme.of(context);
     final textTheme = theme.textTheme;
     bool isValid = !invalidWord && isAlpha(wordController.text);
@@ -193,53 +192,61 @@ class _GroupViewState extends State<GroupView> {
     InputBorder? wordFieldBorder = (isValid || wordController.text.isEmpty)
         ? null
         : UnderlineInputBorder(borderSide: BorderSide(color: Colours.invalid));
+    return SizedBox(
+      width: MediaQuery.of(context).size.width * 0.9,
+      child: Neumorphic(
+        padding: EdgeInsets.all(8.0),
+        style: NeumorphicStyle(
+          depth: 2,
+          boxShape: NeumorphicBoxShape.roundRect(BorderRadius.circular(12.0)),
+        ),
+        child: Column(
+          children: [
+            Text(
+              'Set Word',
+              style: textTheme.headline5,
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      maxLength: group.config.wordLength,
+                      maxLengthEnforcement: MaxLengthEnforcement.enforced,
+                      onChanged: (x) => setState(() => invalidWord = false), // hmm
+                      textCapitalization: TextCapitalization.none,
+                      controller: wordController,
+                      decoration: InputDecoration(
+                        border: wordFieldBorder,
+                        enabledBorder: wordFieldBorder,
+                        focusedBorder: wordFieldBorder,
+                      ),
+                    ),
+                  ),
+                  Container(width: 16.0),
+                  NeumorphicButton(
+                    onPressed: canSubmit ? _submitWord : null,
+                    child: const Icon(MdiIcons.keyboardReturn),
+                  ),
+                ],
+              ),
+            ),
+            if (group.config.timeLimit != null) GameClock(group.config.timeLimit!, fullDetail: true),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _lobbyView(BuildContext context, GameGroup group) {
+    final isCreator = auth().userId == group.creator;
+    final theme = Theme.of(context);
+    final textTheme = theme.textTheme;
+    bool inGroup = group.players.contains(auth().userId);
     return Column(
       children: [
-        SizedBox(
-          width: MediaQuery.of(context).size.width * 0.9,
-          child: Neumorphic(
-            padding: EdgeInsets.all(8.0),
-            style: NeumorphicStyle(
-              depth: 2,
-              boxShape: NeumorphicBoxShape.roundRect(BorderRadius.circular(12.0)),
-            ),
-            child: Column(
-              children: [
-                Text(
-                  'Set Word',
-                  style: textTheme.headline5,
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: TextField(
-                          maxLength: group.config.wordLength,
-                          maxLengthEnforcement: MaxLengthEnforcement.enforced,
-                          onChanged: (x) => setState(() => invalidWord = false), // hmm
-                          textCapitalization: TextCapitalization.none,
-                          controller: wordController,
-                          decoration: InputDecoration(
-                            border: wordFieldBorder,
-                            enabledBorder: wordFieldBorder,
-                            focusedBorder: wordFieldBorder,
-                          ),
-                        ),
-                      ),
-                      Container(width: 16.0),
-                      NeumorphicButton(
-                        onPressed: canSubmit ? _submitWord : null,
-                        child: const Icon(MdiIcons.keyboardReturn),
-                      ),
-                    ],
-                  ),
-                ),
-                if (group.config.timeLimit != null) GameClock(group.config.timeLimit!, fullDetail: true),
-              ],
-            ),
-          ),
-        ),
+        if (inGroup) _setWordBox(context, group),
         Container(height: 30),
         Text(
           'Players',
@@ -256,12 +263,25 @@ class _GroupViewState extends State<GroupView> {
                 title: UsernameLink(
                   innerKey: ValueKey('lobby_${group.id}_$player'),
                   id: player,
-                  content: (context, u) => Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  content: (context, u) => Row(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      Text('[${u.rating.rating.toStringAsFixed(0)}] ${u.username}'),
-                      if (u.team != null) _team(context, u.team!),
+                      if (isCreator)
+                        InkWell(
+                          onTap: () => controller.kickPlayer(player),
+                          child: Padding(
+                            padding: const EdgeInsets.only(right: 8.0),
+                            child: Icon(MdiIcons.close),
+                          ),
+                        ),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('[${u.rating.rating.toStringAsFixed(0)}] ${u.username}'),
+                          if (u.team != null) _team(context, u.team!),
+                        ],
+                      ),
                     ],
                   ),
                 ),
