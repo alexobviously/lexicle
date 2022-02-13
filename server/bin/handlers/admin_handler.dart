@@ -8,7 +8,7 @@ import '../utils/auth_utils.dart';
 import '../utils/http_utils.dart';
 
 class AdminHandler {
-  static Future<Response> resetPassword(Request request) async {
+  static Future<Response> changePassword(Request request) async {
     try {
       final result = await authenticateRequest(request, needAdmin: true);
       if (!result.ok) return result.errorResponse;

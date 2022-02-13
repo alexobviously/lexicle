@@ -70,6 +70,7 @@ Future main() async {
     ..get('/ws', gameServerHandler())
     ..post('/auth/register', AuthHandler.register)
     ..post('/auth/login', AuthHandler.login)
+    ..post('/auth/change_pw', AuthHandler.changePassword)
     ..get('/users/me', UserHandler.getMe)
     ..get('/users/<id>', UserHandler.getUser)
     ..get('/stats/top_players', UserHandler.getTopPlayers)
@@ -92,7 +93,7 @@ Future main() async {
     ..get('/teams/<id>', TeamHandler.getTeam)
     ..post('/teams/<id>/join', TeamHandler.joinTeam)
     ..post('/teams/leave', TeamHandler.leaveTeam)
-    ..post('/admin/reset_pw', AdminHandler.resetPassword);
+    ..post('/admin/change_pw', AdminHandler.changePassword);
 
   final cascade = Cascade().add(_router);
 
