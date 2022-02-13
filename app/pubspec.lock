@@ -633,17 +633,19 @@ packages:
   soundpool:
     dependency: "direct main"
     description:
-      name: soundpool
-      url: "https://pub.dartlang.org"
-    source: hosted
+      path: soundpool
+      ref: master
+      resolved-ref: f566c9e072710609d902e751c913dba0b34a18f4
+      url: "https://github.com/ukasz123/soundpool.git"
+    source: git
     version: "2.2.0"
   soundpool_macos:
     dependency: "direct overridden"
     description:
       path: soundpool_macos
-      ref: HEAD
-      resolved-ref: e29b926bea1ab394d56d7a5c459932a9030769be
-      url: "https://github.com/YDA93/soundpool.git"
+      ref: master
+      resolved-ref: f566c9e072710609d902e751c913dba0b34a18f4
+      url: "https://github.com/ukasz123/soundpool.git"
     source: git
     version: "2.1.3"
   soundpool_platform_interface:
@@ -657,9 +659,9 @@ packages:
     dependency: "direct overridden"
     description:
       path: soundpool_web
-      ref: HEAD
-      resolved-ref: e29b926bea1ab394d56d7a5c459932a9030769be
-      url: "https://github.com/YDA93/soundpool.git"
+      ref: master
+      resolved-ref: f566c9e072710609d902e751c913dba0b34a18f4
+      url: "https://github.com/ukasz123/soundpool.git"
     source: git
     version: "2.1.0"
   source_span:
