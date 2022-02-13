@@ -78,7 +78,6 @@ TokenData verifyHeaders(Map<String, String> headers, [bool forceRenewToken = fal
 typedef AuthPredicate = bool Function(String);
 
 Future<AuthResult> authenticateRequest(Request request, {bool needAdmin = false, AuthPredicate? predicate}) async {
-  if (needAdmin) return AuthResult.error('unauthorised'); // todo
   final tokenData = verifyHeaders(request.headers);
   if (!tokenData.valid) {
     return AuthResult.error('unauthorised', tokenData);
