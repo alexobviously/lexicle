@@ -21,16 +21,6 @@ class TopPlayersView extends StatefulWidget {
 class _TopPlayersViewState extends State<TopPlayersView> {
   TextEditingController nameController = TextEditingController();
 
-  @override
-  void initState() {
-    final cubit = BlocProvider.of<GameGroupManager>(context);
-    setState(() {
-      nameController.text = cubit.player;
-    });
-    cubit.refresh();
-    super.initState();
-  }
-
   Color? _rowColour(int i) {
     if (i == 0) return Colours.gold.lighten();
     if (i == 1) return Colours.silver;
@@ -40,7 +30,6 @@ class _TopPlayersViewState extends State<TopPlayersView> {
 
   @override
   Widget build(BuildContext context) {
-    final cubit = BlocProvider.of<GameGroupManager>(context);
     final theme = Theme.of(context);
     final textTheme = theme.textTheme;
     return StandardScaffold(

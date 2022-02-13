@@ -3,6 +3,7 @@ import 'package:duration/duration.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:word_game/app/colours.dart';
 import 'package:word_game/cubits/local_game_manager.dart';
 import 'package:word_game/model/game_creation_data.dart';
 import 'package:word_game/ui/length_control.dart';
@@ -88,7 +89,7 @@ class _GameCreatorState extends State<GameCreator> {
                   title: _titleController.text,
                 ));
               },
-              child: Text('Create New Game', style: textTheme.headline6!.copyWith(color: theme.primaryColor)),
+              child: Text('Create New Game', style: textTheme.headline6!.copyWith(color: Colours.correct.darken(0.4))),
             ),
           ],
         ),

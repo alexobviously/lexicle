@@ -16,7 +16,7 @@ class GameGroupController extends Cubit<GameGroupState> {
   StreamSubscription<bool>? finishedSub;
 
   String get id => state.group.id;
-  String get player => auth().userId!;
+  String? get player => auth().userId;
   Map<String, dynamic> toMap({bool hideAnswers = true}) => state.group.toMap(hideAnswers: hideAnswers);
   List<String> get unreadyPlayers => state.group.players.where((e) => !state.group.words.containsKey(e)).toList();
 
@@ -95,11 +95,12 @@ class GameGroupController extends Cubit<GameGroupState> {
   }
 
   Future<Result<GameGroup>> setWord(String word) async {
+    if (player == null) return Result.error('unauthorised');
     if (state.group.state > MatchState.lobby) return Result.error('group_started');
     if (!state.group.players.contains(player)) return Result.error('not_in_group');
     if (word.length != state.group.config.wordLength) return Result.error('invalid_word');
     if (!dictionary().isValidWord(word)) return Result.error('invalid_word');
-    final _result = await ApiClient.setWord(id, player, word);
+    final _result = await ApiClient.setWord(id, player!, word);
     if (_result.ok) {
       emit(state.copyWith(group: _result.object!));
     }
