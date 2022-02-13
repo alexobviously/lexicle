@@ -4,7 +4,7 @@ import 'dart:math';
 import 'package:bloc/bloc.dart';
 import 'package:common/common.dart';
 
-class GameController extends Cubit<Game> {
+class GameController extends Cubit<Game> implements BaseGameController {
   final Mediator mediator;
   GameController(Game game, this.mediator) : super(game) {
     start();
@@ -17,7 +17,9 @@ class GameController extends Cubit<Game> {
   }) =>
       GameController(Game.initial(player, length, endTime: endTime), mediator);
 
-  Map<String, dynamic> toMap({bool hideAnswer = false}) => state.toMap(hideAnswer: hideAnswer);
+  Map<String, dynamic> toMap({bool hideAnswer = false, bool hideGuesses = false}) =>
+      state.toMap(hideAnswer: hideAnswer, hideGuesses: hideGuesses);
+
   GameStub get stub => state.stub;
 
   Timer? endTimer;
@@ -49,16 +51,19 @@ class GameController extends Cubit<Game> {
     end(EndReasons.timeout);
   }
 
+  @override
   void addLetter(String l) {
     if (state.word.length >= state.length || state.gameFinished) return;
     emit(state.copyWith(current: WordData.current('${state.word}$l')));
   }
 
+  @override
   void backspace() {
     if (state.word.isEmpty || state.gameFinished) return;
     emit(state.copyWith(current: WordData.current(state.word.substring(0, state.word.length - 1))));
   }
 
+  @override
   Future<bool> enter() async {
     if (state.gameFinished) return false;
     final _result = await mediator.validateWord(state.word);
@@ -103,6 +108,11 @@ class GameController extends Cubit<Game> {
     return super.close();
   }
 
+  @override
   Stream<int> get numRowsStream => stream.map((e) => e.numRows).distinct();
+  @override
   Stream<bool> get gameFinishedStream => stream.map((e) => e.gameFinished).distinct();
+
+  @override
+  bool get canAct => true;
 }

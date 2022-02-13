@@ -215,7 +215,8 @@ class GameHandler {
       }
       final authResult = await authenticateRequest(request);
       bool hideGuesses = !authResult.hasUser ||
-          (authResult.user!.id != result.object!.state.player && authResult.user!.id != result.object!.state.creator);
+          (authResult.user!.id !=
+              result.object!.state.player); // && authResult.user!.id != result.object!.state.creator);
       return HttpUtils.buildResponse(data: {
         'game': result.object!.toMap(hideAnswer: true, hideGuesses: hideGuesses),
       });

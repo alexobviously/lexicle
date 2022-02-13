@@ -91,7 +91,7 @@ class Game implements Entity {
       GameFields.answer: hideAnswer ? ('*' * answer.length) : answer,
       GameFields.player: player,
       GameFields.creator: creator,
-      GameFields.guesses: guesses.map((e) => e.toMap()).toList(),
+      GameFields.guesses: guesses.map((e) => e.toMap(hideContent: hideGuesses)).toList(),
       GameFields.current: current.toMap(),
       GameFields.flags: flags,
       if (group != null) GameFields.group: group,

@@ -91,10 +91,12 @@ GoRouter buildRouter() {
       GoRoute(
         path: Routes.game(':id'),
         builder: (context, state) {
-          if (state.extra is! GameRouteData) throw Exception('Missing/Invalid Game Route Data');
+          GameRouteData data = GameRouteData();
+          if (state.extra is GameRouteData) data = state.extra as GameRouteData;
+          // if (state.extra is! GameRouteData) throw Exception('Missing/Invalid Game Route Data');
           return GameView(
             id: state.params['id'] ?? '',
-            data: state.extra as GameRouteData,
+            data: data,
           );
         },
       ),

@@ -526,8 +526,9 @@ class _GroupViewState extends State<GroupView> {
     }
 
     Color? _boxColour(GameStub g) {
+      print('__ ${g.progress}');
       if (g.id.isEmpty) return Colours.wrong;
-      if (g.progress >= 1.0) {
+      if (g.progress >= 1.0 && g.endReason != null) {
         if (g.endReason == EndReasons.solved) {
           return Colours.correct;
         } else {
@@ -587,14 +588,17 @@ class _GroupViewState extends State<GroupView> {
                             .reversed
                             .map((g) => Padding(
                                   padding: EdgeInsets.symmetric(horizontal: 2.0, vertical: finished ? 8.0 : 0.0),
-                                  child: Container(
-                                    width: 32,
-                                    height: 32,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(4.0),
-                                      color: _boxColour(g),
+                                  child: GestureDetector(
+                                    onTap: () => context.push(Routes.game(g.id)),
+                                    child: Container(
+                                      width: 32,
+                                      height: 32,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(4.0),
+                                        color: _boxColour(g),
+                                      ),
+                                      child: g.id.isNotEmpty ? Center(child: Text(g.guesses.toString())) : null,
                                     ),
-                                    child: g.id.isNotEmpty ? Center(child: Text(g.guesses.toString())) : null,
                                   ),
                                 ))
                             .toList(),
