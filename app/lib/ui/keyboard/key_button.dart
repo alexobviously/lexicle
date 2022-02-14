@@ -6,6 +6,7 @@ class KeyButton extends StatefulWidget {
   final double width;
   final double height;
   final VoidCallback? onTap;
+  final VoidCallback? onLongPress;
   final Duration animationDuration;
   final double depth;
   final double blurRadius;
@@ -15,7 +16,8 @@ class KeyButton extends StatefulWidget {
     required this.child,
     this.width = 50,
     this.height = 75,
-    required this.onTap,
+    this.onTap,
+    this.onLongPress,
     this.depth = 2.0,
     this.blurRadius = 10.0,
     this.animationDuration = const Duration(milliseconds: 100),
@@ -52,6 +54,7 @@ class _KeyButtonState extends State<KeyButton> with SingleTickerProviderStateMix
         onTapDown: widget.onTap != null ? (_) => _onTapDown() : null,
         onTapUp: widget.onTap != null ? (_) => _onTapUp() : null,
         onTapCancel: widget.onTap != null ? _onTapUp : null,
+        onLongPress: widget.onLongPress,
         child: AnimatedContainer(
           duration: widget.animationDuration,
           width: widget.width,

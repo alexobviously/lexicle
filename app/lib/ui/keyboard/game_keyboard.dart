@@ -10,6 +10,7 @@ class GameKeyboard extends StatelessWidget {
   final Function(String) onTap;
   final VoidCallback onEnter;
   final VoidCallback onBackspace;
+  final VoidCallback? onClear;
   final Iterable<String> correct;
   final Iterable<String> semiCorrect;
   final Iterable<String> wrong;
@@ -20,6 +21,7 @@ class GameKeyboard extends StatelessWidget {
     required this.onTap,
     required this.onEnter,
     required this.onBackspace,
+    this.onClear,
     this.correct = const [],
     this.semiCorrect = const [],
     this.wrong = const [],
@@ -110,6 +112,7 @@ class GameKeyboard extends StatelessWidget {
         color: !wordEmpty ? null : Colors.grey[400],
       ),
       onTap: !wordEmpty ? () => _onBackspace() : null,
+      onLongPress: onClear,
     );
   }
 }

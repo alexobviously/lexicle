@@ -45,6 +45,8 @@ class ObserverGameController extends Cubit<Game> implements BaseGameController {
   Future<bool> enter() async => false;
   @override
   void addLetter(String l) {}
+  @override
+  void clearInput() {}
 
   @override
   Stream<int> get numRowsStream => stream.map((e) => e.numRows).distinct();

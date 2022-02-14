@@ -16,6 +16,7 @@ class WordRow extends StatelessWidget {
   final TextStyle? textStyle;
   final bool correctOnTop;
   final Duration? animationDuration;
+  final VoidCallback? onLongPress;
   const WordRow({
     Key? key,
     required this.length,
@@ -32,6 +33,7 @@ class WordRow extends StatelessWidget {
     this.textStyle,
     this.correctOnTop = false,
     this.animationDuration,
+    this.onLongPress,
   })  : assert(content.length <= length),
         super(key: key);
 
@@ -52,9 +54,12 @@ class WordRow extends StatelessWidget {
       }
       _letterData.add(LetterData(_letters[i], c));
     }
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: _letterData.map((e) => _letter(context, e.content, colour: e.colour)).toList(),
+    return GestureDetector(
+      onLongPress: onLongPress,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: _letterData.map((e) => _letter(context, e.content, colour: e.colour)).toList(),
+      ),
     );
   }
 

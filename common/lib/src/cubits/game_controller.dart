@@ -80,6 +80,13 @@ class GameController extends Cubit<Game> implements BaseGameController {
     return true;
   }
 
+  @override
+  void clearInput() {
+    if (state.current.content.isNotEmpty) {
+      emit(state.copyWith(current: WordData.current('')));
+    }
+  }
+
   Future<Result<WordValidationResult>> makeGuess(String word) async {
     if (state.gameFinished) return Result.error('game_finished');
     if (state.guesses.isNotEmpty && state.guesses.first.finalised && state.guesses.first.content == word) {

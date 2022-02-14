@@ -115,6 +115,10 @@ class _GameViewState extends State<GameView> {
     _scrollDown();
   }
 
+  void _clearInput() {
+    game!.clearInput();
+  }
+
   @override
   Widget build(BuildContext context) {
     return StandardScaffold(
@@ -200,6 +204,7 @@ class _GameViewState extends State<GameView> {
                                         valid: !state.invalid,
                                         surfaceIntensity: 0,
                                         shape: NeumorphicShape.convex,
+                                        onLongPress: game!.canAct ? _clearInput : null,
                                       ),
                                     ),
                                   Container(height: 16),
@@ -221,6 +226,7 @@ class _GameViewState extends State<GameView> {
                                   onTap: _addLetter,
                                   onBackspace: _onBackspace,
                                   onEnter: _onEnter,
+                                  onClear: _clearInput,
                                   correct: state.correctLetters,
                                   semiCorrect: state.semiCorrectLetters,
                                   wrong: state.wrongLetters,

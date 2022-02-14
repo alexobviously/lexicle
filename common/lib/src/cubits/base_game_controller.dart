@@ -7,6 +7,7 @@ abstract class BaseGameController implements Cubit<Game> {
   Future<bool> enter();
   void backspace();
   void addLetter(String l);
+  void clearInput();
 
   Stream<int> get numRowsStream;
   Stream<bool> get gameFinishedStream;
