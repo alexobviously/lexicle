@@ -87,6 +87,7 @@ class GameKeyboard extends StatelessWidget {
     // if (wordReady) textStyle = textStyle.copyWith(color: Colors.grey[400]);
     return KeyButton(
       child: Text(letter, style: textStyle),
+      colour: colour,
       onTap: wordReady ? null : () => _onTap(letter),
     );
   }

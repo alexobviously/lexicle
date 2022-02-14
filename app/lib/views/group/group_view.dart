@@ -526,7 +526,6 @@ class _GroupViewState extends State<GroupView> {
     }
 
     Color? _boxColour(GameStub g) {
-      print('__ ${g.progress}');
       if (g.id.isEmpty) return Colours.wrong;
       if (g.progress >= 1.0 && g.endReason != null) {
         if (g.endReason == EndReasons.solved) {
