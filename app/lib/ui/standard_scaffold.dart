@@ -6,18 +6,26 @@ class StandardScaffold extends StatelessWidget {
   final String? title;
   final bool showAppBar;
   final bool showBackButton;
+  final List<Widget> appBarActions;
   const StandardScaffold({
     Key? key,
     required this.body,
     this.showAppBar = true,
     this.showBackButton = true,
     this.title,
+    this.appBarActions = const [],
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: showAppBar ? MyAppBar(title: title, showBackButton: showBackButton) : null,
+      appBar: showAppBar
+          ? MyAppBar(
+              title: title,
+              showBackButton: showBackButton,
+              actions: appBarActions,
+            )
+          : null,
       backgroundColor: NeumorphicTheme.baseColor(context),
       body: body,
     );

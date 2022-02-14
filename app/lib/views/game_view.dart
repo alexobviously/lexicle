@@ -1,11 +1,13 @@
 import 'dart:async';
 import 'dart:math';
+import 'package:flutter/services.dart';
 
 import 'package:common/common.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:word_game/app/colours.dart';
 import 'package:word_game/cubits/observer_game_controller.dart';
 import 'package:word_game/services/service_locator.dart';
@@ -121,138 +123,145 @@ class _GameViewState extends State<GameView> {
 
   @override
   Widget build(BuildContext context) {
-    return StandardScaffold(
-      title: widget.data.title,
-      body: Center(
-        child: SafeArea(
-          child: Builder(builder: (context) {
-            if (error != null) {
-              return Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    'Error getting game',
-                    style: Theme.of(context).textTheme.headline5,
-                  ),
-                  Text(
-                    error!,
-                    style: Theme.of(context).textTheme.headline6,
-                  ),
-                ],
-              );
-            }
-            if (game == null) {
-              return Center(
-                child: SpinKitFadingGrid(
-                  color: Colours.correct.darken(0.3),
-                  size: 64,
-                ),
-              );
-            }
-            return BlocBuilder<BaseGameController, Game>(
-                bloc: game!,
-                builder: (context, state) {
-                  print('!! isObserving: $isObserving');
+    if (error != null || game == null) {
+      return StandardScaffold(
+        body: Center(
+          child: SafeArea(
+            child: Builder(
+              builder: (context) {
+                if (error != null) {
                   return Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      if (isObserving) _observerBox(context, state),
-                      if (timeLeft != null) GameClock(timeLeft!),
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.all(4.0),
-                          child: Neumorphic(
-                            padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                            duration: const Duration(milliseconds: 2000),
-                            style: NeumorphicStyle(
-                              depth: -10,
-                              color: state.gameFinished
-                                  ? state.endReason == EndReasons.solved
-                                      ? Colours.correct.withAlpha(100)
-                                      : Colours.wrong.withAlpha(150)
-                                  : null,
-                              border: state.solved
-                                  ? NeumorphicBorder(color: Colours.correct, width: 1.0)
-                                  : const NeumorphicBorder.none(),
-                            ),
-                            child: SingleChildScrollView(
-                              controller: _controller,
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Container(height: 16),
-                                  ...state.guesses
-                                      .map(
-                                        (e) => FittedBox(
-                                          child: WordRow(
-                                            length: state.length,
-                                            content: e.content,
-                                            correct: e.correct,
-                                            semiCorrect: e.semiCorrect,
-                                            finalised: e.finalised,
-                                            shape: NeumorphicShape.convex,
-                                            surfaceIntensity: e.solved ? 0.4 : 0.25,
-                                          ),
+                      Text(
+                        'Error getting game',
+                        style: Theme.of(context).textTheme.headline5,
+                      ),
+                      Text(
+                        error!,
+                        style: Theme.of(context).textTheme.headline6,
+                      ),
+                    ],
+                  );
+                }
+                return Center(
+                  child: SpinKitFadingGrid(
+                    color: Colours.correct.darken(0.3),
+                    size: 64,
+                  ),
+                );
+              },
+            ),
+          ),
+        ),
+      );
+    }
+    return BlocBuilder<BaseGameController, Game>(
+        bloc: game!,
+        builder: (context, state) {
+          return StandardScaffold(
+            title: widget.data.title,
+            appBarActions: [_copyButton(context)],
+            body: Center(
+              child: SafeArea(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    if (isObserving) _observerBox(context, state),
+                    if (timeLeft != null) GameClock(timeLeft!),
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.all(4.0),
+                        child: Neumorphic(
+                          padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                          duration: const Duration(milliseconds: 2000),
+                          style: NeumorphicStyle(
+                            depth: -10,
+                            color: state.gameFinished
+                                ? state.endReason == EndReasons.solved
+                                    ? Colours.correct.withAlpha(100)
+                                    : Colours.wrong.withAlpha(150)
+                                : null,
+                            border: state.solved
+                                ? NeumorphicBorder(color: Colours.correct, width: 1.0)
+                                : const NeumorphicBorder.none(),
+                          ),
+                          child: SingleChildScrollView(
+                            controller: _controller,
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Container(height: 16),
+                                ...state.guesses
+                                    .map(
+                                      (e) => FittedBox(
+                                        child: WordRow(
+                                          length: state.length,
+                                          content: e.content,
+                                          correct: e.correct,
+                                          semiCorrect: e.semiCorrect,
+                                          finalised: e.finalised,
+                                          shape: NeumorphicShape.convex,
+                                          surfaceIntensity: e.solved ? 0.4 : 0.25,
                                         ),
-                                      )
-                                      .toList(),
-                                  if (!state.gameFinished)
-                                    FittedBox(
-                                      child: WordRow(
-                                        length: state.length,
-                                        content: state.word,
-                                        valid: !state.invalid,
-                                        surfaceIntensity: 0,
-                                        shape: NeumorphicShape.convex,
-                                        onLongPress: game!.canAct ? _clearInput : null,
                                       ),
+                                    )
+                                    .toList(),
+                                if (!state.gameFinished)
+                                  FittedBox(
+                                    child: WordRow(
+                                      length: state.length,
+                                      content: state.word,
+                                      valid: !state.invalid,
+                                      surfaceIntensity: 0,
+                                      shape: NeumorphicShape.convex,
+                                      onLongPress: game!.canAct ? _clearInput : null,
                                     ),
-                                  Container(height: 16),
-                                ],
-                              ),
+                                  ),
+                                Container(height: 16),
+                              ],
                             ),
                           ),
                         ),
                       ),
-                      if (game!.canAct)
-                        SizedBox(
-                          width: MediaQuery.of(context).size.width,
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: AnimatedCrossFade(
-                              duration: Duration(milliseconds: 1000),
-                              firstChild: FittedBox(
-                                child: GameKeyboard(
-                                  onTap: _addLetter,
-                                  onBackspace: _onBackspace,
-                                  onEnter: _onEnter,
-                                  onClear: _clearInput,
-                                  correct: state.correctLetters,
-                                  semiCorrect: state.semiCorrectLetters,
-                                  wrong: state.wrongLetters,
-                                  wordReady: state.wordReady,
-                                  wordEmpty: state.wordEmpty,
-                                ),
+                    ),
+                    if (game!.canAct)
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: AnimatedCrossFade(
+                            duration: Duration(milliseconds: 1000),
+                            firstChild: FittedBox(
+                              child: GameKeyboard(
+                                onTap: _addLetter,
+                                onBackspace: _onBackspace,
+                                onEnter: _onEnter,
+                                onClear: _clearInput,
+                                correct: state.correctLetters,
+                                semiCorrect: state.semiCorrectLetters,
+                                wrong: state.wrongLetters,
+                                wordReady: state.wordReady,
+                                wordEmpty: state.wordEmpty,
                               ),
-                              secondChild: SizedBox(
-                                width: MediaQuery.of(context).size.width - 16.0,
-                                child: PostGamePanel(
-                                  guesses: state.guesses.length,
-                                  reason: state.endReason,
-                                ),
-                              ),
-                              crossFadeState:
-                                  !state.gameFinished ? CrossFadeState.showFirst : CrossFadeState.showSecond,
                             ),
+                            secondChild: SizedBox(
+                              width: MediaQuery.of(context).size.width - 16.0,
+                              child: PostGamePanel(
+                                guesses: state.guesses.length,
+                                reason: state.endReason,
+                              ),
+                            ),
+                            crossFadeState: !state.gameFinished ? CrossFadeState.showFirst : CrossFadeState.showSecond,
                           ),
                         ),
-                    ],
-                  );
-                });
-          }),
-        ),
-      ),
-    );
+                      ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        });
   }
 
   Widget _observerBox(BuildContext context, Game game) {
@@ -293,5 +302,21 @@ class _GameViewState extends State<GameView> {
         ),
       );
     });
+  }
+
+  Widget _copyButton(BuildContext context) {
+    bool enabled = game!.state.guesses.isNotEmpty;
+    String title = widget.data.title != null ? 'Lexicle: ${widget.data.title!}' : 'Lexicle';
+    return IconButton(
+      onPressed: enabled
+          ? () => Clipboard.setData(
+                ClipboardData(text: '$title\n${game!.state.toEmojis()}'),
+              )
+          : null,
+      icon: Icon(
+        MdiIcons.contentCopy,
+        color: enabled ? null : Colors.grey[400],
+      ),
+    );
   }
 }
