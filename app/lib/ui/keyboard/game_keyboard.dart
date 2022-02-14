@@ -81,122 +81,35 @@ class GameKeyboard extends StatelessWidget {
   }
 
   Widget _key(BuildContext context, String letter, {Color? colour}) {
+    TextStyle textStyle = Theme.of(context).textTheme.headline4!;
+    // if (wordReady) textStyle = textStyle.copyWith(color: Colors.grey[400]);
     return KeyButton(
-      child: Text(
-        letter,
-        style: Theme.of(context).textTheme.headline4,
-      ),
-      onTap: () => _onTap(letter),
+      child: Text(letter, style: textStyle),
+      onTap: wordReady ? null : () => _onTap(letter),
     );
-    // return Padding(
-    //   padding: const EdgeInsets.all(6.0),
-    //   child: GestureDetector(
-    //     onTap: () => _onTap(letter),
-    //     child: AnimatedContainer(
-    //       duration: const Duration(milliseconds: 1000),
-    //       width: 50,
-    //       height: 75,
-    //       padding: const EdgeInsets.all(12.0),
-    //       decoration: BoxDecoration(
-    //         color: colour ?? Colors.grey[300],
-    //         borderRadius: BorderRadius.circular(6.0),
-    //         // shape: BoxShape.circle,
-    //         boxShadow: [
-    //           BoxShadow(
-    //             color: Colors.grey.shade500,
-    //             offset: const Offset(2, 2),
-    //             blurRadius: 10.0,
-    //           ),
-    //           const BoxShadow(
-    //             color: Colors.white,
-    //             offset: Offset(-2, -2),
-    //             blurRadius: 10.0,
-    //           ),
-    //         ],
-    //       ),
-    //       child: Center(
-    //         child: Text(
-    //           letter,
-    //           style: Theme.of(context).textTheme.headline4,
-    //         ),
-    //       ),
-    //     ),
-    //   ),
-    // );
   }
 
   Widget _enterKey(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(6.0),
-      child: GestureDetector(
-        onTap: wordReady ? _onEnter : null,
-        child: Container(
-          width: 75,
-          height: 75,
-          padding: const EdgeInsets.all(12.0),
-          decoration: BoxDecoration(
-            color: Colors.grey[300],
-            borderRadius: BorderRadius.circular(6.0),
-            // shape: BoxShape.circle,
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey.shade500,
-                offset: const Offset(2, 2),
-                blurRadius: 10.0,
-              ),
-              const BoxShadow(
-                color: Colors.white,
-                offset: Offset(-2, -2),
-                blurRadius: 10.0,
-              ),
-            ],
-          ),
-          child: Center(
-            child: Icon(
-              MdiIcons.keyboardReturn,
-              size: 36,
-              color: wordReady ? null : Colors.grey[400],
-            ),
-          ),
-        ),
+    return KeyButton(
+      width: 75,
+      child: Icon(
+        MdiIcons.keyboardReturn,
+        size: 36,
+        color: wordReady ? null : Colors.grey[400],
       ),
+      onTap: wordReady ? () => _onEnter() : null,
     );
   }
 
   Widget _backspaceKey(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(6.0),
-      child: GestureDetector(
-        onTap: !wordEmpty ? _onBackspace : null,
-        child: Container(
-          width: 75,
-          height: 75,
-          padding: const EdgeInsets.all(12.0),
-          decoration: BoxDecoration(
-            color: Colors.grey[300],
-            borderRadius: BorderRadius.circular(6.0),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey.shade500,
-                offset: const Offset(2, 2),
-                blurRadius: 10.0,
-              ),
-              const BoxShadow(
-                color: Colors.white,
-                offset: Offset(-2, -2),
-                blurRadius: 10.0,
-              ),
-            ],
-          ),
-          child: Center(
-            child: Icon(
-              MdiIcons.backspaceOutline,
-              size: 36,
-              color: !wordEmpty ? null : Colors.grey[400],
-            ),
-          ),
-        ),
+    return KeyButton(
+      width: 75,
+      child: Icon(
+        MdiIcons.backspaceOutline,
+        size: 36,
+        color: !wordEmpty ? null : Colors.grey[400],
       ),
+      onTap: !wordEmpty ? () => _onBackspace() : null,
     );
   }
 }

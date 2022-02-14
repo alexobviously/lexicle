@@ -3,7 +3,9 @@ import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 
 class KeyButton extends StatefulWidget {
   final Widget child;
-  final VoidCallback onTap;
+  final double width;
+  final double height;
+  final VoidCallback? onTap;
   final Duration animationDuration;
   final double depth;
   final double blurRadius;
@@ -11,10 +13,12 @@ class KeyButton extends StatefulWidget {
   const KeyButton({
     Key? key,
     required this.child,
+    this.width = 50,
+    this.height = 75,
     required this.onTap,
     this.depth = 2.0,
     this.blurRadius = 10.0,
-    this.animationDuration = const Duration(milliseconds: 150),
+    this.animationDuration = const Duration(milliseconds: 100),
     this.colour,
   }) : super(key: key);
 
@@ -23,8 +27,6 @@ class KeyButton extends StatefulWidget {
 }
 
 class _KeyButtonState extends State<KeyButton> with SingleTickerProviderStateMixin {
-  late AnimationController ac;
-
   late double _depth;
 
   @override
@@ -34,7 +36,7 @@ class _KeyButtonState extends State<KeyButton> with SingleTickerProviderStateMix
   }
 
   void _onTapDown() async {
-    setState(() => _depth = 0.0);
+    setState(() => _depth = widget.depth * 0.15);
   }
 
   void _onTapUp() {
@@ -47,16 +49,13 @@ class _KeyButtonState extends State<KeyButton> with SingleTickerProviderStateMix
       padding: const EdgeInsets.all(6.0),
       child: GestureDetector(
         onTap: widget.onTap,
-        onTapDown: (_) => _onTapDown(),
-        onTapUp: (_) => _onTapUp(),
-        onTapCancel: _onTapUp,
-        // onTapDown: (_) => ac.forward(),
-        // onTapCancel: () => ac.reverse(),
-        // onTapUp: (_) => ac.reverse(),
+        onTapDown: widget.onTap != null ? (_) => _onTapDown() : null,
+        onTapUp: widget.onTap != null ? (_) => _onTapUp() : null,
+        onTapCancel: widget.onTap != null ? _onTapUp : null,
         child: AnimatedContainer(
           duration: widget.animationDuration,
-          width: 50,
-          height: 75,
+          width: widget.width,
+          height: widget.height,
           padding: const EdgeInsets.all(12.0),
           decoration: BoxDecoration(
             color: widget.colour ?? Colors.grey[300],
