@@ -118,6 +118,7 @@ class _GameViewState extends State<GameView> {
   }
 
   void _clearInput() {
+    HapticFeedback.mediumImpact();
     game!.clearInput();
   }
 
