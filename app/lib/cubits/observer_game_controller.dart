@@ -18,14 +18,12 @@ class ObserverGameController extends Cubit<Game> implements BaseGameController {
   }
 
   void _update() async {
-    print('@@ updating game ${state.id}');
     final result = await gameStore().get(state.id, true);
-    print('@@ result $result');
     if (isClosed) return;
     if (result.ok) {
       emit(result.object!);
     }
-    if (!result.object!.gameFinished) {
+    if (!result.ok || !result.object!.gameFinished) {
       _timer = Timer(updateInterval, _update);
     }
   }

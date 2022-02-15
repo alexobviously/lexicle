@@ -79,6 +79,7 @@ class Game implements Entity {
           (doc[GameFields.guesses] as List).map<WordData>((e) => WordData.fromJson(e as Map<String, dynamic>)).toList(),
       current: WordData.fromJson(doc[GameFields.current] as Map<String, dynamic>),
       flags: coerceList(doc[GameFields.flags] ?? []),
+      group: doc[GameFields.group],
       endTime: doc[GameFields.endTime],
       endReason: doc[GameFields.endReason],
     );

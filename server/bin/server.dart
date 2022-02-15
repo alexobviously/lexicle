@@ -96,7 +96,8 @@ Future main() async {
     ..get('/teams/<id>', TeamHandler.getTeam)
     ..post('/teams/<id>/join', TeamHandler.joinTeam)
     ..post('/teams/leave', TeamHandler.leaveTeam)
-    ..post('/admin/change_pw', AdminHandler.changePassword);
+    ..post('/admin/change_pw', AdminHandler.changePassword)
+    ..post('/admin/restore_group', AdminHandler.restoreGroup);
 
   final cascade = Cascade().add(_router);
 
@@ -110,14 +111,6 @@ Future main() async {
   );
 
   print('Serving at http://${server.address.host}:${server.port}');
-
-  // final d = _db.db;
-  // final coll = d.collection('groups');
-  // final res = await coll.find(where.eq(GroupFields.state, MatchState.finished)).toList();
-  // print('## ${res.length}');
-  // for (var x in res) {
-  //   print(x);
-  // }
 }
 
 Response _echoRequest(Request request) => Response.ok('Request for "${request.url}"');

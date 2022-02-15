@@ -30,4 +30,20 @@ class AdminHandler {
       return HttpUtils.invalidRequestResponse();
     }
   }
+
+  static Future<Response> restoreGroup(Request request) async {
+    try {
+      final result = await authenticateRequest(request, needAdmin: true);
+      if (!result.ok) return result.errorResponse;
+      final String payload = await request.readAsString();
+      Map<String, dynamic> data = json.decode(payload);
+      String groupId = data['group'];
+      final restoreResult = await gameServer().restoreGroup(groupId);
+      if (!restoreResult.ok) return HttpUtils.buildErrorResponse(restoreResult.error!);
+      return HttpUtils.buildResponse(data: {'group': restoreResult.object!.toMap()});
+    } catch (e, s) {
+      print('exception in restoreGame: $e\n$s');
+      return HttpUtils.invalidRequestResponse();
+    }
+  }
 }

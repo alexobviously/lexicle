@@ -26,7 +26,11 @@ class GameController extends Cubit<Game> implements BaseGameController {
 
   StreamSubscription<int>? highestGuessStream; // listen to highest guess count in the group, for penalty
   int highestGuess = 0;
-  void registerHighestGuessStream(Stream<int> stream) => highestGuessStream = stream.listen(_handleHighestGuess);
+  void registerHighestGuessStream(Stream<int> stream, {int? initial}) {
+    if (initial != null) highestGuess = initial;
+    highestGuessStream = stream.listen(_handleHighestGuess);
+  }
+
   void _handleHighestGuess(int count) => highestGuess = count;
 
   void start() {

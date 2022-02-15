@@ -78,6 +78,7 @@ class EntityStore<T extends Entity> {
 
   Future<void> onDelete(String id) async {
     items.remove(id);
+    cache.remove(id);
   }
 
   Future<Result<Iterable<String>>> pushCache() async {
