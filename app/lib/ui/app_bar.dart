@@ -5,7 +5,8 @@ import 'package:go_router/go_router.dart';
 class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String? title;
   final bool showBackButton;
-  const MyAppBar({this.title, this.showBackButton = true, Key? key}) : super(key: key);
+  final List<Widget> actions;
+  const MyAppBar({this.title, this.showBackButton = true, this.actions = const [], Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -36,6 +37,7 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
                   title!,
                   style: Theme.of(context).textTheme.headline6,
                 ),
+              ...actions,
             ],
           ),
         ),

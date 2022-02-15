@@ -10,7 +10,7 @@ import 'package:word_game/services/service_locator.dart';
 class GameGroupManager extends Cubit<GroupManagerState> {
   Map<String, GameGroupController> groupControllers = {};
   Map<String, StreamSubscription> streams = {};
-  String get player => auth().userId!;
+  String? get player => auth().userId;
   GameGroupManager() : super(GroupManagerState.initial()) {
     init();
   }
@@ -90,7 +90,8 @@ class GameGroupManager extends Cubit<GroupManagerState> {
   }
 
   Future<bool> joinGroup(String id) async {
-    final _result = await ApiClient.joinGroup(id, player);
+    if (player == null) return false;
+    final _result = await ApiClient.joinGroup(id, player!);
     if (!_result.ok) return false;
     GameGroup g = _result.object!;
     _updateGroup(g);
@@ -98,7 +99,8 @@ class GameGroupManager extends Cubit<GroupManagerState> {
   }
 
   Future<bool> leaveGroup(String id) async {
-    final _result = await ApiClient.leaveGroup(id, player);
+    if (player == null) return false;
+    final _result = await ApiClient.leaveGroup(id, player!);
     if (!_result.ok) return false;
     GameGroup g = _result.object!;
     print(g.players);
@@ -107,7 +109,8 @@ class GameGroupManager extends Cubit<GroupManagerState> {
   }
 
   Future<bool> deleteGroup(String id) async {
-    final _result = await ApiClient.deleteGroup(id, player);
+    if (player == null) return false;
+    final _result = await ApiClient.deleteGroup(id, player!);
     if (!_result.ok) return false;
     emit(state.copyWith(
       groups: Map.from(state.groups)..remove(id),
@@ -117,7 +120,8 @@ class GameGroupManager extends Cubit<GroupManagerState> {
   }
 
   Future<bool> createGroup(String title, GameConfig config) async {
-    final _result = await ApiClient.createGroup(player, title, config);
+    if (player == null) return false;
+    final _result = await ApiClient.createGroup(player!, title, config);
     if (!_result.ok) return false;
     _updateGroup(_result.object!);
     return true;

@@ -2,9 +2,7 @@ import 'dart:io';
 import 'package:common/common.dart';
 
 class ServerDictionary extends Dictionary {
-  ServerDictionary() {
-    init();
-  }
+  ServerDictionary();
 
   @override
   Future<bool> initialise() async {

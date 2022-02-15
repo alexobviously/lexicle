@@ -20,7 +20,7 @@ void main() async {
   await setUpServiceLocator(db: ApiService());
   await dictionary().ready;
   await sound().ready;
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
 Future<void> loadEnv() async {
@@ -33,7 +33,12 @@ Future<void> loadEnv() async {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  MyApp({Key? key}) : super(key: key);
+
+  final _appKey = GlobalKey();
+  final _router = buildRouter();
+
+  final _themeMode = ThemeMode.light; // change this to system if you want to try dark hell
 
   @override
   Widget build(BuildContext context) {
@@ -45,8 +50,18 @@ class MyApp extends StatelessWidget {
       appBarTheme: appBarTheme,
       boxShape: NeumorphicBoxShape.roundRect(BorderRadius.circular(25.0)),
     );
-
-    final _router = buildRouter();
+    final _darkTheme = NeumorphicThemeData(
+      baseColor: const Color(0xFF252525),
+      lightSource: LightSource.bottomRight,
+      depth: 2,
+      textTheme: GoogleFonts.dmSansTextTheme().apply(
+        displayColor: Colors.black87,
+        bodyColor: Colors.white70,
+      ),
+      defaultTextColor: Colors.white24,
+      appBarTheme: appBarTheme,
+      boxShape: NeumorphicBoxShape.roundRect(BorderRadius.circular(25.0)),
+    );
 
     return MultiBlocProvider(
       providers: [
@@ -65,27 +80,20 @@ class MyApp extends StatelessWidget {
       ],
       child: NeumorphicTheme(
         theme: _theme,
+        darkTheme: _darkTheme,
+        themeMode: _themeMode,
         child: Builder(
           builder: (context) => IconTheme(
             data: NeumorphicTheme.currentTheme(context).iconTheme,
             child: MaterialApp.router(
+              key: _appKey,
               title: 'Lexicle',
               theme: _theme.materialTheme,
-              themeMode: ThemeMode.light,
+              darkTheme: _darkTheme.materialTheme,
+              themeMode: _themeMode,
               debugShowCheckedModeBanner: false,
               routeInformationParser: _router.routeInformationParser,
               routerDelegate: _router.routerDelegate,
-              // initialRoute: Routes.home,
-              // routes: {
-              //   Routes.home: (ctx) => const HomeView(),
-              //   Routes.auth: (ctx) => const AuthView(),
-              //   Routes.solo: (ctx) => const SoloView(),
-              //   Routes.groups: (ctx) => const GroupsView(),
-              //   Routes.settings: (ctx) => const SettingsView(),
-              //   Routes.dict: (ctx) => const DictSearchView(),
-              //   Routes.topPlayers: (ctx) => const TopPlayersView(),
-              //   Routes.about: (ctx) => const AboutView(),
-              // },
             ),
           ),
         ),

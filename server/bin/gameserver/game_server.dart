@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'dart:developer';
+import 'dart:math';
 
 import 'package:common/common.dart';
 import '../mediators/server_mediator.dart';
@@ -134,6 +134,7 @@ class GameServer with ReadyManager {
   }
 
   Result<GameGroupController> startGroup(String id, String player) {
+    // TODO: deprecate using player here and just authenticate in handler
     if (!gameGroups.containsKey(id)) return Result.error('not_found');
     GameGroupController ggc = gameGroups[id]!;
     final _result = ggc.canStart;
@@ -165,6 +166,7 @@ class GameServer with ReadyManager {
           group: controller.id,
           endTime: endTime,
         );
+        gameStore().set(g);
         games[gid] = GameController(g, ServerMediator(answer: _group.words[c]!));
         games[gid]!.registerHighestGuessStream(controller.highestGuessStream);
         playerGames.add(gid);
@@ -274,5 +276,31 @@ class GameServer with ReadyManager {
       return Result.error(_result.error!);
     }
     return Result.ok(_result.object!);
+  }
+
+  Future<Result<GameGroupController>> restoreGroup(String id) async {
+    final result = await groupStore().get(id);
+    if (!result.ok) return Result.error(result.error!);
+    final group = result.object!;
+    int numGames = group.games.entries.fold(0, (p, e) => p + e.value.length);
+    final _games = await gameStore().getGamesForGroup(id);
+    if (_games.length != numGames) return Result.error('games_missing');
+
+    GameGroupController ggc = GameGroupController(group);
+    gameGroups[id] = ggc;
+    final sub = ggc.stream.listen(_handleGroupUpdate);
+    groupSubs[id] = sub;
+
+    // get highest guess
+    int highestGuess = _games.fold(0, (p, g) => max(p, g.guesses.length));
+
+    for (Game g in _games) {
+      games[g.id] = GameController(g, ServerMediator(answer: g.answer));
+      games[g.id]!.registerHighestGuessStream(ggc.highestGuessStream, initial: highestGuess);
+      final sub = games[g.id]!.stream.listen(_handleGameUpdate);
+      gameSubs[g.id] = sub;
+    }
+    ggc.start(group.games, ggc.getEndTime());
+    return Result.ok(ggc);
   }
 }

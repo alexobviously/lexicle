@@ -5,8 +5,8 @@ import 'package:validators/validators.dart';
 class Dictionary with ReadyManager {
   static const int minimumLength = 4;
   static const int maximumLength = 8;
-  Map<int, List<String>> words = {};
-  Map<int, List<String>> commonWords = {};
+  Map<int, List<String>> expanded = {};
+  Map<int, List<String>> common = {};
   static int startTime = DateTime.now().millisecondsSinceEpoch;
 
   Dictionary() {
@@ -24,8 +24,8 @@ class Dictionary with ReadyManager {
 
   void clear() {
     for (int i = minimumLength; i <= maximumLength; i++) {
-      words[i] = [];
-      commonWords[i] = [];
+      expanded[i] = [];
+      common[i] = [];
     }
   }
 
@@ -38,7 +38,7 @@ class Dictionary with ReadyManager {
       w = w.toLowerCase();
       _words[w.length]!.add(w);
       if (dict == DictionaryType.common) {
-        if (!words[w.length]!.contains(w)) print('!!!!! word $w in common dict not found in expanded');
+        if (!expanded[w.length]!.contains(w)) print('!!!!! word $w in common dict not found in expanded');
       }
     }
     if (debug) print('%% [${elapsed}ms] words sorted by length');
@@ -71,9 +71,9 @@ class Dictionary with ReadyManager {
   Map<int, List<String>> getDict(DictionaryType dict) {
     switch (dict) {
       case DictionaryType.common:
-        return commonWords;
+        return common;
       case DictionaryType.expanded:
-        return words;
+        return expanded;
       default:
         throw ('Invalid dictionary type $dict');
     }

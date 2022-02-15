@@ -17,6 +17,7 @@ import 'package:word_game/app/router.dart';
 import 'package:word_game/cubits/game_group_controller.dart';
 import 'package:word_game/services/service_locator.dart';
 import 'package:word_game/services/sound_service.dart';
+import 'package:word_game/ui/confirmation_dialog.dart';
 import 'package:word_game/ui/entity_future_builder.dart';
 import 'package:word_game/ui/game_clock.dart';
 import 'package:word_game/ui/game_overview.dart';
@@ -149,6 +150,18 @@ class _GroupViewState extends State<GroupView> {
 
   void _setResultsTab(int t) => setState(() => _resultsTab = t);
 
+  void _kickPlayer(User player) async {
+    final ok = await showConfirmationDialog(
+      context,
+      title: 'Kick ${player.username}',
+      body: 'Are you sure?',
+      positiveText: 'Kick',
+    );
+    if (ok) {
+      controller.kickPlayer(player.id);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return StandardScaffold(
@@ -184,8 +197,7 @@ class _GroupViewState extends State<GroupView> {
     );
   }
 
-  Widget _lobbyView(BuildContext context, GameGroup group) {
-    final isCreator = auth().userId == group.creator;
+  Widget _setWordBox(BuildContext context, GameGroup group) {
     final theme = Theme.of(context);
     final textTheme = theme.textTheme;
     bool isValid = !invalidWord && isAlpha(wordController.text);
@@ -193,53 +205,61 @@ class _GroupViewState extends State<GroupView> {
     InputBorder? wordFieldBorder = (isValid || wordController.text.isEmpty)
         ? null
         : UnderlineInputBorder(borderSide: BorderSide(color: Colours.invalid));
+    return SizedBox(
+      width: MediaQuery.of(context).size.width * 0.9,
+      child: Neumorphic(
+        padding: EdgeInsets.all(8.0),
+        style: NeumorphicStyle(
+          depth: 2,
+          boxShape: NeumorphicBoxShape.roundRect(BorderRadius.circular(12.0)),
+        ),
+        child: Column(
+          children: [
+            Text(
+              'Set Word',
+              style: textTheme.headline5,
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      maxLength: group.config.wordLength,
+                      maxLengthEnforcement: MaxLengthEnforcement.enforced,
+                      onChanged: (x) => setState(() => invalidWord = false), // hmm
+                      textCapitalization: TextCapitalization.none,
+                      controller: wordController,
+                      decoration: InputDecoration(
+                        border: wordFieldBorder,
+                        enabledBorder: wordFieldBorder,
+                        focusedBorder: wordFieldBorder,
+                      ),
+                    ),
+                  ),
+                  Container(width: 16.0),
+                  NeumorphicButton(
+                    onPressed: canSubmit ? _submitWord : null,
+                    child: const Icon(MdiIcons.keyboardReturn),
+                  ),
+                ],
+              ),
+            ),
+            if (group.config.timeLimit != null) GameClock(group.config.timeLimit!, fullDetail: true),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _lobbyView(BuildContext context, GameGroup group) {
+    final isCreator = auth().userId == group.creator;
+    final theme = Theme.of(context);
+    final textTheme = theme.textTheme;
+    bool inGroup = group.players.contains(auth().userId);
     return Column(
       children: [
-        SizedBox(
-          width: MediaQuery.of(context).size.width * 0.9,
-          child: Neumorphic(
-            padding: EdgeInsets.all(8.0),
-            style: NeumorphicStyle(
-              depth: 2,
-              boxShape: NeumorphicBoxShape.roundRect(BorderRadius.circular(12.0)),
-            ),
-            child: Column(
-              children: [
-                Text(
-                  'Set Word',
-                  style: textTheme.headline5,
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: TextField(
-                          maxLength: group.config.wordLength,
-                          maxLengthEnforcement: MaxLengthEnforcement.enforced,
-                          onChanged: (x) => setState(() => invalidWord = false), // hmm
-                          textCapitalization: TextCapitalization.none,
-                          controller: wordController,
-                          decoration: InputDecoration(
-                            border: wordFieldBorder,
-                            enabledBorder: wordFieldBorder,
-                            focusedBorder: wordFieldBorder,
-                          ),
-                        ),
-                      ),
-                      Container(width: 16.0),
-                      NeumorphicButton(
-                        onPressed: canSubmit ? _submitWord : null,
-                        child: const Icon(MdiIcons.keyboardReturn),
-                      ),
-                    ],
-                  ),
-                ),
-                if (group.config.timeLimit != null) GameClock(group.config.timeLimit!, fullDetail: true),
-              ],
-            ),
-          ),
-        ),
+        if (inGroup) _setWordBox(context, group),
         Container(height: 30),
         Text(
           'Players',
@@ -256,12 +276,27 @@ class _GroupViewState extends State<GroupView> {
                 title: UsernameLink(
                   innerKey: ValueKey('lobby_${group.id}_$player'),
                   id: player,
-                  content: (context, u) => Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  content: (context, u) => Row(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      Text('[${u.rating.rating.toStringAsFixed(0)}] ${u.username}'),
-                      if (u.team != null) _team(context, u.team!),
+                      if (isCreator)
+                        player != auth().userId
+                            ? InkWell(
+                                onTap: () => _kickPlayer(u),
+                                child: Padding(
+                                  padding: const EdgeInsets.only(right: 8.0),
+                                  child: Icon(MdiIcons.close),
+                                ),
+                              )
+                            : SizedBox(width: 32),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('[${u.rating.rating.toStringAsFixed(0)}] ${u.username}'),
+                          if (u.team != null) _team(context, u.team!),
+                        ],
+                      ),
                     ],
                   ),
                 ),
@@ -492,7 +527,7 @@ class _GroupViewState extends State<GroupView> {
 
     Color? _boxColour(GameStub g) {
       if (g.id.isEmpty) return Colours.wrong;
-      if (g.progress >= 1.0) {
+      if (g.progress >= 1.0 && g.endReason != null) {
         if (g.endReason == EndReasons.solved) {
           return Colours.correct;
         } else {
@@ -552,14 +587,20 @@ class _GroupViewState extends State<GroupView> {
                             .reversed
                             .map((g) => Padding(
                                   padding: EdgeInsets.symmetric(horizontal: 2.0, vertical: finished ? 8.0 : 0.0),
-                                  child: Container(
-                                    width: 32,
-                                    height: 32,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(4.0),
-                                      color: _boxColour(g),
+                                  child: GestureDetector(
+                                    // TODO: navigate to your own games if it's you
+                                    onTap: (e.player != auth().userId && g.creator.isNotEmpty)
+                                        ? () => context.push(Routes.game(g.id))
+                                        : null,
+                                    child: Container(
+                                      width: 32,
+                                      height: 32,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(4.0),
+                                        color: _boxColour(g),
+                                      ),
+                                      child: g.id.isNotEmpty ? Center(child: Text(g.guesses.toString())) : null,
                                     ),
-                                    child: g.id.isNotEmpty ? Center(child: Text(g.guesses.toString())) : null,
                                   ),
                                 ))
                             .toList(),

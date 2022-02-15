@@ -1,25 +1,29 @@
 import 'dart:async';
 import 'dart:math';
+import 'package:flutter/services.dart';
 
 import 'package:common/common.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:word_game/app/colours.dart';
+import 'package:word_game/cubits/observer_game_controller.dart';
 import 'package:word_game/services/service_locator.dart';
 import 'package:word_game/services/sound_service.dart';
+import 'package:word_game/ui/entity_future_builder.dart';
 import 'package:word_game/ui/game_clock.dart';
-import 'package:word_game/ui/game_keyboard.dart';
+import 'package:word_game/ui/keyboard/game_keyboard.dart';
 import 'package:word_game/ui/standard_scaffold.dart';
 import 'package:word_game/ui/word_row.dart';
 
 import '../ui/post_game_panel.dart';
 
-// eventually it would be nice to dynamically get games too, when there's a GameStore
 class GameRouteData {
-  final GameController game;
+  final GameController? game;
   final String? title;
-  GameRouteData({required this.game, this.title});
+  GameRouteData({this.game, this.title});
 }
 
 class GameView extends StatefulWidget {
@@ -32,25 +36,45 @@ class GameView extends StatefulWidget {
 }
 
 class _GameViewState extends State<GameView> {
-  GameController get game => widget.data.game;
+  // GameController get game => widget.data.game;
+  BaseGameController? game;
+  String? error;
 
   int? endTime;
   int? timeLeft;
   Timer? timer;
 
+  bool get isObserving => game is ObserverGameController;
+
   @override
   void initState() {
-    _initTimer();
-    game.stream.map((e) => e.endTime).distinct().listen((_) => _initTimer());
-    game.numRowsStream.listen((_) => _scrollDown());
-    WidgetsBinding.instance!.addPostFrameCallback((_) => _scrollDown(Duration(milliseconds: 750)));
+    _init();
     super.initState();
+  }
+
+  void _init() async {
+    if (widget.data.game != null) {
+      game = widget.data.game!;
+    } else {
+      final result = await gameStore().get(widget.id);
+      if (result.ok) {
+        setState(() => game = ObserverGameController(result.object!));
+      } else {
+        setState(() => error = result.error!);
+      }
+    }
+    if (game != null) {
+      _initTimer();
+      game!.stream.map((e) => e.endTime).distinct().listen((_) => _initTimer());
+      game!.numRowsStream.listen((_) => _scrollDown());
+      WidgetsBinding.instance!.addPostFrameCallback((_) => _scrollDown(Duration(milliseconds: 750)));
+    }
   }
 
   void _initTimer() {
     timer?.cancel();
-    if (game.state.endTime != null) {
-      endTime = game.state.endTime;
+    if (game!.state.endTime != null) {
+      endTime = game!.state.endTime;
       timer = Timer.periodic(Duration(seconds: 1), (_) => _setTimeLeft());
     }
   }
@@ -76,7 +100,7 @@ class _GameViewState extends State<GameView> {
   }
 
   void _onEnter() async {
-    bool ok = await game.enter();
+    bool ok = await game!.enter();
     if (ok) {
       sound().play(Sound.pop);
     }
@@ -84,27 +108,67 @@ class _GameViewState extends State<GameView> {
 
   void _onBackspace() {
     _scrollDown();
-    if (game.state.current.content.isEmpty) setState(() {}); // hack for scroll
-    game.backspace();
+    if (game!.state.current.content.isEmpty) setState(() {}); // hack for scroll
+    game!.backspace();
   }
 
   void _addLetter(String l) {
-    game.addLetter(l);
+    game!.addLetter(l);
     _scrollDown();
+  }
+
+  void _clearInput() {
+    HapticFeedback.mediumImpact();
+    game!.clearInput();
   }
 
   @override
   Widget build(BuildContext context) {
-    return StandardScaffold(
-      title: widget.data.title,
-      body: Center(
-        child: SafeArea(
-          child: BlocBuilder<GameController, Game>(
-              bloc: game,
-              builder: (context, state) {
-                return Column(
+    if (error != null || game == null) {
+      return StandardScaffold(
+        body: Center(
+          child: SafeArea(
+            child: Builder(
+              builder: (context) {
+                if (error != null) {
+                  return Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        'Error getting game',
+                        style: Theme.of(context).textTheme.headline5,
+                      ),
+                      Text(
+                        error!,
+                        style: Theme.of(context).textTheme.headline6,
+                      ),
+                    ],
+                  );
+                }
+                return Center(
+                  child: SpinKitFadingGrid(
+                    color: Colours.correct.darken(0.3),
+                    size: 64,
+                  ),
+                );
+              },
+            ),
+          ),
+        ),
+      );
+    }
+    return BlocBuilder<BaseGameController, Game>(
+        bloc: game!,
+        builder: (context, state) {
+          return StandardScaffold(
+            title: widget.data.title,
+            appBarActions: [_copyButton(context)],
+            body: Center(
+              child: SafeArea(
+                child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
+                    if (isObserving) _observerBox(context, state),
                     if (timeLeft != null) GameClock(timeLeft!),
                     Expanded(
                       child: Padding(
@@ -152,6 +216,7 @@ class _GameViewState extends State<GameView> {
                                       valid: !state.invalid,
                                       surfaceIntensity: 0,
                                       shape: NeumorphicShape.convex,
+                                      onLongPress: game!.canAct ? _clearInput : null,
                                     ),
                                   ),
                                 Container(height: 16),
@@ -161,39 +226,97 @@ class _GameViewState extends State<GameView> {
                         ),
                       ),
                     ),
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width,
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: AnimatedCrossFade(
-                          duration: Duration(milliseconds: 1000),
-                          firstChild: FittedBox(
-                            child: GameKeyboard(
-                              onTap: _addLetter,
-                              onBackspace: _onBackspace,
-                              onEnter: _onEnter,
-                              correct: state.correctLetters,
-                              semiCorrect: state.semiCorrectLetters,
-                              wrong: state.wrongLetters,
-                              wordReady: state.wordReady,
-                              wordEmpty: state.wordEmpty,
+                    if (game!.canAct)
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: AnimatedCrossFade(
+                            duration: Duration(milliseconds: 1000),
+                            firstChild: FittedBox(
+                              child: GameKeyboard(
+                                onTap: _addLetter,
+                                onBackspace: _onBackspace,
+                                onEnter: _onEnter,
+                                onClear: _clearInput,
+                                correct: state.correctLetters,
+                                semiCorrect: state.semiCorrectLetters,
+                                wrong: state.wrongLetters,
+                                wordReady: state.wordReady,
+                                wordEmpty: state.wordEmpty,
+                              ),
                             ),
-                          ),
-                          secondChild: SizedBox(
-                            width: MediaQuery.of(context).size.width - 16.0,
-                            child: PostGamePanel(
-                              guesses: state.guesses.length,
-                              reason: state.endReason,
+                            secondChild: SizedBox(
+                              width: MediaQuery.of(context).size.width - 16.0,
+                              child: PostGamePanel(
+                                guesses: state.guesses.length,
+                                reason: state.endReason,
+                              ),
                             ),
+                            crossFadeState: !state.gameFinished ? CrossFadeState.showFirst : CrossFadeState.showSecond,
                           ),
-                          crossFadeState: !state.gameFinished ? CrossFadeState.showFirst : CrossFadeState.showSecond,
                         ),
                       ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        });
+  }
+
+  Widget _observerBox(BuildContext context, Game game) {
+    return LayoutBuilder(builder: (context, constraints) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 4.0),
+        child: SizedBox(
+          width: constraints.maxWidth * 0.95,
+          child: Neumorphic(
+            style: NeumorphicStyle(depth: -2),
+            padding: const EdgeInsets.all(16.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    EntityFutureBuilder<User>(
+                      id: game.player,
+                      store: userStore(),
+                      loadingWidget: SpinKitCircle(color: Colours.victory, size: 16),
+                      errorWidget: (_) => Icon(Icons.error),
+                      resultWidget: (u) => Text('Observing ${u.username}'),
+                    ),
+                    EntityFutureBuilder<User>(
+                      id: game.creator,
+                      store: userStore(),
+                      loadingWidget: SpinKitCircle(color: Colours.victory, size: 16),
+                      errorWidget: (_) => Icon(Icons.error),
+                      resultWidget: (u) => Text('${u.username}\'s game'),
                     ),
                   ],
-                );
-              }),
+                ),
+                Text('${game.guesses.length}', style: Theme.of(context).textTheme.headline5),
+              ],
+            ),
+          ),
         ),
+      );
+    });
+  }
+
+  Widget _copyButton(BuildContext context) {
+    bool enabled = game!.state.guesses.isNotEmpty;
+    String title = widget.data.title != null ? 'Lexicle: ${widget.data.title!}' : 'Lexicle';
+    return IconButton(
+      onPressed: enabled
+          ? () => Clipboard.setData(
+                ClipboardData(text: '$title\n${game!.state.toEmojis()}'),
+              )
+          : null,
+      icon: Icon(
+        MdiIcons.contentCopy,
+        color: enabled ? null : Colors.grey[400],
       ),
     );
   }

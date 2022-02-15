@@ -79,19 +79,20 @@ class Game implements Entity {
           (doc[GameFields.guesses] as List).map<WordData>((e) => WordData.fromJson(e as Map<String, dynamic>)).toList(),
       current: WordData.fromJson(doc[GameFields.current] as Map<String, dynamic>),
       flags: coerceList(doc[GameFields.flags] ?? []),
+      group: doc[GameFields.group],
       endTime: doc[GameFields.endTime],
       endReason: doc[GameFields.endReason],
     );
   }
 
-  Map<String, dynamic> toMap({bool hideAnswer = false}) {
+  Map<String, dynamic> toMap({bool hideAnswer = false, bool hideGuesses = false}) {
     return {
       Fields.id: parseObjectId(id),
       Fields.timestamp: timestamp,
       GameFields.answer: hideAnswer ? ('*' * answer.length) : answer,
       GameFields.player: player,
       GameFields.creator: creator,
-      GameFields.guesses: guesses.map((e) => e.toMap()).toList(),
+      GameFields.guesses: guesses.map((e) => e.toMap(hideContent: hideGuesses)).toList(),
       GameFields.current: current.toMap(),
       GameFields.flags: flags,
       if (group != null) GameFields.group: group,
@@ -140,4 +141,17 @@ class Game implements Entity {
 
   @override
   String toString() => 'Game($id, player; $player, creator: $creator, answer: $answer, guesses: ${guesses.length})';
+
+  String toEmojis() {
+    String _emojiAt(WordData word, int index) {
+      if (word.correct.contains(index)) return '🟩';
+      if (word.semiCorrect.contains(index)) return '🟨';
+      return '⬛';
+    }
+
+    if (guesses.isEmpty) return '';
+    final range = List.generate(length, (i) => i);
+    List<String> lines = guesses.map((e) => range.map((i) => _emojiAt(e, i)).join('')).toList();
+    return lines.join('\n');
+  }
 }

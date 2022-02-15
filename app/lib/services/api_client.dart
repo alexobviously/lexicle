@@ -13,56 +13,74 @@ class ApiClient {
 
   static Future<ApiResult<ServerMeta>> getMeta() async => getAndUnwrap('/meta', unwrapper: unwrapServerMeta);
   static Future<ApiResult<User>> getUser(String id) => getAndUnwrap('/users/$id', unwrapper: unwrapUser);
-  static Future<ApiResult<User>> getMe() => getAndUnwrap('/users/me', unwrapper: unwrapUser, needAuth: true);
+  static Future<ApiResult<User>> getMe() =>
+      getAndUnwrap('/users/me', unwrapper: unwrapUser, authType: AuthType.required);
   static Future<ApiResult<UserStats>> getMyStats() =>
-      getAndUnwrap('/ustats/me', unwrapper: unwrapUserStats, needAuth: true);
+      getAndUnwrap('/ustats/me', unwrapper: unwrapUserStats, authType: AuthType.required);
 
   static Future<Result<List<String>>> allGroups() =>
       getAndUnwrap('/groups/all', unwrapper: (data) => coerceList(data['groups']));
-  static Future<Result<GameGroup>> getGroup(String id) => getAndUnwrap('/groups/$id', unwrapper: unwrapGameGroup);
+  static Future<Result<GameGroup>> getGroup(String id) => getAndUnwrap(
+        '/groups/$id',
+        unwrapper: unwrapGameGroup,
+        authType: AuthType.optional,
+      );
   static Future<Result<GameGroup>> createGroup(String creator, String title, GameConfig config) => postAndUnwrap(
         '/groups/create',
         body: {'creator': creator, 'title': title, 'config': config.toMap()},
         unwrapper: unwrapGameGroup,
-        needAuth: true,
+        authType: AuthType.required,
       );
   static Future<Result<GameGroup>> joinGroup(String id, String player) => postAndUnwrap(
         '/groups/$id/join',
         body: {'player': player},
         unwrapper: unwrapGameGroup,
-        needAuth: true,
+        authType: AuthType.required,
       );
   static Future<Result<GameGroup>> leaveGroup(String id, String player) => postAndUnwrap(
         '/groups/$id/leave',
         body: {'player': player},
         unwrapper: unwrapGameGroup,
-        needAuth: true,
+        authType: AuthType.required,
       );
   static Future<Result<bool>> deleteGroup(String id, String player) => postAndUnwrap(
         '/groups/$id/delete',
         body: {'player': player},
         unwrapper: (_) => true,
-        needAuth: true,
+        authType: AuthType.required,
       );
-  static Future<Result<GameGroup>> startGroup(String id) =>
-      postAndUnwrap('/groups/$id/start', unwrapper: unwrapGameGroup, needAuth: true);
+  static Future<ApiResult<GameGroup>> kickPlayer(String group, String player) async => postAndUnwrap(
+        '/groups/$group/kick',
+        body: {GameFields.player: player},
+        unwrapper: unwrapGameGroup,
+        authType: AuthType.required,
+      );
+  static Future<Result<GameGroup>> startGroup(String id) => postAndUnwrap(
+        '/groups/$id/start',
+        unwrapper: unwrapGameGroup,
+        authType: AuthType.required,
+      );
   static Future<Result<GameGroup>> setWord(String group, String player, String word) => postAndUnwrap(
         '/groups/$group/setword',
         body: {'player': player, 'word': word},
         unwrapper: unwrapGameGroup,
-        needAuth: true,
+        authType: AuthType.required,
       );
 
   static Future<Result<List<String>>> allGames() =>
       getAndUnwrap('/games/all', unwrapper: (data) => coerceList(data['games']));
   static Future<Result<List<String>>> activeGames() =>
       getAndUnwrap('/games/active', unwrapper: (data) => coerceList(data['games']));
-  static Future<Result<Game>> getGame(String id) => getAndUnwrap('/games/$id', unwrapper: unwrapGame);
+  static Future<Result<Game>> getGame(String id) => getAndUnwrap(
+        '/games/$id',
+        unwrapper: unwrapGame,
+        authType: AuthType.optional,
+      );
   static Future<Result<WordValidationResult>> makeGuess(String game, String guess) => postAndUnwrap(
         '/games/$game/guess',
         body: {'guess': guess},
         unwrapper: (data) => WordValidationResult.fromJson(data['result']),
-        needAuth: true,
+        authType: AuthType.required,
       );
 
   static Future<ApiResult<User>> login(String username, String password) => postAndUnwrap(
@@ -86,13 +104,13 @@ class ApiClient {
   static Future<ApiResult<User>> joinTeam(String id) async => postAndUnwrap(
         '/teams/$id/join',
         unwrapper: unwrapUser,
-        needAuth: true,
+        authType: AuthType.required,
       );
 
   static Future<ApiResult<User>> leaveTeam() async => postAndUnwrap(
         '/teams/leave',
         unwrapper: unwrapUser,
-        needAuth: true,
+        authType: AuthType.required,
       );
 
   static Map<Type, String Function(String)> getEndpoints = {
@@ -114,16 +132,19 @@ class ApiClient {
 
   static T unwrap<T extends Entity>(Map<String, dynamic> doc) => unwrappers[T]!(doc);
 
-  static Future<ApiResult<T>> getEntity<T extends Entity>(String id) async =>
-      getAndUnwrap(getEndpoints[T]!(id), unwrapper: unwrap<T>);
+  static Future<ApiResult<T>> getEntity<T extends Entity>(String id) async => getAndUnwrap(
+        getEndpoints[T]!(id),
+        unwrapper: unwrap<T>,
+        authType: AuthType.optional,
+      );
 
-  static Future<ApiResponse> get(String path, [bool needAuth = false]) async {
+  static Future<ApiResponse> get(String path, [AuthType authType = AuthType.optional]) async {
     try {
       Map<String, String> headers = {};
-      if (needAuth) {
+      if (authType != AuthType.none) {
         if (auth().hasToken) {
           headers['Authorization'] = 'Bearer ${auth().token}';
-        } else {
+        } else if (authType != AuthType.optional) {
           return ApiResponse.error('unauthorised');
         }
       }
@@ -142,13 +163,17 @@ class ApiClient {
     }
   }
 
-  static Future<ApiResponse> post(String path, {Map<String, dynamic> body = const {}, bool needAuth = false}) async {
+  static Future<ApiResponse> post(
+    String path, {
+    Map<String, dynamic> body = const {},
+    AuthType authType = AuthType.optional,
+  }) async {
     try {
       Map<String, String> headers = {};
-      if (needAuth) {
+      if (authType != AuthType.none) {
         if (auth().hasToken) {
           headers['Authorization'] = 'Bearer ${auth().token}';
-        } else {
+        } else if (authType != AuthType.optional) {
           return ApiResponse.error('unauthorised');
         }
       }
@@ -206,17 +231,20 @@ class ApiClient {
     );
   }
 
-  static Future<ApiResult<T>> getAndUnwrap<T>(String path,
-          {required Unwrapper<T> unwrapper, bool needAuth = false}) async =>
-      unwrapResponse(await get(path, needAuth), unwrapper);
+  static Future<ApiResult<T>> getAndUnwrap<T>(
+    String path, {
+    required Unwrapper<T> unwrapper,
+    AuthType authType = AuthType.optional,
+  }) async =>
+      unwrapResponse(await get(path, authType), unwrapper);
 
   static Future<ApiResult<T>> postAndUnwrap<T>(
     String path, {
     required Unwrapper<T> unwrapper,
     Map<String, dynamic> body = const {},
-    bool needAuth = false,
+    AuthType authType = AuthType.optional,
   }) async =>
-      unwrapResponse(await post(path, body: body, needAuth: needAuth), unwrapper);
+      unwrapResponse(await post(path, body: body, authType: authType), unwrapper);
 
   static GameGroup unwrapGameGroup(Map<String, dynamic> data) => GameGroup.fromJson(data['group']);
   static Game unwrapGame(Map<String, dynamic> data) => Game.fromJson(data['game']);
@@ -224,4 +252,10 @@ class ApiClient {
   static UserStats unwrapUserStats(Map<String, dynamic> data) => UserStats.fromJson(data['stats']);
   static Team unwrapTeam(Map<String, dynamic> data) => Team.fromJson(data['team']);
   static ServerMeta unwrapServerMeta(Map<String, dynamic> data) => ServerMeta.fromJson(data);
+}
+
+enum AuthType {
+  none,
+  optional,
+  required,
 }

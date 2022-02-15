@@ -30,4 +30,10 @@ class ApiService implements DatabaseService {
     // TODO: implement getAll
     throw UnimplementedError();
   }
+
+  @override
+  Future<List<T>> getAllByField<T extends Entity>(String field, value) {
+    // TODO: implement getAllByField
+    throw UnimplementedError();
+  }
 }

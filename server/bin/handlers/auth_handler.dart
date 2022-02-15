@@ -56,4 +56,29 @@ class AuthHandler {
       return HttpUtils.invalidRequestResponse();
     }
   }
+
+  static Future<Response> changePassword(Request request) async {
+    try {
+      final result = await authenticateRequest(request);
+      if (!result.ok) return result.errorResponse;
+      User user = result.user!;
+      final String payload = await request.readAsString();
+      Map<String, dynamic> data = json.decode(payload);
+      String oldPass = data['old'];
+      String newPass = data['new'];
+      final aResult = await authStore().get(user.id);
+      if (!aResult.ok) return HttpUtils.buildErrorResponse('unknown');
+      if (!checkpw(oldPass, aResult.object!.password!)) return HttpUtils.buildErrorResponse('unauthorised');
+      AuthData authData = aResult.object!.copyWith(password: encrypt(newPass));
+      final wResult = await authStore().write(authData);
+      if (!wResult.ok) return HttpUtils.buildErrorResponse('unknown');
+      return HttpUtils.buildResponse(
+        // todo: maybe we should invalidate old tokens after this?
+        tokenData: issueToken(user.id),
+      );
+    } catch (e, s) {
+      print('exception in resetPasword: $e\n$s');
+      return HttpUtils.invalidRequestResponse();
+    }
+  }
 }

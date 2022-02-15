@@ -52,6 +52,12 @@ class MongoService implements DatabaseService {
   }
 
   @override
+  Future<List<T>> getAllByField<T extends Entity>(String field, dynamic value) async {
+    SelectorBuilder selector = where.eq(field, value);
+    return getAll<T>(selector: selector);
+  }
+
+  @override
   Future<Result<T>> getByField<T extends Entity>(String field, dynamic value) async {
     await connected;
     final coll = db.collection(Entity.table(T));

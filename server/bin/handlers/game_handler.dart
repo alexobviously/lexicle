@@ -154,6 +154,29 @@ class GameHandler {
     }
   }
 
+  static Future<Response> kickPlayer(Request request, String id) async {
+    try {
+      final gResult = await groupStore().get(id);
+      if (!gResult.ok) return HttpUtils.buildErrorResponse(gResult.error!);
+      final authResult = await authenticateRequest(request, predicate: matchOneUser(gResult.object!.creator));
+      if (!authResult.ok) return authResult.errorResponse;
+      final String payload = await request.readAsString();
+      Map<String, dynamic> data = json.decode(payload);
+      String player = data[GameFields.player];
+      final _result = gameServer().leaveGroup(id, player);
+      if (!_result.ok) {
+        return HttpUtils.buildErrorResponse(_result.error!, warnings: _result.warnings);
+      } else {
+        return HttpUtils.buildResponse(data: {
+          'group': _result.object!.toMap(),
+        });
+      }
+    } catch (e, s) {
+      print('exception in startGroup: $e\n$s');
+      return HttpUtils.invalidRequestResponse();
+    }
+  }
+
   static Future<Response> allGroupIds(Request request) async {
     List<String> allIds = gameServer().getAllGroupIds();
     return HttpUtils.buildResponse(data: {
@@ -180,14 +203,22 @@ class GameHandler {
 
   static Future<Response> getGame(Request request, String id) async {
     try {
-      final _result = gameServer().getGameController(id);
-      if (!_result.ok) {
-        return HttpUtils.buildErrorResponse(_result.error!);
-      } else {
-        return HttpUtils.buildResponse(data: {
-          'game': _result.object!.toMap(hideAnswer: true),
-        });
+      final result = gameServer().getGameController(id);
+      if (!result.ok) {
+        final result2 = await gameStore().get(id);
+        if (result2.ok) {
+          return HttpUtils.buildResponse(
+            data: {'game': result.object!.toMap()},
+          );
+        }
+        return HttpUtils.buildErrorResponse(result.error!);
       }
+      final authResult = await authenticateRequest(request);
+      bool hideGuesses = !authResult.hasUser ||
+          (authResult.user!.id != result.object!.state.player && authResult.user!.id != result.object!.state.creator);
+      return HttpUtils.buildResponse(data: {
+        'game': result.object!.toMap(hideAnswer: true, hideGuesses: hideGuesses),
+      });
     } catch (e, s) {
       print('exception in getGame: $e\n$s');
       return HttpUtils.invalidRequestResponse();

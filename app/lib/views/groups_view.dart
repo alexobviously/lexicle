@@ -12,7 +12,6 @@ import 'package:word_game/services/sound_service.dart';
 import 'package:word_game/ui/game_clock.dart';
 import 'package:word_game/ui/game_creator.dart';
 import 'package:word_game/ui/standard_scaffold.dart';
-import 'package:word_game/views/group/group_view.dart';
 
 class GroupsView extends StatefulWidget {
   const GroupsView({Key? key}) : super(key: key);

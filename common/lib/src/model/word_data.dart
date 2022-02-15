@@ -32,9 +32,9 @@ class WordData {
         finalised: doc[WordFields.finalised] as bool? ?? true,
       );
 
-  Map<String, dynamic> toMap({bool showFinalised = false}) {
+  Map<String, dynamic> toMap({bool showFinalised = false, bool hideContent = false}) {
     return {
-      WordFields.content: content,
+      WordFields.content: hideContent ? ' ' * content.length : content,
       WordFields.correct: correct,
       WordFields.semiCorrect: semiCorrect,
       if (showFinalised) WordFields.finalised: finalised,

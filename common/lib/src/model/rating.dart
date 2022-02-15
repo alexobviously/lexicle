@@ -1,5 +1,4 @@
 import 'package:common/common.dart';
-import 'package:common/src/utils/rating_utils.dart';
 
 class Rating {
   final double rating;

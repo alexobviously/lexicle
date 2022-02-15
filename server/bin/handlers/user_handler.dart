@@ -1,7 +1,6 @@
 import 'package:common/common.dart';
 import 'package:mongo_dart/mongo_dart.dart';
 import 'package:shelf/shelf.dart';
-import 'package:validators/validators.dart';
 
 import '../services/service_locator.dart';
 import '../utils/auth_utils.dart';

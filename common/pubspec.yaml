@@ -1,6 +1,6 @@
 name: common
 description: Common code shared between app and backend
-version: 0.1.3
+version: 0.1.4
 publish_to: 'none'
 
 environment:
