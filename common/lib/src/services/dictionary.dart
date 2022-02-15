@@ -23,7 +23,6 @@ class Dictionary with ReadyManager {
   }
 
   void clear() {
-    print('!!! Dictionary.clear');
     for (int i = minimumLength; i <= maximumLength; i++) {
       expanded[i] = [];
       common[i] = [];

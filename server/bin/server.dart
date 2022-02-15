@@ -1,6 +1,8 @@
 import 'dart:io';
 
+import 'package:common/common.dart';
 import 'package:dart_dotenv/dart_dotenv.dart';
+import 'package:mongo_dart/mongo_dart.dart';
 import 'package:shelf/shelf.dart';
 import 'package:shelf_cors_headers/shelf_cors_headers.dart';
 import 'package:shelf/shelf_io.dart' as shelf_io;
@@ -108,6 +110,14 @@ Future main() async {
   );
 
   print('Serving at http://${server.address.host}:${server.port}');
+
+  // final d = _db.db;
+  // final coll = d.collection('groups');
+  // final res = await coll.find(where.eq(GroupFields.state, MatchState.finished)).toList();
+  // print('## ${res.length}');
+  // for (var x in res) {
+  //   print(x);
+  // }
 }
 
 Response _echoRequest(Request request) => Response.ok('Request for "${request.url}"');

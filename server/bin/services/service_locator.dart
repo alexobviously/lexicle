@@ -1,6 +1,7 @@
 import 'package:common/common.dart';
 import 'package:get_it/get_it.dart';
 import '../gameserver/game_server.dart';
+import 'cache_manager.dart';
 import 'dictionary.dart';
 import 'environment.dart';
 
@@ -16,6 +17,7 @@ UserStore userStore() => getIt.get<UserStore>();
 AuthStore authStore() => getIt.get<AuthStore>();
 UserStatsStore ustatsStore() => getIt.get<UserStatsStore>();
 TeamStore teamStore() => getIt.get<TeamStore>();
+CacheManager cacheManager() => getIt.get<CacheManager>();
 
 Future<void> setUpServiceLocator({required Environment environment, required DatabaseService db}) async {
   getIt.registerSingleton<ServerDictionary>(ServerDictionary());
@@ -28,4 +30,5 @@ Future<void> setUpServiceLocator({required Environment environment, required Dat
   getIt.registerSingleton<AuthStore>(AuthStore(db));
   getIt.registerSingleton<UserStatsStore>(UserStatsStore(db));
   getIt.registerSingleton<TeamStore>(TeamStore(db));
+  getIt.registerSingleton<CacheManager>(CacheManager(interval: Duration(minutes: 1)));
 }
