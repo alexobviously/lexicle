@@ -104,6 +104,7 @@ class _GroupViewState extends State<GroupView> {
   }
 
   void _submitWord() async {
+    wordController.text = wordController.text.toLowerCase();
     final state = controller.state.group;
     if (!isAlpha(wordController.text) || wordController.text.length != state.config.wordLength) {
       sound().play(Sound.bad);

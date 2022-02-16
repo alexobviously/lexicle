@@ -1,7 +1,9 @@
 import 'package:common/common.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:word_game/services/service_locator.dart';
+import 'package:word_game/services/sound_service.dart';
 import 'package:word_game/ui/neumorphic_text_field.dart';
 
 class LoginForm extends StatefulWidget {
@@ -25,9 +27,11 @@ class _LoginFormState extends State<LoginForm> {
   void _login() async {
     if (_formKey.currentState!.validate()) {
       final _result = await auth().login(_username, _password);
+      sound().play(_result.ok ? Sound.clickUp : Sound.bad);
+      HapticFeedback.mediumImpact();
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(_result.ok ? 'Logged in as ${_result.object!.username}' : 'Login failed: ${_result.error}'),
+          content: Text(_result.ok ? 'Logged in as ${_result.object!.username}!' : 'Login failed: ${_result.error}'),
         ),
       );
     }

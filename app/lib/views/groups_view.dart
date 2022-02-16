@@ -85,8 +85,8 @@ class _GroupsViewState extends State<GroupsView> {
                                 children: [
                                   if (g.config.timeLimit != null)
                                     GameClock(
-                                      g.config.timeLimit!,
-                                      fullDetail: true,
+                                      g.started ? (g.endTime! - nowMs()) : g.config.timeLimit!,
+                                      fullDetail: !g.started,
                                       textStyle: textTheme.bodyText1,
                                       iconSize: 16,
                                     ),

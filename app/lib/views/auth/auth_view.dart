@@ -46,9 +46,6 @@ class _AuthViewState extends State<AuthView> {
       listener: (context, state) {
         if (state.loggedIn) {
           context.go(Routes.home);
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text('Logged in!'),
-          ));
         }
       },
       child: StandardScaffold(
