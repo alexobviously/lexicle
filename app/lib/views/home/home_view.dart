@@ -82,6 +82,20 @@ class _HomeViewState extends State<HomeView> {
                         child: Text('Practice', style: textTheme.headline6),
                       ),
                       Container(height: 20),
+
+                      // WARNING: STEVE CODE
+                      NeumorphicButton(
+                        onPressed: () => context.push(Routes.settings),
+                        style: NeumorphicStyle(
+                          depth: 2,
+                          shape: NeumorphicShape.flat,
+                          boxShape: NeumorphicBoxShape.roundRect(BorderRadius.circular(16)),
+                        ),
+                        child: Text('Settings', style: textTheme.headline6),
+                      ),
+                      // WARNING: STEVE CODE
+
+                      Container(height: 20),
                       NeumorphicButton(
                         onPressed: () => context.push(Routes.dict),
                         style: NeumorphicStyle(

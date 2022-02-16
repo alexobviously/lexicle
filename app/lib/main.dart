@@ -38,7 +38,8 @@ class MyApp extends StatelessWidget {
   final _appKey = GlobalKey();
   final _router = buildRouter();
 
-  final _themeMode = ThemeMode.light; // change this to system if you want to try dark hell
+  //final _themeMode = ThemeMode.light; // change this to system if you want to try dark hell
+  static final ValueNotifier<ThemeMode> themeNotifier = ValueNotifier(ThemeMode.light);
 
   @override
   Widget build(BuildContext context) {
@@ -78,26 +79,29 @@ class MyApp extends StatelessWidget {
           create: (_) => ServerMetaCubit(),
         ),
       ],
-      child: NeumorphicTheme(
-        theme: _theme,
-        darkTheme: _darkTheme,
-        themeMode: _themeMode,
-        child: Builder(
-          builder: (context) => IconTheme(
-            data: NeumorphicTheme.currentTheme(context).iconTheme,
-            child: MaterialApp.router(
-              key: _appKey,
-              title: 'Lexicle',
-              theme: _theme.materialTheme,
-              darkTheme: _darkTheme.materialTheme,
-              themeMode: _themeMode,
-              debugShowCheckedModeBanner: false,
-              routeInformationParser: _router.routeInformationParser,
-              routerDelegate: _router.routerDelegate,
-            ),
-          ),
-        ),
-      ),
+      child: ValueListenableBuilder(
+          valueListenable: themeNotifier,
+          builder: (_, ThemeMode currentMode, __) {
+            return NeumorphicTheme(
+              theme: _theme,
+              darkTheme: _darkTheme,
+              themeMode: currentMode,
+              child: Builder(
+                builder: (context) => IconTheme(
+                    data: NeumorphicTheme.currentTheme(context).iconTheme,
+                    child: MaterialApp.router(
+                      key: _appKey,
+                      title: 'Lexicle',
+                      theme: _theme.materialTheme,
+                      darkTheme: _darkTheme.materialTheme,
+                      themeMode: currentMode,
+                      debugShowCheckedModeBanner: false,
+                      routeInformationParser: _router.routeInformationParser,
+                      routerDelegate: _router.routerDelegate,
+                    )),
+              ),
+            );
+          }),
     );
   }
 }
