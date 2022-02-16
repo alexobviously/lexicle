@@ -1,8 +1,10 @@
 import 'package:common/common.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:go_router/go_router.dart';
 import 'package:word_game/app/router.dart';
 import 'package:word_game/services/service_locator.dart';
+import 'package:word_game/services/sound_service.dart';
 
 class UserDetails extends StatelessWidget {
   final User user;
@@ -44,7 +46,11 @@ class UserDetails extends StatelessWidget {
                         NeumorphicButton(
                           style: NeumorphicStyle(depth: 3),
                           child: Text('Log Out'),
-                          onPressed: () => auth().logout(),
+                          onPressed: () {
+                            auth().logout();
+                            sound().play(Sound.clickDown);
+                            HapticFeedback.mediumImpact();
+                          },
                         ),
                       ],
                     ),
