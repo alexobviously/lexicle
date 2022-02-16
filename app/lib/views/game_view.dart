@@ -7,8 +7,10 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:go_router/go_router.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:word_game/app/colours.dart';
+import 'package:word_game/app/router.dart';
 import 'package:word_game/cubits/observer_game_controller.dart';
 import 'package:word_game/services/service_locator.dart';
 import 'package:word_game/services/sound_service.dart';
@@ -141,6 +143,11 @@ class _GameViewState extends State<GameView> {
                       Text(
                         error!,
                         style: Theme.of(context).textTheme.headline6,
+                      ),
+                      OutlinedButton.icon(
+                        onPressed: () => context.go(Routes.home),
+                        icon: Icon(MdiIcons.home),
+                        label: Text('Go Home'),
                       ),
                     ],
                   );
