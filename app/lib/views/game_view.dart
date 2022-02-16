@@ -317,9 +317,15 @@ class _GameViewState extends State<GameView> {
     String title = widget.data.title != null ? 'Lexicle: ${widget.data.title!}' : 'Lexicle';
     return IconButton(
       onPressed: enabled
-          ? () => Clipboard.setData(
+          ? () {
+              Clipboard.setData(
                 ClipboardData(text: '$title\n${game!.state.toEmojis()}'),
-              )
+              ).then((_) {
+                sound().play(Sound.good);
+                ScaffoldMessenger.of(context)
+                    .showSnackBar(SnackBar(content: Text('Game copied to clipboard'), duration: Duration(seconds: 2)));
+              });
+            }
           : null,
       icon: Icon(
         MdiIcons.contentCopy,

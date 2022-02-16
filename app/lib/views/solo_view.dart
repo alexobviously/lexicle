@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:go_router/go_router.dart';
 import 'package:word_game/app/router.dart';
 import 'package:word_game/cubits/local_game_manager.dart';
+import 'package:word_game/services/service_locator.dart';
+import 'package:word_game/services/sound_service.dart';
 import 'package:word_game/ui/game_creator.dart';
 import 'package:word_game/ui/game_overview.dart';
 import 'package:word_game/views/game_view.dart';
@@ -60,7 +63,11 @@ class _SoloViewState extends State<SoloView> {
                             .map((e) => GestureDetector(
                                   child: GameOverview(
                                     e,
-                                    onRemove: () => gameManager.removeGame(e.state.id),
+                                    onRemove: () {
+                                      sound().play(Sound.clickDown);
+                                      HapticFeedback.mediumImpact();
+                                      gameManager.removeGame(e.state.id);
+                                    },
                                     key: ValueKey('go_${e.state.id}'),
                                   ),
                                   onTap: () => context.push(
@@ -80,7 +87,11 @@ class _SoloViewState extends State<SoloView> {
                     ),
                   ),
                   GameCreator(
-                    onCreate: (cfg) => gameManager.createGame(cfg.config),
+                    onCreate: (cfg) {
+                      sound().play(Sound.clickUp);
+                      HapticFeedback.mediumImpact();
+                      gameManager.createGame(cfg.config);
+                    },
                     showTimeLimit: true,
                   ),
                 ],
