@@ -17,4 +17,7 @@ class OnlineMediator implements Mediator {
     }
     return _result.object!;
   }
+
+  @override
+  Future<String?> getAnswer() async => null;
 }

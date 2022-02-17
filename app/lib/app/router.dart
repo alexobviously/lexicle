@@ -7,6 +7,7 @@ import 'package:word_game/views/game_view.dart';
 import 'package:word_game/views/group/group_view.dart';
 import 'package:word_game/views/groups_view.dart';
 import 'package:word_game/views/home/home_view.dart';
+import 'package:word_game/views/rush_view.dart';
 import 'package:word_game/views/settings_view.dart';
 import 'package:word_game/views/solo_view.dart';
 import 'package:word_game/views/profile_view.dart';
@@ -25,6 +26,7 @@ class Routes {
   static const users = '/users';
   static const teams = '/teams';
   static const games = '/games';
+  static const rush = '/rush';
   static user(String id) => '$users/$id';
   static team(String id) => '$teams/$id';
   static group(String id) => '$groups/$id';
@@ -100,6 +102,13 @@ GoRouter buildRouter() {
           );
         },
       ),
+      GoRoute(
+          path: Routes.rush,
+          builder: (context, state) {
+            if (state.extra is! RushRouteData) throw Exception('Missing/invalid rush route data');
+            RushRouteData data = state.extra as RushRouteData;
+            return RushView(id: data.game!.state.id, data: data);
+          }),
     ],
   );
 }

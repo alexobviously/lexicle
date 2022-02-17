@@ -52,4 +52,7 @@ class OfflineMediator implements Mediator {
       ),
     );
   }
+
+  @override
+  Future<String?> getAnswer() async => answer;
 }

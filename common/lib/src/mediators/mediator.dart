@@ -2,6 +2,7 @@ import 'package:common/common.dart';
 
 abstract class Mediator {
   Future<WordValidationResult> validateWord(String word);
+  Future<String?> getAnswer();
 }
 
 class WordValidationResult {

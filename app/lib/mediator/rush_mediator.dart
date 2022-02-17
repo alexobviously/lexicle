@@ -1,11 +1,17 @@
 import 'package:common/common.dart';
 import 'package:validators/validators.dart';
-import '../services/service_locator.dart';
+import 'package:word_game/services/service_locator.dart';
 
-class ServerMediator implements Mediator {
-  final String answer;
-  late final Map<String, int> counts;
-  ServerMediator({required this.answer}) {
+class RushMediator implements Mediator {
+  Map<String, int> counts = {};
+  final String Function() getWord;
+  late String answer;
+  RushMediator({required this.getWord}) {
+    _getNewWord();
+  }
+
+  void _getNewWord() {
+    answer = getWord();
     counts = _countLetters(answer);
   }
 
@@ -42,14 +48,18 @@ class ServerMediator implements Mediator {
         semiCorrect.add(i);
       }
     }
+
+    final wd = WordData(
+      content: word,
+      correct: correct,
+      semiCorrect: semiCorrect,
+      finalised: true,
+    );
+    if (wd.solved) _getNewWord();
+
     return WordValidationResult(
       valid: true,
-      word: WordData(
-        content: word,
-        correct: correct,
-        semiCorrect: semiCorrect,
-        finalised: true,
-      ),
+      word: wd,
     );
   }
 

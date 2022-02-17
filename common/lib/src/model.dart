@@ -7,6 +7,7 @@ export 'model/game_group.dart';
 export 'model/game_stub.dart';
 export 'model/rating.dart';
 export 'model/result.dart';
+export 'model/rush.dart';
 export 'model/standing.dart';
 export 'model/team.dart';
 export 'model/user.dart';

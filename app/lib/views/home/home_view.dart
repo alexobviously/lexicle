@@ -1,3 +1,4 @@
+import 'package:badges/badges.dart';
 import 'package:common/common.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
@@ -7,11 +8,14 @@ import 'package:word_game/app/colours.dart';
 import 'package:word_game/app/router.dart';
 import 'package:word_game/cubits/auth_controller.dart';
 import 'package:word_game/cubits/server_meta_cubit.dart';
+import 'package:word_game/mediator/rush_mediator.dart';
 import 'package:word_game/model/server_meta.dart';
+import 'package:word_game/services/service_locator.dart';
 import 'package:word_game/ui/standard_scaffold.dart';
 import 'package:word_game/views/home/animated_logo.dart';
 import 'package:word_game/views/home/user_details.dart';
 import 'package:go_router/go_router.dart';
+import 'package:word_game/views/rush_view.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({Key? key}) : super(key: key);
@@ -80,6 +84,34 @@ class _HomeViewState extends State<HomeView> {
                           boxShape: NeumorphicBoxShape.roundRect(BorderRadius.circular(16)),
                         ),
                         child: Text('Practice', style: textTheme.headline6),
+                      ),
+                      Container(height: 20),
+                      NeumorphicButton(
+                        onPressed: () => context.push(
+                          Routes.rush,
+                          extra: RushRouteData(
+                            game: RushController(
+                              Rush.initial('alex', GameConfig(wordLength: 5, timeLimit: 300000)),
+                              RushMediator(getWord: () => dictionary().randomWord(5)),
+                            ),
+                          ),
+                        ),
+                        style: NeumorphicStyle(
+                          depth: 2,
+                          shape: NeumorphicShape.flat,
+                          boxShape: NeumorphicBoxShape.roundRect(BorderRadius.circular(16)),
+                        ),
+                        child: Badge(
+                          position: BadgePosition.topEnd(top: -6, end: -15),
+                          toAnimate: false,
+                          shape: BadgeShape.square,
+                          badgeColor: Colours.victory.darken(0.5).withOpacity(0.5),
+                          borderRadius: BorderRadius.circular(8),
+                          padding: EdgeInsets.all(2.0),
+                          elevation: 0,
+                          badgeContent: Text('new', style: TextStyle(color: Colors.white70)),
+                          child: Text('  Rush  ', style: textTheme.headline6),
+                        ),
                       ),
                       Container(height: 20),
                       NeumorphicButton(
