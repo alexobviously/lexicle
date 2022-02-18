@@ -39,7 +39,7 @@ class MyApp extends StatelessWidget {
   final _appKey = GlobalKey();
   final _router = buildRouter();
 
-  final _themeMode = ThemeMode.system; // change this to system if you want to try dark hell
+  static final ValueNotifier<ThemeMode> themeNotifier = ValueNotifier(ThemeMode.light);
 
   @override
   Widget build(BuildContext context) {
@@ -58,26 +58,29 @@ class MyApp extends StatelessWidget {
           create: (_) => ServerMetaCubit(),
         ),
       ],
-      child: NeumorphicTheme(
-        theme: neumorphicLight,
-        darkTheme: neumorphicDark,
-        themeMode: _themeMode,
-        child: Builder(
-          builder: (context) => IconTheme(
-            data: NeumorphicTheme.currentTheme(context).iconTheme,
-            child: MaterialApp.router(
-              key: _appKey,
-              title: 'Lexicle',
-              theme: lightTheme,
-              darkTheme: darkTheme,
-              themeMode: _themeMode,
-              debugShowCheckedModeBanner: false,
-              routeInformationParser: _router.routeInformationParser,
-              routerDelegate: _router.routerDelegate,
-            ),
-          ),
-        ),
-      ),
+      child: ValueListenableBuilder(
+          valueListenable: themeNotifier,
+          builder: (_, ThemeMode currentMode, __) {
+            return NeumorphicTheme(
+              theme: neumorphicLight,
+              darkTheme: neumorphicDark,
+              themeMode: currentMode,
+              child: Builder(
+                builder: (context) => IconTheme(
+                    data: NeumorphicTheme.currentTheme(context).iconTheme,
+                    child: MaterialApp.router(
+                      key: _appKey,
+                      title: 'Lexicle',
+                      theme: lightTheme,
+                      darkTheme: darkTheme,
+                      themeMode: currentMode,
+                      debugShowCheckedModeBanner: false,
+                      routeInformationParser: _router.routeInformationParser,
+                      routerDelegate: _router.routerDelegate,
+                    )),
+              ),
+            );
+          }),
     );
   }
 }
