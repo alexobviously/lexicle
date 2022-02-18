@@ -70,7 +70,6 @@ class _HomeViewState extends State<HomeView> {
                         onPressed: () => context.push(state.loggedIn ? Routes.groups : Routes.auth),
                         style: NeumorphicStyle(
                           depth: 2,
-                          shape: NeumorphicShape.flat,
                           boxShape: NeumorphicBoxShape.roundRect(BorderRadius.circular(16)),
                         ),
                         child: Text(state.loggedIn ? 'Play Online' : 'Login', style: textTheme.headline6),
@@ -80,7 +79,6 @@ class _HomeViewState extends State<HomeView> {
                         onPressed: () => context.push(Routes.solo),
                         style: NeumorphicStyle(
                           depth: 2,
-                          shape: NeumorphicShape.flat,
                           boxShape: NeumorphicBoxShape.roundRect(BorderRadius.circular(16)),
                         ),
                         child: Text('Practice', style: textTheme.headline6),
@@ -98,7 +96,6 @@ class _HomeViewState extends State<HomeView> {
                         ),
                         style: NeumorphicStyle(
                           depth: 2,
-                          shape: NeumorphicShape.flat,
                           boxShape: NeumorphicBoxShape.roundRect(BorderRadius.circular(16)),
                         ),
                         child: Badge(
@@ -118,7 +115,6 @@ class _HomeViewState extends State<HomeView> {
                         onPressed: () => context.push(Routes.dict),
                         style: NeumorphicStyle(
                           depth: 2,
-                          shape: NeumorphicShape.flat,
                           boxShape: NeumorphicBoxShape.roundRect(BorderRadius.circular(16)),
                         ),
                         child: Text('Dictionary', style: textTheme.headline6),

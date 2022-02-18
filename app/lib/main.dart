@@ -4,6 +4,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:word_game/app/router.dart';
+import 'package:word_game/app/themes.dart';
 import 'package:word_game/cubits/auth_controller.dart';
 import 'package:word_game/cubits/game_group_manager.dart';
 import 'package:word_game/cubits/local_game_manager.dart';
@@ -38,31 +39,10 @@ class MyApp extends StatelessWidget {
   final _appKey = GlobalKey();
   final _router = buildRouter();
 
-  final _themeMode = ThemeMode.light; // change this to system if you want to try dark hell
+  final _themeMode = ThemeMode.system; // change this to system if you want to try dark hell
 
   @override
   Widget build(BuildContext context) {
-    final _theme = NeumorphicThemeData(
-      baseColor: const Color(0xFFEEEEEE),
-      lightSource: LightSource.topLeft,
-      depth: 10,
-      textTheme: GoogleFonts.dmSansTextTheme(),
-      appBarTheme: appBarTheme,
-      boxShape: NeumorphicBoxShape.roundRect(BorderRadius.circular(25.0)),
-    );
-    final _darkTheme = NeumorphicThemeData(
-      baseColor: const Color(0xFF252525),
-      lightSource: LightSource.bottomRight,
-      depth: 2,
-      textTheme: GoogleFonts.dmSansTextTheme().apply(
-        displayColor: Colors.black87,
-        bodyColor: Colors.white70,
-      ),
-      defaultTextColor: Colors.white24,
-      appBarTheme: appBarTheme,
-      boxShape: NeumorphicBoxShape.roundRect(BorderRadius.circular(25.0)),
-    );
-
     return MultiBlocProvider(
       providers: [
         BlocProvider<AuthController>(
@@ -79,8 +59,8 @@ class MyApp extends StatelessWidget {
         ),
       ],
       child: NeumorphicTheme(
-        theme: _theme,
-        darkTheme: _darkTheme,
+        theme: neumorphicLight,
+        darkTheme: neumorphicDark,
         themeMode: _themeMode,
         child: Builder(
           builder: (context) => IconTheme(
@@ -88,8 +68,8 @@ class MyApp extends StatelessWidget {
             child: MaterialApp.router(
               key: _appKey,
               title: 'Lexicle',
-              theme: _theme.materialTheme,
-              darkTheme: _darkTheme.materialTheme,
+              theme: lightTheme,
+              darkTheme: darkTheme,
               themeMode: _themeMode,
               debugShowCheckedModeBanner: false,
               routeInformationParser: _router.routeInformationParser,
@@ -101,12 +81,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
-const appBarTheme = NeumorphicAppBarThemeData(
-  buttonStyle: NeumorphicStyle(
-    boxShape: NeumorphicBoxShape.circle(),
-    depth: 2.0,
-  ),
-  textStyle: TextStyle(color: Colors.black54),
-  iconTheme: IconThemeData(color: Colors.black54, size: 30),
-);
