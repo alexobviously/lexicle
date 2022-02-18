@@ -1,5 +1,7 @@
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:word_game/app/colours.dart';
+import 'package:word_game/cubits/scheme_cubit.dart';
 
 class WordRow extends StatelessWidget {
   final int length;
@@ -39,27 +41,31 @@ class WordRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<String> _letters = content.split('')..addAll(List.filled(length - content.length, ''));
-    List<LetterData> _letterData = [];
-    for (int i = 0; i < length; i++) {
-      Color? c;
-      if (finalised) {
-        if (semiCorrect.contains(i) && (!correctOnTop || !correct.contains(i))) {
-          c = Colours.semiCorrect;
-        } else if (correct.contains(i)) {
-          c = Colours.correct;
-        } else {
-          c = Colours.wrong;
+    return BlocBuilder<SchemeCubit, ColourScheme>(
+      builder: (context, scheme) {
+        List<String> _letters = content.split('')..addAll(List.filled(length - content.length, ''));
+        List<LetterData> _letterData = [];
+        for (int i = 0; i < length; i++) {
+          Color c = scheme.blank;
+          if (finalised) {
+            if (semiCorrect.contains(i) && (!correctOnTop || !correct.contains(i))) {
+              c = scheme.semiCorrect;
+            } else if (correct.contains(i)) {
+              c = scheme.correct;
+            } else {
+              c = scheme.wrong;
+            }
+          }
+          _letterData.add(LetterData(_letters[i], c));
         }
-      }
-      _letterData.add(LetterData(_letters[i], c));
-    }
-    return GestureDetector(
-      onLongPress: onLongPress,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: _letterData.map((e) => _letter(context, e.content, colour: e.colour)).toList(),
-      ),
+        return GestureDetector(
+          onLongPress: onLongPress,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: _letterData.map((e) => _letter(context, e.content, colour: e.colour)).toList(),
+          ),
+        );
+      },
     );
   }
 

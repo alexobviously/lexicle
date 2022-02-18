@@ -8,6 +8,7 @@ import 'package:word_game/app/themes.dart';
 import 'package:word_game/cubits/auth_controller.dart';
 import 'package:word_game/cubits/game_group_manager.dart';
 import 'package:word_game/cubits/local_game_manager.dart';
+import 'package:word_game/cubits/scheme_cubit.dart';
 import 'package:word_game/cubits/server_meta_cubit.dart';
 import 'package:word_game/extensions/neumorphic_extensions.dart';
 import 'package:word_game/services/api_client.dart';
@@ -57,27 +58,34 @@ class MyApp extends StatelessWidget {
         BlocProvider<ServerMetaCubit>(
           create: (_) => ServerMetaCubit(),
         ),
+        BlocProvider<SchemeCubit>(
+          create: (_) => SchemeCubit(),
+          lazy: false,
+        ),
       ],
       child: ValueListenableBuilder(
           valueListenable: themeNotifier,
-          builder: (_, ThemeMode currentMode, __) {
+          builder: (context, ThemeMode currentMode, _) {
+            // set dark mode of scheme cubit
+            bool dark = currentMode == ThemeMode.dark;
+            if (currentMode == ThemeMode.system) {
+              dark = MediaQuery.of(context).platformBrightness == Brightness.dark;
+            }
+            BlocProvider.of<SchemeCubit>(context).setDark(dark);
+
             return NeumorphicTheme(
               theme: neumorphicLight,
               darkTheme: neumorphicDark,
               themeMode: currentMode,
-              child: Builder(
-                builder: (context) => IconTheme(
-                    data: NeumorphicTheme.currentTheme(context).iconTheme,
-                    child: MaterialApp.router(
-                      key: _appKey,
-                      title: 'Lexicle',
-                      theme: lightTheme,
-                      darkTheme: darkTheme,
-                      themeMode: currentMode,
-                      debugShowCheckedModeBanner: false,
-                      routeInformationParser: _router.routeInformationParser,
-                      routerDelegate: _router.routerDelegate,
-                    )),
+              child: MaterialApp.router(
+                key: _appKey,
+                title: 'Lexicle',
+                theme: lightTheme,
+                darkTheme: darkTheme,
+                themeMode: currentMode,
+                debugShowCheckedModeBanner: false,
+                routeInformationParser: _router.routeInformationParser,
+                routerDelegate: _router.routerDelegate,
               ),
             );
           }),

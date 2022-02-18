@@ -7,7 +7,11 @@ ThemeData lightTheme = ThemeData(
 );
 ThemeData darkTheme = ThemeData(
   brightness: Brightness.dark,
-  textTheme: GoogleFonts.dmSansTextTheme().apply(bodyColor: Colors.grey[300]),
+  textTheme: GoogleFonts.dmSansTextTheme().apply(
+    bodyColor: Colors.grey[300],
+    displayColor: Colors.grey[300],
+    decorationColor: Colors.grey[300],
+  ),
   backgroundColor: const Color(0xFF252525),
 );
 

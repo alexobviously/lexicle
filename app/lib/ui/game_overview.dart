@@ -92,6 +92,9 @@ class _GameOverviewState extends State<GameOverview> {
                           finalised: e.finalised,
                           shape: NeumorphicShape.convex,
                           surfaceIntensity: 0.15,
+                          textStyle: dark
+                              ? Theme.of(context).textTheme.headline4!.copyWith(color: Colors.grey.shade200)
+                              : null,
                         ),
                       ),
                     )

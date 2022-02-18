@@ -47,6 +47,7 @@ class _AnimatedLogoState extends State<AnimatedLogo> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final textTheme = theme.textTheme;
+    bool dark = theme.brightness == Brightness.dark;
     return FittedBox(
       child: WordRow(
         length: 7,
@@ -54,6 +55,7 @@ class _AnimatedLogoState extends State<AnimatedLogo> {
         textStyle: textTheme.headline3!.copyWith(
           fontFamily: GoogleFonts.comfortaa().fontFamily,
           fontWeight: FontWeight.w900,
+          color: dark ? Colors.grey.shade300 : null,
         ),
         correct: correct,
         semiCorrect: semi,
