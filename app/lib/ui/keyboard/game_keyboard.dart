@@ -84,11 +84,14 @@ class GameKeyboard extends StatelessWidget {
 
   Widget _key(BuildContext context, String letter, {Color? colour}) {
     TextStyle textStyle = Theme.of(context).textTheme.headline4!;
-    // if (wordReady) textStyle = textStyle.copyWith(color: Colors.grey[400]);
+    bool dark = Theme.of(context).brightness == Brightness.dark;
+    if (dark && colour == null) textStyle = textStyle.copyWith(color: Colors.white);
     return KeyButton(
       child: Text(letter, style: textStyle),
       colour: colour,
       onTap: wordReady ? null : () => _onTap(letter),
+      blurRadius: dark ? 2 : 10,
+      depth: dark ? 1 : 2,
     );
   }
 

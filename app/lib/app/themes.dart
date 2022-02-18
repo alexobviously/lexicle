@@ -20,7 +20,7 @@ NeumorphicThemeData neumorphicLight = NeumorphicThemeData(
 
 NeumorphicThemeData neumorphicDark = NeumorphicThemeData(
   baseColor: const Color(0xFF252525),
-  lightSource: LightSource.bottomRight,
+  lightSource: LightSource.topLeft,
   intensity: 0.35,
   buttonStyle: NeumorphicStyle(shape: NeumorphicShape.convex),
   depth: 2,

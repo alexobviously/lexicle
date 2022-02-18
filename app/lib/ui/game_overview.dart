@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:word_game/app/colours.dart';
-import 'package:word_game/cubits/local_game_manager.dart';
 import 'package:word_game/ui/word_row.dart';
 
 class GameOverview extends StatefulWidget {
@@ -41,6 +40,8 @@ class _GameOverviewState extends State<GameOverview> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    bool dark = theme.brightness == Brightness.dark;
     return BlocBuilder<GameController, Game>(
         bloc: widget.game,
         builder: (context, state) {
@@ -97,7 +98,12 @@ class _GameOverviewState extends State<GameOverview> {
                     .toList(),
                 if (!state.gameFinished)
                   FittedBox(
-                    child: WordRow(length: state.length, content: state.word),
+                    child: WordRow(
+                      length: state.length,
+                      content: state.word,
+                      textStyle:
+                          dark ? Theme.of(context).textTheme.headline4!.copyWith(color: Colors.grey.shade200) : null,
+                    ),
                   ),
                 Container(height: 10),
               ],

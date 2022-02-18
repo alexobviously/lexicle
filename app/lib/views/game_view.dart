@@ -126,6 +126,8 @@ class _GameViewState extends State<GameView> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    bool dark = theme.brightness == Brightness.dark;
     if (error != null || game == null) {
       return StandardScaffold(
         body: Center(
@@ -224,6 +226,9 @@ class _GameViewState extends State<GameView> {
                                       surfaceIntensity: 0,
                                       shape: NeumorphicShape.convex,
                                       onLongPress: game!.canAct ? _clearInput : null,
+                                      textStyle: dark
+                                          ? Theme.of(context).textTheme.headline4!.copyWith(color: Colors.grey.shade200)
+                                          : null,
                                     ),
                                   ),
                                 Container(height: 16),

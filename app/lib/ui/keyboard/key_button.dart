@@ -47,6 +47,8 @@ class _KeyButtonState extends State<KeyButton> with SingleTickerProviderStateMix
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    bool dark = theme.brightness == Brightness.dark;
     return Padding(
       padding: const EdgeInsets.all(6.0),
       child: GestureDetector(
@@ -61,17 +63,17 @@ class _KeyButtonState extends State<KeyButton> with SingleTickerProviderStateMix
           height: widget.height,
           padding: const EdgeInsets.all(12.0),
           decoration: BoxDecoration(
-            color: widget.colour ?? Colors.grey[300],
+            color: widget.colour ?? theme.scaffoldBackgroundColor,
             borderRadius: BorderRadius.circular(6.0),
             // shape: BoxShape.circle,
             boxShadow: [
               BoxShadow(
-                color: Colors.grey.shade500,
+                color: dark ? Colors.white54 : Colors.grey.shade500,
                 offset: Offset(_depth, _depth),
                 blurRadius: widget.blurRadius,
               ),
               BoxShadow(
-                color: Colors.white,
+                color: dark ? Colors.grey.shade600 : Colors.grey.shade200,
                 offset: Offset(-_depth, -_depth),
                 blurRadius: widget.blurRadius,
               ),

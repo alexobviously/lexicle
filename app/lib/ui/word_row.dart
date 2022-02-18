@@ -64,6 +64,8 @@ class WordRow extends StatelessWidget {
   }
 
   Widget _letter(BuildContext context, String letter, {Color? colour}) {
+    final theme = Theme.of(context);
+    bool dark = theme.brightness == Brightness.dark;
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: SizedBox(
@@ -75,7 +77,7 @@ class WordRow extends StatelessWidget {
           style: NeumorphicStyle(
             surfaceIntensity: surfaceIntensity,
             shape: shape,
-            color: colour ?? Colors.grey[300],
+            color: colour ?? theme.scaffoldBackgroundColor,
             border: (!valid || (!finalised && letter.isNotEmpty))
                 ? NeumorphicBorder(
                     width: borderWidth ?? 1.0,
@@ -83,7 +85,7 @@ class WordRow extends StatelessWidget {
                   )
                 : const NeumorphicBorder.none(),
             boxShape: NeumorphicBoxShape.roundRect(BorderRadius.circular(6.0)),
-            depth: 4.0,
+            depth: dark ? 2.0 : 4.0,
             intensity: 0.6,
           ),
           child: Center(
