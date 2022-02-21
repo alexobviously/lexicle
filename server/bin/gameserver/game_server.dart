@@ -234,9 +234,12 @@ class GameServer with ReadyManager {
       Map<int, int> _numGames = Map.from(stats.numGames);
       _numGames[wordLength] = (_numGames[wordLength] ?? 0) + group.players.length - 1;
       Map<int, int> _guessCounts = Map.from(stats.guessCounts[wordLength] ?? {});
+      Map<int, int> _timeouts = Map.from(stats.timeouts);
       for (GameStub g in group.games[player]!) {
         if (g.endReason == EndReasons.solved) {
           _guessCounts[g.guesses] = (_guessCounts[g.guesses] ?? 0) + 1;
+        } else if (g.endReason == EndReasons.timeout) {
+          _timeouts[wordLength] = (_timeouts[wordLength] ?? 0) + 1;
         }
       }
       Map<int, Map<int, int>> _gcAll = Map.from(stats.guessCounts);

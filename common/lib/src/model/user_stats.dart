@@ -14,6 +14,7 @@ class UserStats implements Entity {
   final Map<int, int> numGames;
   final Map<int, int> wins;
   final Map<int, Map<int, int>> guessCounts;
+  final Map<int, int> timeouts;
   final List<WordDifficulty> words;
 
   int get groupsTotal => numGroups.entries.fold(0, (a, b) => a + b.value);
@@ -28,6 +29,7 @@ class UserStats implements Entity {
     this.guessCounts = const {},
     this.words = const [],
     this.wins = const {},
+    this.timeouts = const {},
   })  : id = id ?? ObjectId().id.hexString,
         timestamp = timestamp ?? nowMs();
 
@@ -48,6 +50,7 @@ class UserStats implements Entity {
       guessCounts: z,
       words: mapList<WordDifficulty>(doc[StatsFields.words] ?? [], (e) => WordDifficulty.fromJson(e)),
       wins: intifyMapKeys(doc[StatsFields.wins].cast<String, int>()),
+      timeouts: intifyMapKeys(doc[StatsFields.timeouts].cast<String, int>()),
     );
   }
 
@@ -59,6 +62,7 @@ class UserStats implements Entity {
         StatsFields.guessCounts: stringifyMapKeys(guessCounts.map((k, v) => MapEntry(k, stringifyMapKeys(v)))),
         StatsFields.words: words.map((e) => e.toMap()).toList(),
         StatsFields.wins: stringifyMapKeys(wins),
+        StatsFields.timeouts: stringifyMapKeys(timeouts),
       };
 
   @override

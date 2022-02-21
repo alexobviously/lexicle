@@ -67,6 +67,7 @@ class StatsFields {
   static const guessCounts = 'c';
   static const words = 'w';
   static const wins = 'q';
+  static const timeouts = 't';
 }
 
 class TeamFields {
