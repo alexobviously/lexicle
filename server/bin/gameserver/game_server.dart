@@ -256,6 +256,7 @@ class GameServer with ReadyManager {
         numGames: _numGames,
         guessCounts: _gcAll,
         wins: _wins,
+        timeouts: _timeouts,
       );
       ustatsStore().write(stats);
     }

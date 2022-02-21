@@ -50,7 +50,7 @@ class UserStats implements Entity {
       guessCounts: z,
       words: mapList<WordDifficulty>(doc[StatsFields.words] ?? [], (e) => WordDifficulty.fromJson(e)),
       wins: intifyMapKeys(doc[StatsFields.wins].cast<String, int>()),
-      timeouts: intifyMapKeys(doc[StatsFields.timeouts].cast<String, int>()),
+      timeouts: intifyMapKeys((doc[StatsFields.timeouts] ?? {}).cast<String, int>()),
     );
   }
 
