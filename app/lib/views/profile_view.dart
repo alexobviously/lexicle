@@ -104,7 +104,7 @@ class _ProfileViewState extends State<ProfileView> {
                         ),
                       ),
                       Container(height: 32),
-                      _words(context, u.words),
+                      _words(context, u.words, scheme: ColourScheme.base(context)),
                     ],
                   );
                 },
@@ -138,6 +138,8 @@ class _ProfileViewState extends State<ProfileView> {
     }
     int maxCount = max(1, _counts.entries.fold(0, (a, b) => max(a, b.value)));
 
+    Color borderColour = Theme.of(context).textTheme.bodyText1?.color ?? Colors.black87;
+
     List<BarChartGroupData> _groups = List.generate(
         8,
         (i) => BarChartGroupData(
@@ -146,9 +148,9 @@ class _ProfileViewState extends State<ProfileView> {
                 BarChartRodData(
                   y: ((_counts[i + 1] ?? 0) / maxCount) * maxCount,
                   width: 41,
-                  colors: [Colours.correct.darken(0.2)],
+                  colors: [_difficultyColour(i + 1, scheme: ColourScheme.base(context))],
                   borderRadius: const BorderRadius.vertical(top: Radius.circular(2.0)),
-                  // borderSide: BorderSide(width: 1.0, color: Colors.black54.withOpacity(1.0)),
+                  borderSide: BorderSide(width: 0.3, color: borderColour.withOpacity(0.5)),
                 ),
               ],
             ));
@@ -184,29 +186,32 @@ class _ProfileViewState extends State<ProfileView> {
     );
   }
 
-  Widget _words(BuildContext context, List<WordDifficulty> words) {
-    final textTheme = Theme.of(context).textTheme;
-    Color _answerColour(double difficulty) {
-      if (difficulty < 5.5) {
-        return Color.lerp(Colours.correct, Colours.semiCorrect, (difficulty - 2.0) / 3.5)!;
-      } else {
-        return Color.lerp(Colours.semiCorrect, Colours.invalid.lighten(0.2), (difficulty - 5.5) / 3.5)!;
-      }
+  Color _difficultyColour(double difficulty, {ColourScheme scheme = ColourScheme.light}) {
+    if (difficulty < 5.5) {
+      return Color.lerp(scheme.correct, scheme.semiCorrect, (difficulty - 2.0) / 3.5)!;
+    } else {
+      return Color.lerp(scheme.semiCorrect, scheme.invalid.lighten(0.2), (difficulty - 5.5) / 3.5)!;
     }
+  }
+
+  Widget _words(BuildContext context, List<WordDifficulty> words, {ColourScheme scheme = ColourScheme.light}) {
+    final textTheme = Theme.of(context).textTheme;
 
     List<WordDifficulty> _words = [...words];
     _words.sort((a, b) => b.difficulty.compareTo(a.difficulty));
+
+    TextStyle textStyle = textTheme.headline6!.copyWith(color: Colors.black87);
 
     return Column(
         children: _words
             .map((e) => Container(
                   padding: const EdgeInsets.all(8.0),
-                  color: _answerColour(e.difficulty),
+                  color: _difficultyColour(e.difficulty, scheme: scheme),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(e.word, style: textTheme.headline6),
-                      Text(e.difficulty.toStringAsFixed(2), style: textTheme.headline6),
+                      Text(e.word, style: textStyle),
+                      Text(e.difficulty.toStringAsFixed(2), style: textStyle),
                     ],
                   ),
                 ))
