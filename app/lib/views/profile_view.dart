@@ -94,6 +94,7 @@ class _ProfileViewState extends State<ProfileView> {
                                 Text('Games Played: ${(u.numGames[_length(lengthIndex)] ?? 0)}'),
                               ],
                             ),
+                            Text('Timeouts: ${u.timeouts[_length(lengthIndex)] ?? 0} '),
                             Container(height: 24),
                             SizedBox(
                               width: MediaQuery.of(context).size.width * 0.85,
