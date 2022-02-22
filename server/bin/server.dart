@@ -14,6 +14,7 @@ import 'handlers/auth_handler.dart';
 import 'handlers/dictionary_handler.dart';
 import 'handlers/game_handler.dart';
 import 'handlers/game_server_handler.dart';
+import 'handlers/group_handler.dart';
 import 'handlers/status_handler.dart';
 import 'handlers/team_handler.dart';
 import 'handlers/user_handler.dart';
@@ -75,6 +76,7 @@ Future main() async {
     ..post('/auth/change_pw', AuthHandler.changePassword)
     ..get('/users/me', UserHandler.getMe)
     ..get('/users/<id>', UserHandler.getUser)
+    ..get('/users/<id>/groups', GroupHandler.getPlayerGroups)
     ..get('/stats/top_players', UserHandler.getTopPlayers)
     ..get('/ustats/me', UserHandler.getMyStats)
     ..get('/ustats/<id>', UserHandler.getStats)
