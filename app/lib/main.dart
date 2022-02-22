@@ -10,6 +10,7 @@ import 'package:word_game/cubits/game_group_manager.dart';
 import 'package:word_game/cubits/local_game_manager.dart';
 import 'package:word_game/cubits/scheme_cubit.dart';
 import 'package:word_game/cubits/server_meta_cubit.dart';
+import 'package:word_game/cubits/settings_cubit.dart';
 import 'package:word_game/extensions/neumorphic_extensions.dart';
 import 'package:word_game/services/api_client.dart';
 import 'package:word_game/services/api_service.dart';
@@ -40,10 +41,9 @@ class MyApp extends StatelessWidget {
   final _appKey = GlobalKey();
   final _router = buildRouter();
 
-  static final ValueNotifier<ThemeMode> themeNotifier = ValueNotifier(ThemeMode.light);
-
   @override
   Widget build(BuildContext context) {
+    final _settingsCubit = SettingsCubit();
     return MultiBlocProvider(
       providers: [
         BlocProvider<AuthController>(
@@ -58,37 +58,32 @@ class MyApp extends StatelessWidget {
         BlocProvider<ServerMetaCubit>(
           create: (_) => ServerMetaCubit(),
         ),
+        BlocProvider<SettingsCubit>(
+          create: (_) => _settingsCubit,
+          lazy: false,
+        ),
         BlocProvider<SchemeCubit>(
-          create: (_) => SchemeCubit(),
+          create: (_) => SchemeCubit(settingsCubit: _settingsCubit),
           lazy: false,
         ),
       ],
-      child: ValueListenableBuilder(
-          valueListenable: themeNotifier,
-          builder: (context, ThemeMode currentMode, _) {
-            // set dark mode of scheme cubit
-            bool dark = currentMode == ThemeMode.dark;
-            if (currentMode == ThemeMode.system) {
-              dark = MediaQuery.of(context).platformBrightness == Brightness.dark;
-            }
-            BlocProvider.of<SchemeCubit>(context).setDark(dark);
-
-            return NeumorphicTheme(
-              theme: neumorphicLight,
-              darkTheme: neumorphicDark,
-              themeMode: currentMode,
-              child: MaterialApp.router(
-                key: _appKey,
-                title: 'Lexicle',
-                theme: lightTheme,
-                darkTheme: darkTheme,
-                themeMode: currentMode,
-                debugShowCheckedModeBanner: false,
-                routeInformationParser: _router.routeInformationParser,
-                routerDelegate: _router.routerDelegate,
-              ),
-            );
-          }),
+      child: BlocBuilder<SettingsCubit, Settings>(builder: (context, settings) {
+        return NeumorphicTheme(
+          theme: neumorphicLight,
+          darkTheme: neumorphicDark,
+          themeMode: settings.themeMode,
+          child: MaterialApp.router(
+            key: _appKey,
+            title: 'Lexicle',
+            theme: lightTheme,
+            darkTheme: darkTheme,
+            themeMode: settings.themeMode,
+            debugShowCheckedModeBanner: false,
+            routeInformationParser: _router.routeInformationParser,
+            routerDelegate: _router.routerDelegate,
+          ),
+        );
+      }),
     );
   }
 }

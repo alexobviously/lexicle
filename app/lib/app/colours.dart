@@ -7,6 +7,7 @@ class ColourSchemePair {
   const ColourSchemePair({required this.name, required this.light, required this.dark});
 
   ColourScheme scheme(BuildContext context) => Theme.of(context).brightness == Brightness.light ? light : dark;
+  ColourScheme ofBrightness(Brightness b) => b == Brightness.light ? light : dark;
 
   static const List<ColourSchemePair> all = [normal, colourBlind];
 

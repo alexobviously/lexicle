@@ -1,32 +1,19 @@
 import 'package:bloc/bloc.dart';
+import 'package:flutter/material.dart';
 import 'package:word_game/app/colours.dart';
+import 'package:word_game/cubits/settings_cubit.dart';
 
+/// Just listens to the SettingsCubit and updates its scheme based on it.
+/// Purely for convenience in UI building.
 class SchemeCubit extends Cubit<ColourScheme> {
-  SchemeCubit() : super(ColourScheme.light) {
-    init();
+  SchemeCubit({required SettingsCubit settingsCubit}) : super(ColourScheme.light) {
+    settingsCubit.stream.listen(_onSettings);
   }
 
-  bool dark = false;
-  ColourSchemePair scheme = ColourSchemePair.normal;
-
-  void init() {
-    // warning steve might touch this
-    // todo: load stuff from preferences
-  }
-
-  void _emit() {
-    emit(dark ? scheme.dark : scheme.light);
-  }
-
-  void setDark(bool d) {
-    if (d == dark) return;
-    dark = d;
-    _emit();
-  }
-
-  void setScheme(ColourSchemePair s) {
-    if (scheme == s) return;
-    scheme = s;
-    _emit();
+  void _onSettings(Settings settings) {
+    ColourScheme _scheme = settings.scheme.ofBrightness(settings.brightness);
+    if (state != _scheme) {
+      emit(_scheme);
+    }
   }
 }
