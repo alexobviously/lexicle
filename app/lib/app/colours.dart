@@ -40,6 +40,7 @@ class ColourScheme {
   final Color gold;
   final Color silver;
   final Color bronze;
+  final Color alt;
 
   const ColourScheme({
     required this.correct,
@@ -51,6 +52,7 @@ class ColourScheme {
     required this.gold,
     required this.silver,
     required this.bronze,
+    required this.alt,
   });
 
   static ColourScheme base(BuildContext context) => ColourSchemePair.normal.scheme(context);
@@ -59,12 +61,13 @@ class ColourScheme {
     correct: Color(0xFFC3EDC0),
     semiCorrect: Color(0xFFF9E08A),
     wrong: Color(0xFFC8CAD0),
-    invalid: Color(0xFFD8464B),
+    invalid: Color.fromARGB(255, 131, 42, 45),
     victory: Color(0xFFA1E1F7),
     blank: Color(0xFFE0E0E0),
     gold: Color(0xFFD4C05F),
     silver: Color(0xFFCECECE),
     bronze: Color(0xFFBEA278),
+    alt: Color(0xFFC8CAD0),
   );
 
   static const dark = ColourScheme(
@@ -72,11 +75,12 @@ class ColourScheme {
     semiCorrect: Color(0xFFAE8809),
     wrong: Color(0xFF252525),
     invalid: Color(0xFFD8464B),
-    victory: Color(0xFFA1FFF7),
+    victory: Color(0xFF1091BC),
     blank: Color(0xFF343434),
-    gold: Color(0xFFDFF05F),
-    silver: Color(0xFFCFFFFE),
-    bronze: Color(0xFF00A278),
+    gold: Color(0xFFA18D2B),
+    silver: Color(0xFF7A7A7A),
+    bronze: Color(0xFF8A6D42),
+    alt: Color(0xFF3D3D3D),
   );
 
   static const colourBlindLight = ColourScheme(
@@ -89,6 +93,7 @@ class ColourScheme {
     gold: Color(0xFFD4C05F),
     silver: Color(0xFFCECECE),
     bronze: Color(0xFFBEA278),
+    alt: Color(0xFFC8CAD0),
   );
 
   static const colourBlindDark = ColourScheme(
@@ -96,11 +101,12 @@ class ColourScheme {
     semiCorrect: Color(0xFF0056E0),
     wrong: Color(0xFF252525),
     invalid: Color(0xFFD8464B),
-    victory: Color(0xFFA1E1F7),
+    victory: Color(0xFF1091BC),
     blank: Color(0xFF343434),
-    gold: Color(0xFFD4C05F),
-    silver: Color(0xFFCECECE),
-    bronze: Color(0xFFBEA278),
+    gold: Color(0xFFA18D2B),
+    silver: Color(0xFF7A7A7A),
+    bronze: Color(0xFF8A6D42),
+    alt: Color(0xFF3D3D3D),
   );
 
   @override

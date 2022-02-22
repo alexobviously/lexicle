@@ -15,6 +15,7 @@ import 'package:validators/validators.dart';
 import 'package:word_game/app/colours.dart';
 import 'package:word_game/app/router.dart';
 import 'package:word_game/cubits/game_group_controller.dart';
+import 'package:word_game/cubits/scheme_cubit.dart';
 import 'package:word_game/services/service_locator.dart';
 import 'package:word_game/services/sound_service.dart';
 import 'package:word_game/ui/confirmation_dialog.dart';
@@ -320,72 +321,74 @@ class _GroupViewState extends State<GroupView> {
     final theme = Theme.of(context);
     final textTheme = theme.textTheme;
     bool inGroup = group.players.contains(auth().userId);
-    return Column(
-      children: [
-        if (inGroup) _setWordBox(context, group),
-        Container(height: 30),
-        Text(
-          'Players',
-          style: textTheme.headline5,
-        ),
-        Expanded(
-          child: ListView.builder(
-            // shrinkWrap: true,
-            itemCount: group.players.length,
-            itemBuilder: (context, i) {
-              String player = group.players[i];
-              bool ready = group.playerReady(player);
-              return ListTile(
-                title: UsernameLink(
-                  innerKey: ValueKey('lobby_${group.id}_$player'),
-                  id: player,
-                  content: (context, u) => Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      if (isCreator)
-                        player != auth().userId
-                            ? InkWell(
-                                onTap: () => _kickPlayer(u),
-                                child: Padding(
-                                  padding: const EdgeInsets.only(right: 8.0),
-                                  child: Icon(MdiIcons.close),
-                                ),
-                              )
-                            : SizedBox(width: 32),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('[${u.rating.rating.toStringAsFixed(0)}] ${u.username}'),
-                          if (u.team != null) _team(context, u.team!),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-                trailing: Text(ready ? 'Ready' : 'Not Ready'),
-              );
-            },
+    return BlocBuilder<SchemeCubit, ColourScheme>(builder: (context, scheme) {
+      return Column(
+        children: [
+          if (inGroup) _setWordBox(context, group),
+          Container(height: 30),
+          Text(
+            'Players',
+            style: textTheme.headline5,
           ),
-        ),
-        // Spacer(),
-        if (isCreator && group.canBegin)
-          NeumorphicButton(
-            onPressed: controller!.start,
-            child: Text(
-              'Start Group',
-              style: textTheme.headline5,
+          Expanded(
+            child: ListView.builder(
+              // shrinkWrap: true,
+              itemCount: group.players.length,
+              itemBuilder: (context, i) {
+                String player = group.players[i];
+                bool ready = group.playerReady(player);
+                return ListTile(
+                  title: UsernameLink(
+                    innerKey: ValueKey('lobby_${group.id}_$player'),
+                    id: player,
+                    content: (context, u) => Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        if (isCreator)
+                          player != auth().userId
+                              ? InkWell(
+                                  onTap: () => _kickPlayer(u),
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(right: 8.0),
+                                    child: Icon(MdiIcons.close),
+                                  ),
+                                )
+                              : SizedBox(width: 32),
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text('[${u.rating.rating.toStringAsFixed(0)}] ${u.username}'),
+                            if (u.team != null) _team(context, u.team!, scheme),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  trailing: Text(ready ? 'Ready' : 'Not Ready'),
+                );
+              },
             ),
           ),
-        if (isCreator && !group.canBegin)
-          Neumorphic(
-            padding: EdgeInsets.all(16.0),
-            style: NeumorphicStyle(depth: 2),
-            child: Text('Waiting for players..', style: textTheme.headline5),
-          ),
-        _created(context, group),
-      ],
-    );
+          // Spacer(),
+          if (isCreator && group.canBegin)
+            NeumorphicButton(
+              onPressed: controller!.start,
+              child: Text(
+                'Start Group',
+                style: textTheme.headline5,
+              ),
+            ),
+          if (isCreator && !group.canBegin)
+            Neumorphic(
+              padding: EdgeInsets.all(16.0),
+              style: NeumorphicStyle(depth: 2),
+              child: Text('Waiting for players..', style: textTheme.headline5),
+            ),
+          _created(context, group),
+        ],
+      );
+    });
   }
 
   Widget _playView(BuildContext context, GameGroupState state) {
@@ -496,40 +499,42 @@ class _GroupViewState extends State<GroupView> {
         group.players.map((e) => AnswerTableRow(e, group.words[e] ?? '', group.wordDifficulty(e))).toList();
     _rows.sort((a, b) => b.difficulty.compareTo(a.difficulty));
 
-    Color _answerColour(double difficulty) {
+    Color _answerColour(double difficulty, ColourScheme scheme) {
       if (difficulty < 5.5) {
-        return Color.lerp(Colours.correct, Colours.semiCorrect, (difficulty - 2.0) / 3.5)!;
+        return Color.lerp(scheme.correct, scheme.semiCorrect, (difficulty - 2.0) / 3.5)!;
       } else {
-        return Color.lerp(Colours.semiCorrect, Colours.invalid.lighten(0.2), (difficulty - 5.5) / 3.5)!;
+        return Color.lerp(scheme.semiCorrect, scheme.invalid.lighten(0.2), (difficulty - 5.5) / 3.5)!;
       }
     }
 
-    return Column(
-      children: [
-        ..._rows.map(
-          (e) => Container(
-            width: width,
-            height: 48,
-            padding: const EdgeInsets.all(8.0),
-            color: _answerColour(e.difficulty),
-            child: Row(
-              children: [
-                SizedBox(
-                  width: 150,
-                  child: UsernameLink(
-                    innerKey: ValueKey('answers_${group.id}_${e.player}'),
-                    id: e.player,
+    return BlocBuilder<SchemeCubit, ColourScheme>(builder: (context, scheme) {
+      return Column(
+        children: [
+          ..._rows.map(
+            (e) => Container(
+              width: width,
+              height: 48,
+              padding: const EdgeInsets.all(8.0),
+              color: _answerColour(e.difficulty, ColourScheme.base(context)),
+              child: Row(
+                children: [
+                  SizedBox(
+                    width: 150,
+                    child: UsernameLink(
+                      innerKey: ValueKey('answers_${group.id}_${e.player}'),
+                      id: e.player,
+                    ),
                   ),
-                ),
-                Text(e.word, style: textTheme.headline6),
-                Spacer(),
-                Text(e.difficulty.toStringAsFixed(2), style: textTheme.headline6),
-              ],
+                  Text(e.word, style: textTheme.headline6),
+                  Spacer(),
+                  Text(e.difficulty.toStringAsFixed(2), style: textTheme.headline6),
+                ],
+              ),
             ),
           ),
-        ),
-      ],
-    );
+        ],
+      );
+    });
   }
 
   Widget _games(BuildContext context, List<BaseGameController> gcs) {
@@ -574,112 +579,114 @@ class _GroupViewState extends State<GroupView> {
     final textTheme = theme.textTheme;
     final standings = state.standings;
 
-    Color? _standingColour(Standing st) {
+    Color? _standingColour(Standing st, ColourScheme scheme) {
       if (!finished) return null;
       if (st.guesses == standings[0].guesses) {
-        return Colours.gold.lighten();
+        return scheme.gold;
       }
       if (st.guesses == standings[1].guesses) {
-        return Colours.silver.lighten(0.05);
+        return scheme.silver.lighten(0.05);
       }
       if (standings.length > 2 && st.guesses == standings[2].guesses) {
-        return Colours.bronze.lighten();
+        return scheme.bronze.lighten();
       }
       return null;
     }
 
-    Color? _boxColour(GameStub g) {
-      if (g.id.isEmpty) return Colours.wrong;
+    Color? _boxColour(GameStub g, ColourScheme scheme) {
+      if (g.id.isEmpty) return scheme.alt;
       if (g.progress >= 1.0 && g.endReason != null) {
         if (g.endReason == EndReasons.solved) {
-          return Colours.correct;
+          return scheme.correct;
         } else {
-          return Colours.invalid.lighten(0.3);
+          return scheme.invalid.lighten(0.3);
         }
       }
-      return Color.lerp(Colours.blank, Colours.semiCorrect, g.progress);
+      return Color.lerp(scheme.blank, scheme.semiCorrect, g.progress);
     }
 
     // exceptionally stupid but it works
     int x = finished ? state.players.length : 0;
 
-    return Column(
-      children: [
-        ...standings
-            .map(
-              (e) => Container(
-                width: width,
-                height: 48,
-                padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: finished ? 0.0 : 8.0),
-                color: _standingColour(e),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    SizedBox(
-                      width: 100,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          UsernameLink(
-                              innerKey: ValueKey('standings_${state.id}_${finished}_${e.player}'),
-                              id: e.player,
-                              content: finished
-                                  ? (context, u) => Column(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Text(u.username, style: textTheme.headline6),
-                                          if (u.team != null) _team(context, u.team!),
-                                        ],
-                                      )
-                                  : null),
-                        ],
+    return BlocBuilder<SchemeCubit, ColourScheme>(builder: (context, scheme) {
+      return Column(
+        children: [
+          ...standings
+              .map(
+                (e) => Container(
+                  width: width,
+                  height: 48,
+                  padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: finished ? 0.0 : 8.0),
+                  color: _standingColour(e, ColourScheme.base(context)),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      SizedBox(
+                        width: 100,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            UsernameLink(
+                                innerKey: ValueKey('standings_${state.id}_${finished}_${e.player}'),
+                                id: e.player,
+                                content: finished
+                                    ? (context, u) => Column(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Text(u.username, style: textTheme.headline6),
+                                            if (u.team != null) _team(context, u.team!, scheme),
+                                          ],
+                                        )
+                                    : null),
+                          ],
+                        ),
                       ),
-                    ),
-                    Text('${e.guesses}', style: textTheme.headline6),
-                    Container(width: 32),
-                    Expanded(
-                      child: ListView(
-                        controller: _scrollControllers[x++],
-                        reverse: true,
-                        scrollDirection: Axis.horizontal,
-                        shrinkWrap: true,
-                        children: state
-                            .playerGamesSorted(e.player)
-                            .reversed
-                            .map((g) => Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 2.0, vertical: finished ? 8.0 : 0.0),
-                                  child: GestureDetector(
-                                    // TODO: navigate to your own games if it's you
-                                    onTap: (e.player != auth().userId && g.creator.isNotEmpty)
-                                        ? () => context.push(Routes.game(g.id))
-                                        : null,
-                                    child: Container(
-                                      width: 32,
-                                      height: 32,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(4.0),
-                                        color: _boxColour(g),
+                      Text('${e.guesses}', style: textTheme.headline6),
+                      Container(width: 32),
+                      Expanded(
+                        child: ListView(
+                          controller: _scrollControllers[x++],
+                          reverse: true,
+                          scrollDirection: Axis.horizontal,
+                          shrinkWrap: true,
+                          children: state
+                              .playerGamesSorted(e.player)
+                              .reversed
+                              .map((g) => Padding(
+                                    padding: EdgeInsets.symmetric(horizontal: 2.0, vertical: finished ? 8.0 : 0.0),
+                                    child: GestureDetector(
+                                      // TODO: navigate to your own games if it's you
+                                      onTap: (e.player != auth().userId && g.creator.isNotEmpty)
+                                          ? () => context.push(Routes.game(g.id))
+                                          : null,
+                                      child: Container(
+                                        width: 32,
+                                        height: 32,
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(4.0),
+                                          color: _boxColour(g, ColourScheme.base(context)),
+                                        ),
+                                        child: g.id.isNotEmpty ? Center(child: Text(g.guesses.toString())) : null,
                                       ),
-                                      child: g.id.isNotEmpty ? Center(child: Text(g.guesses.toString())) : null,
                                     ),
-                                  ),
-                                ))
-                            .toList(),
+                                  ))
+                              .toList(),
+                        ),
                       ),
-                    ),
-                    Container(width: 16),
-                  ],
+                      Container(width: 16),
+                    ],
+                  ),
                 ),
-              ),
-            )
-            .toList(),
-      ],
-    );
+              )
+              .toList(),
+        ],
+      );
+    });
   }
 
-  Widget _team(BuildContext context, String id) {
+  Widget _team(BuildContext context, String id, ColourScheme scheme) {
     return EntityFutureBuilder<Team>(
       id: id,
       store: teamStore(),
@@ -687,7 +694,7 @@ class _GroupViewState extends State<GroupView> {
       errorWidget: (_) => Icon(Icons.error),
       resultWidget: (team) => Text(
         team.name,
-        style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Colours.correct.darken(0.4)),
+        style: Theme.of(context).textTheme.bodyText2!.copyWith(fontStyle: FontStyle.italic),
       ),
     );
   }
