@@ -2,12 +2,14 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:common/common.dart';
+import 'package:word_game/cubits/observer_game_controller.dart';
 import 'package:word_game/mediator/online_mediator.dart';
 import 'package:word_game/services/api_client.dart';
 import '../services/service_locator.dart';
 
 class GameGroupController extends Cubit<GameGroupState> {
-  GameGroupController(GameGroupState initial) : super(initial) {
+  final bool observing;
+  GameGroupController(GameGroupState initial, {this.observing = false}) : super(initial) {
     init();
     startTimer(); // hmm
   }
@@ -52,7 +54,9 @@ class GameGroupController extends Cubit<GameGroupState> {
   void _createGameController(String gid) async {
     final _result = await ApiClient.getGame(gid);
     if (!_result.ok) return; // should we do something here maybe?
-    final gc = GameController(_result.object!, OnlineMediator(gameId: gid, wordLength: _result.object!.length));
+    final gc = observing
+        ? ObserverGameController(_result.object!)
+        : GameController(_result.object!, OnlineMediator(gameId: gid, wordLength: _result.object!.length));
     emit(state.copyWith(games: Map.from(state.games)..[gid] = gc));
   }
 
@@ -122,14 +126,14 @@ class GameGroupController extends Cubit<GameGroupState> {
 class GameGroupState {
   final bool loading;
   final GameGroup group;
-  final Map<String, GameController> games;
+  final Map<String, BaseGameController> games;
 
   GameGroupState({this.loading = false, required this.group, this.games = const {}});
 
   GameGroupState copyWith({
     bool? loading,
     GameGroup? group,
-    Map<String, GameController>? games,
+    Map<String, BaseGameController>? games,
   }) =>
       GameGroupState(
         loading: loading ?? this.loading,

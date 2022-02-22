@@ -5,11 +5,10 @@ import 'package:common/common.dart';
 import 'package:word_game/services/service_locator.dart';
 
 class ObserverGameController extends Cubit<Game> implements BaseGameController {
-  ObserverGameController(Game initialState) : super(initialState) {
+  final Duration updateInterval;
+  ObserverGameController(Game initialState, {this.updateInterval = const Duration(seconds: 5)}) : super(initialState) {
     _init();
   }
-
-  static const Duration updateInterval = Duration(seconds: 5);
 
   Timer? _timer;
 

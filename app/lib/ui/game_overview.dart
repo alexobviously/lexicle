@@ -7,7 +7,7 @@ import 'package:word_game/app/colours.dart';
 import 'package:word_game/ui/word_row.dart';
 
 class GameOverview extends StatefulWidget {
-  final GameController game;
+  final BaseGameController game;
   final VoidCallback? onRemove;
   final Widget? header;
   const GameOverview(this.game, {this.onRemove, this.header, Key? key}) : super(key: key);
@@ -42,7 +42,7 @@ class _GameOverviewState extends State<GameOverview> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     bool dark = theme.brightness == Brightness.dark;
-    return BlocBuilder<GameController, Game>(
+    return BlocBuilder<BaseGameController, Game>(
         bloc: widget.game,
         builder: (context, state) {
           return Neumorphic(

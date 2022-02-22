@@ -83,10 +83,11 @@ GoRouter buildRouter() {
       GoRoute(
         path: Routes.group(':id'),
         builder: (context, state) {
-          if (state.extra is! GameGroupController) throw Exception('Missing/Invalid Group Controler');
+          GroupRouteData data = GroupRouteData();
+          if (state.extra is GroupRouteData) data = state.extra as GroupRouteData;
           return GroupView(
             id: state.params['id'] ?? '',
-            controller: state.extra as GameGroupController,
+            data: data,
           );
         },
       ),
@@ -95,7 +96,6 @@ GoRouter buildRouter() {
         builder: (context, state) {
           GameRouteData data = GameRouteData();
           if (state.extra is GameRouteData) data = state.extra as GameRouteData;
-          // if (state.extra is! GameRouteData) throw Exception('Missing/Invalid Game Route Data');
           return GameView(
             id: state.params['id'] ?? '',
             data: data,

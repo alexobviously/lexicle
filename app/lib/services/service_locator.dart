@@ -18,6 +18,7 @@ AppUserStore userStore() => getIt.get<AppUserStore>();
 AppUserStatsStore ustatsStore() => getIt.get<AppUserStatsStore>();
 TeamStore teamStore() => getIt.get<TeamStore>();
 GameStore gameStore() => getIt.get<GameStore>();
+GameGroupStore groupStore() => getIt.get<GameGroupStore>();
 
 Future<void> setUpServiceLocator({required DatabaseService db}) async {
   getIt.registerSingleton<FlutterSecureStorage>(FlutterSecureStorage(
@@ -31,4 +32,5 @@ Future<void> setUpServiceLocator({required DatabaseService db}) async {
   getIt.registerSingleton<AppUserStatsStore>(AppUserStatsStore(db));
   getIt.registerSingleton<TeamStore>(TeamStore(db));
   getIt.registerSingleton<GameStore>(GameStore(db));
+  getIt.registerSingleton<GameGroupStore>(GameGroupStore(db));
 }

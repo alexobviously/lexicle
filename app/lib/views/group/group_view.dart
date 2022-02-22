@@ -25,19 +25,27 @@ import 'package:word_game/views/game_view.dart';
 import 'package:word_game/ui/standard_scaffold.dart';
 import 'package:word_game/ui/username_link.dart';
 
+class GroupRouteData {
+  final GameGroupController? group;
+  final String? title;
+  GroupRouteData({this.group, this.title});
+}
+
 class GroupView extends StatefulWidget {
   // right now a controller must be passed in extras, but eventually I'd like to be able to retrieve
   // groups from demand by id if no controller is provided
   final String id;
-  final GameGroupController controller;
-  const GroupView({required this.id, required this.controller, Key? key}) : super(key: key);
+  final GroupRouteData data;
+  const GroupView({required this.id, required this.data, Key? key}) : super(key: key);
 
   @override
   State<GroupView> createState() => _GroupViewState();
 }
 
 class _GroupViewState extends State<GroupView> {
-  GameGroupController get controller => widget.controller;
+  GameGroupController? controller;
+  String? error;
+  // GameGroupController get controller => widget.controller;
   TextEditingController wordController = TextEditingController();
   final _scrollControllerGroup = LinkedScrollControllerGroup();
   List<ScrollController> _scrollControllers = [];
@@ -56,37 +64,53 @@ class _GroupViewState extends State<GroupView> {
 
   @override
   void initState() {
-    if (controller.state.group.words.containsKey(auth().userId)) {
-      wordController.text = controller.state.group.words[auth().userId!]!;
-    }
-    // todo: unfuck this
-    for (int i = 0; i < 50; i++) {
-      _scrollControllers.add(_scrollControllerGroup.addAndGet());
-    }
-    SchedulerBinding.instance!.addPostFrameCallback((_) {
-      final _controller = _scrollControllers.first;
-      if (_controller.positions.isEmpty) return; // ???
-      _controller.animateTo(
-        _controller.position.maxScrollExtent,
-        duration: Duration(milliseconds: 100),
-        curve: Curves.fastOutSlowIn,
-      );
-    });
-    _initTimer();
-    _gameState = controller.state.group.state;
-    _playerCount = controller.state.group.players.length;
-    _wordCount = controller.state.group.words.length;
-    controller.stream.map((e) => e.group.endTime).distinct().listen((_) => _initTimer());
-    controller.stream.map((e) => e.group.state).distinct().listen(_onGameState);
-    controller.stream.map((e) => e.group.players.length).distinct().listen(_onPlayerCount);
-    controller.stream.map((e) => e.group.words.length).distinct().listen(_onWordCount);
+    _init();
     super.initState();
+  }
+
+  void _init() async {
+    if (widget.data.group != null) {
+      controller = widget.data.group!;
+    } else {
+      final result = await groupStore().get(widget.id);
+      if (result.ok) {
+        setState(() => controller = GameGroupController(GameGroupState(group: result.object!), observing: true));
+      } else {
+        setState(() => error = result.error!);
+      }
+    }
+    if (controller != null) {
+      if (controller!.state.group.words.containsKey(auth().userId)) {
+        wordController.text = controller!.state.group.words[auth().userId!]!;
+      }
+      // todo: unfuck this
+      for (int i = 0; i < 50; i++) {
+        _scrollControllers.add(_scrollControllerGroup.addAndGet());
+      }
+      SchedulerBinding.instance!.addPostFrameCallback((_) {
+        final _controller = _scrollControllers.first;
+        if (_controller.positions.isEmpty) return; // ???
+        _controller.animateTo(
+          _controller.position.maxScrollExtent,
+          duration: Duration(milliseconds: 100),
+          curve: Curves.fastOutSlowIn,
+        );
+      });
+      _initTimer();
+      _gameState = controller!.state.group.state;
+      _playerCount = controller!.state.group.players.length;
+      _wordCount = controller!.state.group.words.length;
+      controller!.stream.map((e) => e.group.endTime).distinct().listen((_) => _initTimer());
+      controller!.stream.map((e) => e.group.state).distinct().listen(_onGameState);
+      controller!.stream.map((e) => e.group.players.length).distinct().listen(_onPlayerCount);
+      controller!.stream.map((e) => e.group.words.length).distinct().listen(_onWordCount);
+    }
   }
 
   void _initTimer() {
     timer?.cancel();
-    if (controller.state.group.endTime != null) {
-      endTime = controller.state.group.endTime;
+    if (controller!.state.group.endTime != null) {
+      endTime = controller!.state.group.endTime;
       timer = Timer.periodic(Duration(seconds: 1), (_) => _setTimeLeft());
     }
   }
@@ -105,13 +129,13 @@ class _GroupViewState extends State<GroupView> {
 
   void _submitWord() async {
     wordController.text = wordController.text.toLowerCase();
-    final state = controller.state.group;
+    final state = controller!.state.group;
     if (!isAlpha(wordController.text) || wordController.text.length != state.config.wordLength) {
       sound().play(Sound.bad);
       return;
     }
 
-    final _result = await controller.setWord(wordController.text);
+    final _result = await controller!.setWord(wordController.text);
     if (!_result.ok) {
       setState(() => invalidWord = true);
       sound().play(Sound.bad);
@@ -125,8 +149,8 @@ class _GroupViewState extends State<GroupView> {
     if (state == _gameState) return;
     if (state == MatchState.playing) sound().play(Sound.clickUp);
     if (state == MatchState.finished) {
-      final st = controller.state.group.standings;
-      final guesses = controller.state.group.playerGuesses(auth().userId!);
+      final st = controller!.state.group.standings;
+      final guesses = controller!.state.group.playerGuesses(auth().userId!);
       if (st.first.guesses == guesses) {
         // todo: win sound
         sound().play(Sound.clickDown);
@@ -159,12 +183,50 @@ class _GroupViewState extends State<GroupView> {
       positiveText: 'Kick',
     );
     if (ok) {
-      controller.kickPlayer(player.id);
+      controller!.kickPlayer(player.id);
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    if (error != null || controller == null) {
+      return StandardScaffold(
+        body: Center(
+          child: SafeArea(
+            child: Builder(
+              builder: (context) {
+                if (error != null) {
+                  return Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        'Error getting group',
+                        style: Theme.of(context).textTheme.headline5,
+                      ),
+                      Text(
+                        error!,
+                        style: Theme.of(context).textTheme.headline6,
+                      ),
+                      OutlinedButton.icon(
+                        onPressed: () => context.go(Routes.home),
+                        icon: Icon(MdiIcons.home),
+                        label: Text('Go Home'),
+                      ),
+                    ],
+                  );
+                }
+                return Center(
+                  child: SpinKitFadingGrid(
+                    color: Colours.correct.darken(0.3),
+                    size: 64,
+                  ),
+                );
+              },
+            ),
+          ),
+        ),
+      );
+    }
     return StandardScaffold(
       title: 'Group Game',
       body: SafeArea(
@@ -309,7 +371,7 @@ class _GroupViewState extends State<GroupView> {
         // Spacer(),
         if (isCreator && group.canBegin)
           NeumorphicButton(
-            onPressed: controller.start,
+            onPressed: controller!.start,
             child: Text(
               'Start Group',
               style: textTheme.headline5,
@@ -329,7 +391,7 @@ class _GroupViewState extends State<GroupView> {
   Widget _playView(BuildContext context, GameGroupState state) {
     final theme = Theme.of(context);
     final textTheme = theme.textTheme;
-    List<GameController> gcs = state.games.entries.map((e) => e.value).toList();
+    List<BaseGameController> gcs = state.games.entries.map((e) => e.value).toList();
     gcs.sort((a, b) {
       if (a.state.gameFinished == b.state.gameFinished) return 0;
       return b.state.gameFinished ? -1 : 1;
@@ -362,7 +424,7 @@ class _GroupViewState extends State<GroupView> {
   Widget _resultsView(BuildContext context, GameGroupState state) {
     final theme = Theme.of(context);
     final textTheme = theme.textTheme;
-    List<GameController> gcs = state.games.entries.map((e) => e.value).toList();
+    List<BaseGameController> gcs = state.games.entries.map((e) => e.value).toList();
     return SingleChildScrollView(
       child: LayoutBuilder(builder: (context, c) {
         return Column(
@@ -470,7 +532,7 @@ class _GroupViewState extends State<GroupView> {
     );
   }
 
-  Widget _games(BuildContext context, List<GameController> gcs) {
+  Widget _games(BuildContext context, List<BaseGameController> gcs) {
     return GridView.count(
       // controller: _controller,
       shrinkWrap: true,

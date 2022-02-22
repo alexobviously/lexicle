@@ -24,7 +24,7 @@ import 'package:word_game/ui/word_row.dart';
 import '../ui/post_game_panel.dart';
 
 class GameRouteData {
-  final GameController? game;
+  final BaseGameController? game;
   final String? title;
   GameRouteData({this.game, this.title});
 }

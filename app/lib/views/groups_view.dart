@@ -12,6 +12,7 @@ import 'package:word_game/services/sound_service.dart';
 import 'package:word_game/ui/game_clock.dart';
 import 'package:word_game/ui/game_creator.dart';
 import 'package:word_game/ui/standard_scaffold.dart';
+import 'package:word_game/views/group/group_view.dart';
 
 class GroupsView extends StatefulWidget {
   const GroupsView({Key? key}) : super(key: key);
@@ -96,7 +97,8 @@ class _GroupsViewState extends State<GroupsView> {
                           ),
                           tileColor: tileColour,
                           onTap: joined
-                              ? () => context.push(Routes.group(g.id), extra: cubit.getControllerForGroup(g))
+                              ? () => context.push(Routes.group(g.id),
+                                  extra: GroupRouteData(group: cubit.getControllerForGroup(g)))
                               : null,
                           leading: Padding(
                             padding: const EdgeInsets.all(8.0),
@@ -147,4 +149,8 @@ class _GroupsViewState extends State<GroupsView> {
       ),
     );
   }
+
+  // Widget _groupList(BuildContext context, List<GameGroup> groups) {
+
+  // }
 }
