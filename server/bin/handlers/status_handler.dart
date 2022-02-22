@@ -9,7 +9,7 @@ class StatusHandler {
       data: {
         'version': env().version,
         'appMinVersion': '0.4.1',
-        'appCurrentVersion': '0.4.3',
+        'appCurrentVersion': '0.4.4',
       },
     );
   }
