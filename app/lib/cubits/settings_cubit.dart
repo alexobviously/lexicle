@@ -66,6 +66,8 @@ class Settings {
   final Brightness brightness;
   final ColourSchemePair scheme;
 
+  ColourScheme get colourScheme => scheme.ofBrightness(brightness);
+
   Settings({required this.themeMode, required this.brightness, required this.scheme});
   factory Settings.initial() =>
       Settings(themeMode: ThemeMode.system, brightness: Brightness.light, scheme: ColourSchemePair.normal);
