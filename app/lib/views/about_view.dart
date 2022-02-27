@@ -29,7 +29,7 @@ class AboutView extends StatelessWidget {
                   textAlign: TextAlign.center,
                 ),
                 OutlinedButton.icon(
-                  onPressed: () => launch('https://github.com/alexobviously/word_game'),
+                  onPressed: () => launch('https://github.com/alexobviously/lexicle'),
                   icon: Image.asset('assets/images/github.png'),
                   label: Text(
                     'View Code on Github',

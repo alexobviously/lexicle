@@ -1,5 +1,4 @@
 import 'package:go_router/go_router.dart';
-import 'package:word_game/cubits/game_group_controller.dart';
 import 'package:word_game/views/about_view.dart';
 import 'package:word_game/views/auth/auth_view.dart';
 import 'package:word_game/views/dict_search_view.dart';
