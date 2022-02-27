@@ -12,7 +12,6 @@ import 'package:go_router/go_router.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:word_game/app/colours.dart';
 import 'package:word_game/app/router.dart';
-import 'package:word_game/cubits/observer_game_controller.dart';
 import 'package:word_game/services/service_locator.dart';
 import 'package:word_game/services/sound_service.dart';
 import 'package:word_game/ui/entity_future_builder.dart';

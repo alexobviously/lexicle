@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:go_router/go_router.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:word_game/app/colours.dart';
+import 'package:word_game/app/router.dart';
 import 'package:word_game/cubits/scheme_cubit.dart';
 import 'package:word_game/cubits/settings_cubit.dart';
 import 'package:word_game/ui/standard_scaffold.dart';
@@ -30,6 +33,12 @@ class _SettingsViewState extends State<SettingsView> {
             return Column(
               children: [
                 Spacer(),
+                NeumorphicButton(
+                  style: NeumorphicStyle(depth: 2),
+                  onPressed: () => context.push(Routes.changePassword),
+                  child: Text('Change Password'),
+                ),
+                Container(height: 32),
                 Text('Theme Mode', style: textTheme.headline6),
                 ToggleButtons(
                   children: _themeModes.map((e) => _themeModeBox(context, e)).toList(),
@@ -39,23 +48,6 @@ class _SettingsViewState extends State<SettingsView> {
                   fillColor: settings.colourScheme.blank,
                 ),
                 Container(height: 16),
-                // Row(
-                //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                //   children: [
-                //     Spacer(),
-                //     Expanded(
-                //       child: Text('Dark Mode:', style: textTheme.headline6),
-                //     ),
-                //     IconButton(
-                //       onPressed: () {
-                //         MyApp.themeNotifier.value =
-                //             MyApp.themeNotifier.value == ThemeMode.light ? ThemeMode.dark : ThemeMode.light;
-                //       },
-                //       icon: Icon(MyApp.themeNotifier.value == ThemeMode.light ? Icons.dark_mode : Icons.light_mode),
-                //     ),
-                //     Spacer(),
-                //   ],
-                // ),
                 Text('Colour Scheme', style: textTheme.headline6),
                 BlocBuilder<SchemeCubit, ColourScheme>(
                   builder: (context, scheme) {

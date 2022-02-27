@@ -20,7 +20,7 @@ class ProfileView extends StatefulWidget {
 }
 
 class _ProfileViewState extends State<ProfileView> {
-  int lengthIndex = 0;
+  int? lengthIndex;
 
   void setLengthIndex(int x) => setState(() => lengthIndex = x);
 
@@ -62,17 +62,21 @@ class _ProfileViewState extends State<ProfileView> {
                 errorWidget: (_) => Icon(Icons.error),
                 resultWidget: (u) {
                   if (u.gamesTotal == 0) return Text('No games played yet!');
-                  int _length(int index) => u.guessCounts.keys.toList()[index];
+                  // organise the counts for tab order, since they might not be in order
+                  Map<int, Map<int, int>> guessCounts = u.guessCounts.sorted((a, b) => a.key.compareTo(b.key));
+                  // always start on the length 5 tab if it exists
+                  lengthIndex ??= guessCounts.entries.toList().indexWhereOrNull((e) => e.key == 5) ?? 0;
+                  int _length(int index) => guessCounts.keys.toList()[index];
 
                   return Column(
                     children: [
-                      if (u.guessCounts.entries.length > 1)
+                      if (guessCounts.entries.length > 1)
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 32.0),
                           child: NeumorphicToggle(
-                            selectedIndex: lengthIndex,
+                            selectedIndex: lengthIndex!,
                             displayForegroundOnlyIfSelected: true,
-                            children: u.guessCounts.keys.map((e) => _toggleElement(context, e.toString())).toList(),
+                            children: guessCounts.keys.map((e) => _toggleElement(context, e.toString())).toList(),
                             thumb: Neumorphic(
                               style: NeumorphicStyle(
                                 boxShape: NeumorphicBoxShape.roundRect(BorderRadius.all(Radius.circular(12))),
@@ -90,15 +94,15 @@ class _ProfileViewState extends State<ProfileView> {
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
                                 Text(
-                                    'Matches Won: ${(u.wins[_length(lengthIndex)] ?? 0)} / ${(u.numGroups[_length(lengthIndex)] ?? 0)}'),
-                                Text('Games Played: ${(u.numGames[_length(lengthIndex)] ?? 0)}'),
+                                    'Matches Won: ${(u.wins[_length(lengthIndex!)] ?? 0)} / ${(u.numGroups[_length(lengthIndex!)] ?? 0)}'),
+                                Text('Games Played: ${(u.numGames[_length(lengthIndex!)] ?? 0)}'),
                               ],
                             ),
-                            Text('Timeouts: ${u.timeouts[_length(lengthIndex)] ?? 0} '),
+                            Text('Timeouts: ${u.timeouts[_length(lengthIndex!)] ?? 0} '),
                             Container(height: 24),
                             SizedBox(
                               width: MediaQuery.of(context).size.width * 0.85,
-                              child: FittedBox(child: _guessChart(u.guessCounts[_length(lengthIndex)] ?? {})),
+                              child: FittedBox(child: _guessChart(guessCounts[_length(lengthIndex!)] ?? {})),
                             ),
                           ],
                         ),

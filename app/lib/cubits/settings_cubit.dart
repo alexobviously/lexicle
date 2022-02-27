@@ -32,6 +32,7 @@ class SettingsCubit extends Cubit<Settings> {
 
   void setThemeMode(ThemeMode mode, [bool write = true]) {
     if (mode == themeMode) return;
+    emit(state.copyWith(themeMode: mode));
 
     if (mode == ThemeMode.system) {
       _setBrightness();
@@ -41,8 +42,6 @@ class SettingsCubit extends Cubit<Settings> {
         emit(state.copyWith(brightness: b));
       }
     }
-
-    emit(state.copyWith(themeMode: mode));
 
     if (write) {
       prefs.setString('theme_mode', mode.name);

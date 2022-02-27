@@ -1,7 +1,7 @@
 import 'package:go_router/go_router.dart';
-import 'package:word_game/cubits/game_group_controller.dart';
 import 'package:word_game/views/about_view.dart';
 import 'package:word_game/views/auth/auth_view.dart';
+import 'package:word_game/views/change_password_view.dart';
 import 'package:word_game/views/dict_search_view.dart';
 import 'package:word_game/views/game_view.dart';
 import 'package:word_game/views/group/group_view.dart';
@@ -17,6 +17,7 @@ import 'package:word_game/views/top_players_view.dart';
 class Routes {
   static const home = '/';
   static const auth = '/auth';
+  static const changePassword = '/change_password';
   static const solo = '/solo';
   static const groups = '/groups';
   static const settings = '/settings';
@@ -43,6 +44,10 @@ GoRouter buildRouter() {
       GoRoute(
         path: Routes.auth,
         builder: (_, __) => const AuthView(),
+      ),
+      GoRoute(
+        path: Routes.changePassword,
+        builder: (_, __) => const ChangePasswordView(),
       ),
       GoRoute(
         path: Routes.solo,
