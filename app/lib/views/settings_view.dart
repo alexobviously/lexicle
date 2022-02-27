@@ -35,6 +35,8 @@ class _SettingsViewState extends State<SettingsView> {
                   children: _themeModes.map((e) => _themeModeBox(context, e)).toList(),
                   isSelected: _themeModes.map((e) => e == settings.themeMode).toList(),
                   onPressed: (i) => cubit.setThemeMode(_themeModes[i]),
+                  renderBorder: false,
+                  fillColor: settings.colourScheme.blank,
                 ),
                 Container(height: 16),
                 // Row(
@@ -61,6 +63,7 @@ class _SettingsViewState extends State<SettingsView> {
                       children: ColourSchemePair.all.map((e) => _schemeBox(context, e)).toList(),
                       isSelected: ColourSchemePair.all.map<bool>((e) => [e.light, e.dark].contains(scheme)).toList(),
                       onPressed: (i) => cubit.setScheme(ColourSchemePair.all[i]),
+                      renderBorder: false,
                     );
                   },
                 ),
