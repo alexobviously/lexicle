@@ -95,6 +95,12 @@ class ApiClient {
         unwrapper: unwrapUser,
       );
 
+  static Future<ApiResult<bool>> changePassword(String oldPassword, String newPassword) async => postAndUnwrap(
+        '/auth/change_pw',
+        body: {'old': oldPassword, 'new': newPassword},
+        unwrapper: (_) => true,
+      );
+
   static Future<Result<bool>> validateWord(String word) =>
       getAndUnwrap('/dict/$word', unwrapper: (data) => data['valid']);
 
