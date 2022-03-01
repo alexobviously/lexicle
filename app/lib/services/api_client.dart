@@ -151,7 +151,7 @@ class ApiClient {
         if (auth().hasToken) {
           headers['Authorization'] = 'Bearer ${auth().token}';
         } else if (authType != AuthType.optional) {
-          return ApiResponse.error('unauthorised');
+          return ApiResponse.error(Errors.unauthorised);
         }
       }
 
@@ -180,7 +180,7 @@ class ApiClient {
         if (auth().hasToken) {
           headers['Authorization'] = 'Bearer ${auth().token}';
         } else if (authType != AuthType.optional) {
-          return ApiResponse.error('unauthorised');
+          return ApiResponse.error(Errors.unauthorised);
         }
       }
 

@@ -62,12 +62,12 @@ class GameServer with ReadyManager {
   }
 
   Result<GameGroupController> getGroupController(String id) {
-    if (!gameGroups.containsKey(id)) return Result.error('not_found');
+    if (!gameGroups.containsKey(id)) return Result.error(Errors.notFound);
     return Result.ok(gameGroups[id]!);
   }
 
   Result<GameController> getGameController(String id) {
-    if (!games.containsKey(id)) return Result.error('not_found');
+    if (!games.containsKey(id)) return Result.error(Errors.notFound);
     return Result.ok(games[id]!);
   }
 
@@ -76,11 +76,11 @@ class GameServer with ReadyManager {
     if (_result.ok) {
       return getGroupController(_result.object!.state.group ?? '');
     }
-    return Result.error('not_found');
+    return Result.error(Errors.notFound);
   }
 
   Result<GameGroupController> joinGroup(String id, String player) {
-    if (!gameGroups.containsKey(id)) return Result.error('not_found');
+    if (!gameGroups.containsKey(id)) return Result.error(Errors.notFound);
     GameGroupController ggc = gameGroups[id]!;
     final _res = ggc.addPlayer(player);
     if (!_res.ok) {
@@ -90,7 +90,7 @@ class GameServer with ReadyManager {
   }
 
   Result<GameGroupController> leaveGroup(String id, String player) {
-    if (!gameGroups.containsKey(id)) return Result.error('not_found');
+    if (!gameGroups.containsKey(id)) return Result.error(Errors.notFound);
     GameGroupController ggc = gameGroups[id]!;
     if (ggc.state.creator == player) return Result.error('own_group', ['must_delete']);
     Result _result = ggc.removePlayer(player);
@@ -101,11 +101,11 @@ class GameServer with ReadyManager {
   }
 
   Result<bool> deleteGroup(String id, String player) {
-    if (!gameGroups.containsKey(id)) return Result.error('not_found');
+    if (!gameGroups.containsKey(id)) return Result.error(Errors.notFound);
     // todo: dispose?
     GameGroupController ggc = gameGroups[id]!;
-    if (ggc.state.creator != player) return Result.error(('unauthorised'));
-    if (ggc.state.state > MatchState.lobby) return Result.error('group_started');
+    if (ggc.state.creator != player) return Result.error(Errors.unauthorised);
+    if (ggc.state.state > MatchState.lobby) return Result.error(Errors.groupStarted);
     if (ggc.state.code != null) {
       privateGroups.remove(ggc.state.code);
     }
@@ -114,7 +114,7 @@ class GameServer with ReadyManager {
   }
 
   Result<GameGroupController> setWord(String id, String player, String word) {
-    if (!gameGroups.containsKey(id)) return Result.error('not_found');
+    if (!gameGroups.containsKey(id)) return Result.error(Errors.notFound);
     GameGroupController ggc = gameGroups[id]!;
     final _result = ggc.setWord(player, word);
     if (!_result.ok) {
@@ -135,13 +135,13 @@ class GameServer with ReadyManager {
 
   Result<GameGroupController> startGroup(String id, String player) {
     // TODO: deprecate using player here and just authenticate in handler
-    if (!gameGroups.containsKey(id)) return Result.error('not_found');
+    if (!gameGroups.containsKey(id)) return Result.error(Errors.notFound);
     GameGroupController ggc = gameGroups[id]!;
     final _result = ggc.canStart;
     if (!_result.ok) {
       return Result.error(_result.error!, _result.warnings);
     }
-    if (ggc.state.creator != player) return Result.error('unauthorised');
+    if (ggc.state.creator != player) return Result.error(Errors.unauthorised);
     int? endTime = ggc.getEndTime();
     ggc.start(createGamesForGroup(ggc, endTime), endTime);
     return Result.ok(ggc);
@@ -271,9 +271,9 @@ class GameServer with ReadyManager {
   }
 
   Future<Result<WordValidationResult>> makeGuess(String gameId, String player, String word) async {
-    if (!games.containsKey(gameId)) return Result.error('not_found');
+    if (!games.containsKey(gameId)) return Result.error(Errors.notFound);
     GameController gc = games[gameId]!;
-    if (gc.state.player != player) return Result.error('unauthorised');
+    if (gc.state.player != player) return Result.error(Errors.unauthorised);
     final _result = await gc.makeGuess(word);
     // note: invalid words count as ok
     if (!_result.ok) {

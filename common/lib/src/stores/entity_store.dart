@@ -18,7 +18,7 @@ class EntityStore<T extends Entity> {
     return result;
   }
 
-  Result<T> getLocal(String id) => items.containsKey(id) ? Result.ok(items[id]!) : Result.error('not_found');
+  Result<T> getLocal(String id) => items.containsKey(id) ? Result.ok(items[id]!) : Result.error(Errors.notFound);
   Future<Result<T>> getRemote(String id) => get(id, true);
 
   Future<List<T>> getMultiple(List<String> ids, [bool forceUpdate = false]) async {

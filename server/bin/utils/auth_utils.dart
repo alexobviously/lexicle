@@ -80,16 +80,16 @@ typedef AuthPredicate = bool Function(String);
 Future<AuthResult> authenticateRequest(Request request, {bool needAdmin = false, AuthPredicate? predicate}) async {
   final tokenData = verifyHeaders(request.headers);
   if (!tokenData.valid) {
-    return AuthResult.error('unauthorised', tokenData);
+    return AuthResult.error(Errors.unauthorised, tokenData);
   }
   String id = tokenData.subject!;
   if (!isMongoId(id)) return AuthResult.error('invalid_token');
   if (predicate != null && !predicate(id)) {
-    return AuthResult.error('unauthorised');
+    return AuthResult.error(Errors.unauthorised);
   }
   final _result = await userStore().get(id);
   if (!_result.ok) return AuthResult.error(_result.error!);
-  if (needAdmin && !_result.object!.isAdmin) return AuthResult.error('unauthorised');
+  if (needAdmin && !_result.object!.isAdmin) return AuthResult.error(Errors.unauthorised);
   return AuthResult.ok(tokenData, _result.object!);
 }
 

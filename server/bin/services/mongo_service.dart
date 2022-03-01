@@ -29,7 +29,7 @@ class MongoService implements DatabaseService {
     final coll = db.collection(Entity.table(T));
     final doc = await coll.findOne(where.id(ObjectId.fromHexString(id)));
     if (doc == null) {
-      return Result.error('not_found');
+      return Result.error(Errors.notFound);
     } else {
       ObjectId? objectId = doc['_id'];
       doc['id'] = objectId?.id.hexString;
@@ -63,7 +63,7 @@ class MongoService implements DatabaseService {
     final coll = db.collection(Entity.table(T));
     final doc = await coll.findOne(where.eq(field, value));
     if (doc == null) {
-      return Result.error('not_found');
+      return Result.error(Errors.notFound);
     } else {
       ObjectId? objectId = doc['_id'];
       doc['id'] = objectId?.id.hexString;

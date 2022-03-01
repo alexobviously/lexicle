@@ -25,7 +25,7 @@ class GameGroupController extends Cubit<GameGroup> {
 
   Result<bool> addPlayer(String id) {
     if (state.players.contains(id)) return Result.error('already_in_group');
-    if (state.state > MatchState.lobby) return Result.error('group_started');
+    if (state.state > MatchState.lobby) return Result.error(Errors.groupStarted);
     emit(state.copyWith(
       players: List.from(state.players)..add(id),
     ));
@@ -35,8 +35,8 @@ class GameGroupController extends Cubit<GameGroup> {
   /// Removes a player with [id] from the group.
   /// Returns true if the group is to be deleted.
   Result<bool> removePlayer(String id) {
-    if (state.state > MatchState.lobby) return Result.error('group_started');
-    if (!state.players.contains(id)) return Result.error('not_in_group');
+    if (state.state > MatchState.lobby) return Result.error(Errors.groupStarted);
+    if (!state.players.contains(id)) return Result.error(Errors.notInGroup);
     if (id == state.creator) {
       if (state.players.length > 1) {
         return Result.error('cant_leave');
@@ -53,10 +53,10 @@ class GameGroupController extends Cubit<GameGroup> {
   }
 
   Result<bool> get canStart {
-    if (state.state > MatchState.lobby) return Result.error('group_started');
-    if (state.players.length < 2) return Result.error('not_enough_players');
+    if (state.state > MatchState.lobby) return Result.error(Errors.groupStarted);
+    if (state.players.length < 2) return Result.error(Errors.notEnoughPlayers);
     if (unreadyPlayers.isNotEmpty) {
-      return Result.error('players_not_ready', unreadyPlayers);
+      return Result.error(Errors.playersNotReady, unreadyPlayers);
     }
     return Result.ok(true);
   }
@@ -75,10 +75,10 @@ class GameGroupController extends Cubit<GameGroup> {
   }
 
   Result<bool> setWord(String player, String word) {
-    if (state.state > MatchState.lobby) return Result.error('group_started');
-    if (!state.players.contains(player)) return Result.error('not_in_group');
-    if (word.length != state.config.wordLength) return Result.error('invalid_word');
-    if (!dictionary().isValidWord(word)) return Result.error('invalid_word');
+    if (state.state > MatchState.lobby) return Result.error(Errors.groupStarted);
+    if (!state.players.contains(player)) return Result.error(Errors.notInGroup);
+    if (word.length != state.config.wordLength) return Result.error(Errors.invalidWord);
+    if (!dictionary().isValidWord(word)) return Result.error(Errors.invalidWord);
     emit(state.copyWith(words: Map.from(state.words)..[player] = word));
     return Result.ok(true);
   }

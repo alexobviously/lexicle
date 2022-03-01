@@ -71,11 +71,11 @@ class GameGroupController extends Cubit<GameGroupState> {
   }
 
   Result<bool> get canStart {
-    if (player != state.group.creator) return Result.error('unauthorised');
-    if (state.group.state > MatchState.lobby) return Result.error('group_started');
-    if (state.group.players.length < 2) return Result.error('not_enough_players');
+    if (player != state.group.creator) return Result.error(Errors.unauthorised);
+    if (state.group.state > MatchState.lobby) return Result.error(Errors.groupStarted);
+    if (state.group.players.length < 2) return Result.error(Errors.notEnoughPlayers);
     if (unreadyPlayers.isNotEmpty) {
-      return Result.error('players_not_ready', unreadyPlayers);
+      return Result.error(Errors.playersNotReady, unreadyPlayers);
     }
     return Result.ok(true);
   }
@@ -99,11 +99,11 @@ class GameGroupController extends Cubit<GameGroupState> {
   }
 
   Future<Result<GameGroup>> setWord(String word) async {
-    if (player == null) return Result.error('unauthorised');
-    if (state.group.state > MatchState.lobby) return Result.error('group_started');
-    if (!state.group.players.contains(player)) return Result.error('not_in_group');
-    if (word.length != state.group.config.wordLength) return Result.error('invalid_word');
-    if (!dictionary().isValidWord(word)) return Result.error('invalid_word');
+    if (player == null) return Result.error(Errors.unauthorised);
+    if (state.group.state > MatchState.lobby) return Result.error(Errors.groupStarted);
+    if (!state.group.players.contains(player)) return Result.error(Errors.notInGroup);
+    if (word.length != state.group.config.wordLength) return Result.error(Errors.invalidWord);
+    if (!dictionary().isValidWord(word)) return Result.error(Errors.invalidWord);
     final _result = await ApiClient.setWord(id, player!, word);
     if (_result.ok) {
       emit(state.copyWith(group: _result.object!));
@@ -112,9 +112,9 @@ class GameGroupController extends Cubit<GameGroupState> {
   }
 
   Future<Result<GameGroup>> kickPlayer(String player) async {
-    if (state.group.state > MatchState.lobby) return Result.error('group_started');
-    if (state.group.creator != auth().userId) return Result.error('unauthorised');
-    if (!state.group.players.contains(player)) return Result.error('not_in_group');
+    if (state.group.state > MatchState.lobby) return Result.error(Errors.groupStarted);
+    if (state.group.creator != auth().userId) return Result.error(Errors.unauthorised);
+    if (!state.group.players.contains(player)) return Result.error(Errors.notInGroup);
     final result = await ApiClient.kickPlayer(state.group.id, player);
     if (result.ok) {
       emit(state.copyWith(group: result.object!));
