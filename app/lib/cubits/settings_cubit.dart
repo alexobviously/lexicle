@@ -16,6 +16,7 @@ class SettingsCubit extends Cubit<Settings> {
 
   void _init() async {
     window.onPlatformBrightnessChanged = _setBrightness;
+    _setBrightness();
     prefs = await SharedPreferences.getInstance();
     String tm = prefs.getString('theme_mode') ?? 'system';
     ThemeMode _themeMode = ThemeMode.values.firstWhereOrNull((e) => e.name == tm) ?? ThemeMode.system;
