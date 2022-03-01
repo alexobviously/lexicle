@@ -41,7 +41,7 @@ class GameGroupManager extends Cubit<GroupManagerState> {
   @override
   Future<void> close() {
     timer.cancel();
-    state.groups.forEach((_, v) => hasController(v.id) ? getControllerForGroup(v).close() : null);
+    state.joined.forEach((v) => hasController(v.id) ? getControllerForGroup(v).close() : null);
     return super.close();
   }
 
@@ -57,14 +57,17 @@ class GameGroupManager extends Cubit<GroupManagerState> {
 
   void refresh() async {
     emit(state.copyWith(working: true));
-    final _result = await ApiClient.allGroups();
-    if (!_result.ok || isClosed) return;
-    final groupList = _result.object!;
-    for (final g in groupList) {
-      if (hasController(g)) {
-        getControllerForGroup(state.groups[g]!).refresh();
+    final available = await ApiClient.availableGroups();
+    if (!available.ok || isClosed) return;
+    emit(state.copyWith(available: available.object!));
+
+    final joined = await ApiClient.joinedGroups();
+    if (!joined.ok || isClosed) return;
+    for (GameGroup g in joined.object!) {
+      if (hasController(g.id)) {
+        getControllerForGroup(g).refresh();
       } else {
-        getGroup(g);
+        getGroup(g.id);
       }
     }
     emit(state.copyWith(working: false));
@@ -129,12 +132,12 @@ class GameGroupManager extends Cubit<GroupManagerState> {
 }
 
 class GroupManagerState {
-  final Map<String, GameGroup> groups;
-  final List<String> joined;
+  final List<GameGroup> available;
+  final List<GameGroup> joined;
   final bool working;
 
   GroupManagerState({
-    this.groups = const {},
+    this.available = const [],
     this.joined = const [],
     this.working = false,
   });
@@ -142,11 +145,13 @@ class GroupManagerState {
 
   GroupManagerState copyWith({
     Map<String, GameGroup>? groups,
-    List<String>? joined,
+    List<GameGroup>? available,
+    List<GameGroup>? joined,
     bool? working,
   }) =>
       GroupManagerState(
-        groups: groups ?? this.groups,
+        // groups: groups ?? this.groups,
+        available: available ?? this.available,
         joined: joined ?? this.joined,
         working: working ?? this.working,
       );

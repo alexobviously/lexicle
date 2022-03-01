@@ -79,6 +79,8 @@ Future main() async {
     ..get('/ustats/me', UserHandler.getMyStats)
     ..get('/ustats/<id>', UserHandler.getStats)
     ..get('/groups/all', GameHandler.allGroupIds)
+    ..get('/groups/available', GroupHandler.getAvailableGroups)
+    ..get('/groups/joined', GroupHandler.getActiveGroupsForPlayer)
     ..post('/groups/create', GameHandler.createGameGroup)
     ..get('/groups/<id>', GameHandler.getGameGroup)
     ..post('/groups/<id>/join', GameHandler.joinGameGroup)

@@ -2,6 +2,7 @@ import 'package:common/common.dart';
 import 'package:duration/duration.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:word_game/app/colours.dart';
 import 'package:word_game/model/game_creation_data.dart';
 import 'package:word_game/ui/length_control.dart';
@@ -9,9 +10,17 @@ import 'package:word_game/ui/length_control.dart';
 class GameCreator extends StatefulWidget {
   final bool showTitle;
   final bool showTimeLimit;
+  final double depth;
+  final VoidCallback? onCancel;
   final Function(GameCreationData) onCreate;
-  const GameCreator({this.showTitle = false, required this.onCreate, this.showTimeLimit = false, Key? key})
-      : super(key: key);
+  const GameCreator({
+    this.onCancel,
+    this.depth = 4,
+    this.showTitle = false,
+    required this.onCreate,
+    this.showTimeLimit = false,
+    Key? key,
+  }) : super(key: key);
 
   @override
   _GameCreatorState createState() => _GameCreatorState();
@@ -48,13 +57,25 @@ class _GameCreatorState extends State<GameCreator> {
     return SizedBox(
       width: MediaQuery.of(context).size.width * 0.8,
       child: Neumorphic(
-        style: const NeumorphicStyle(
-          depth: 4.0,
+        style: NeumorphicStyle(
+          depth: widget.depth,
           // boxShape: NeumorphicBoxShape.roundRect(BorderRadius.circular(25.0)),
         ),
         padding: const EdgeInsets.all(12.0),
         child: Column(
           children: [
+            if (widget.onCancel != null)
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Container(width: 48),
+                  Text('New Custom Game', style: textTheme.headline6),
+                  IconButton(
+                    icon: Icon(MdiIcons.close),
+                    onPressed: widget.onCancel,
+                  ),
+                ],
+              ),
             if (widget.showTitle)
               Neumorphic(
                 style: NeumorphicStyle(depth: -2),
