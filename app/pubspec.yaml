@@ -61,7 +61,8 @@ flutter:
     - assets/images/launcher_adaptive.png
     - assets/images/launcher_android.png
     - assets/images/launcher_ios.png
-    - assets/images/github.png
+    - assets/images/github_white.png
+    - assets/images/github_black.png
     - assets/sounds/
 
 flutter_icons:

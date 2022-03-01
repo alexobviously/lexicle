@@ -9,6 +9,7 @@ class AboutView extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final textTheme = theme.textTheme;
+    bool dark = theme.brightness == Brightness.dark;
     return StandardScaffold(
       title: 'About Lexicle',
       body: Center(
@@ -30,7 +31,7 @@ class AboutView extends StatelessWidget {
                 ),
                 OutlinedButton.icon(
                   onPressed: () => launch('https://github.com/alexobviously/lexicle'),
-                  icon: Image.asset('assets/images/github.png'),
+                  icon: Image.asset('assets/images/github_${dark ? 'white' : 'black'}.png'),
                   label: Text(
                     'View Code on Github',
                     style: textTheme.headline6,
