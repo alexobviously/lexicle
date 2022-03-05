@@ -273,7 +273,7 @@ class ApiClient {
   static List<T> unwrapList<T>(List<Map<String, dynamic>> data, Unwrapper unwrapper) =>
       data.map<T>((e) => unwrapper(e)).toList();
   static List<GameGroup> unwrapGroupList(Map<String, dynamic> data) =>
-      unwrapList<GameGroup>(data['groups'], unwrapGameGroup);
+      unwrapList<GameGroup>(coerceList<Map<String, dynamic>>(data['groups']), (data) => GameGroup.fromJson(data));
 }
 
 enum AuthType {

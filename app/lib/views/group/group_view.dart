@@ -15,6 +15,7 @@ import 'package:validators/validators.dart';
 import 'package:word_game/app/colours.dart';
 import 'package:word_game/app/router.dart';
 import 'package:word_game/cubits/game_group_controller.dart';
+import 'package:word_game/cubits/game_group_manager.dart';
 import 'package:word_game/cubits/scheme_cubit.dart';
 import 'package:word_game/services/service_locator.dart';
 import 'package:word_game/services/sound_service.dart';
@@ -58,10 +59,11 @@ class _GroupViewState extends State<GroupView> {
   Timer? timer;
 
   late int _gameState;
-  late int _playerCount;
+  late List<String> _players;
   late int _wordCount;
 
   int _resultsTab = 0;
+  bool get isObserving => controller?.observing ?? true;
 
   @override
   void initState() {
@@ -75,11 +77,15 @@ class _GroupViewState extends State<GroupView> {
     } else {
       final result = await groupStore().get(widget.id);
       if (result.ok) {
-        setState(() => controller = GameGroupController(GameGroupState(group: result.object!), observing: true));
+        setState(() => controller = GameGroupController.observer(result.object!));
       } else {
         setState(() => error = result.error!);
       }
     }
+    _initController();
+  }
+
+  void _initController() {
     if (controller != null) {
       if (controller!.state.group.words.containsKey(auth().userId)) {
         wordController.text = controller!.state.group.words[auth().userId!]!;
@@ -99,14 +105,27 @@ class _GroupViewState extends State<GroupView> {
       });
       _initTimer();
       _gameState = controller!.state.group.state;
-      _playerCount = controller!.state.group.players.length;
+      _players = controller!.state.group.players;
       _wordCount = controller!.state.group.words.length;
-      controller!.stream.map((e) => e.group.endTime).distinct().listen((_) => _initTimer());
-      controller!.stream.map((e) => e.group.state).distinct().listen(_onGameState);
-      controller!.stream.map((e) => e.group.players.length).distinct().listen(_onPlayerCount);
-      controller!.stream.map((e) => e.group.words.length).distinct().listen(_onWordCount);
+      _cancelStreams();
+      _endTimeStream = controller!.stream.map((e) => e.group.endTime).distinct().listen((_) => _initTimer());
+      _gameStateStream = controller!.stream.map((e) => e.group.state).distinct().listen(_onGameState);
+      _playersStream = controller!.stream.map((e) => e.group.players).distinct().listen(_onPlayers);
+      _wordCountStream = controller!.stream.map((e) => e.group.words.length).distinct().listen(_onWordCount);
     }
   }
+
+  void _cancelStreams() {
+    _endTimeStream?.cancel();
+    _gameStateStream?.cancel();
+    _playersStream?.cancel();
+    _wordCountStream?.cancel();
+  }
+
+  StreamSubscription<int?>? _endTimeStream;
+  StreamSubscription<int?>? _gameStateStream;
+  StreamSubscription<List<String>?>? _playersStream;
+  StreamSubscription<int?>? _wordCountStream;
 
   void _initTimer() {
     timer?.cancel();
@@ -118,9 +137,45 @@ class _GroupViewState extends State<GroupView> {
 
   @override
   void dispose() {
+    _cancelStreams();
+    if (controller?.observing ?? false) controller!.close();
     timer?.cancel();
     _pageController.dispose();
     super.dispose();
+  }
+
+  void _onJoin(GameGroupController? ggc) {
+    bool ok = ggc != null;
+    print('_onJoin ${ggc?.id}');
+    if (ok) {
+      sound().play(Sound.clickUp);
+      if (!mounted) return;
+      _cancelStreams();
+      controller?.close();
+      controller = ggc;
+      _initController();
+      setState(() {});
+    }
+  }
+
+  void _onDelete(bool ok) {
+    if (ok) {
+      sound().play(Sound.clickDown);
+      context.pop();
+    }
+  }
+
+  void _onLeave(GameGroup? group) {
+    bool ok = group != null;
+    print('_onLeave $ok');
+    if (ok) {
+      sound().play(Sound.clickDown);
+      if (!mounted) return;
+      _cancelStreams();
+      controller = GameGroupController.observer(group);
+      _initController();
+      setState(() {});
+    }
   }
 
   void _setTimeLeft() {
@@ -148,8 +203,8 @@ class _GroupViewState extends State<GroupView> {
 
   void _onGameState(int state) {
     if (state == _gameState) return;
-    if (state == MatchState.playing) sound().play(Sound.clickUp);
-    if (state == MatchState.finished) {
+    if (state == GroupState.playing) sound().play(Sound.clickUp);
+    if (state == GroupState.finished) {
       final st = controller!.state.group.standings;
       final guesses = controller!.state.group.playerGuesses(auth().userId!);
       if (st.first.guesses == guesses) {
@@ -163,10 +218,15 @@ class _GroupViewState extends State<GroupView> {
     _gameState = state;
   }
 
-  void _onPlayerCount(int n) {
-    if (n > _playerCount) sound().play(Sound.clickUp);
-    if (n < _playerCount) sound().play(Sound.clickDown);
-    _playerCount = n;
+  void _onPlayers(List<String> p) {
+    String? player = auth().userId;
+    if (p.length > _players.length && p.contains(player) == _players.contains(player)) {
+      sound().play(Sound.clickUp);
+    }
+    if (p.length < _players.length && p.contains(player) == _players.contains(player)) {
+      sound().play(Sound.clickDown);
+    }
+    _players = p;
   }
 
   void _onWordCount(int n) {
@@ -234,9 +294,9 @@ class _GroupViewState extends State<GroupView> {
         child: BlocBuilder<GameGroupController, GameGroupState>(
           bloc: controller,
           builder: (context, state) {
-            if (state.group.state == MatchState.lobby) {
+            if (state.group.state == GroupState.lobby) {
               return _lobbyView(context, state.group);
-            } else if (state.group.state == MatchState.playing) {
+            } else if (state.group.state == GroupState.playing) {
               return _playView(context, state);
             } else {
               return _resultsView(context, state);
@@ -256,7 +316,7 @@ class _GroupViewState extends State<GroupView> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
-        Text('Created ${_timeString(group.created)} ago'),
+        Text('Created ${_timeString(group.timestamp)} ago'),
       ],
     );
   }
@@ -321,14 +381,52 @@ class _GroupViewState extends State<GroupView> {
     final theme = Theme.of(context);
     final textTheme = theme.textTheme;
     bool inGroup = group.players.contains(auth().userId);
+    final cubit = BlocProvider.of<GameGroupManager>(context);
     return BlocBuilder<SchemeCubit, ColourScheme>(builder: (context, scheme) {
       return Column(
         children: [
           if (inGroup) _setWordBox(context, group),
           Container(height: 30),
-          Text(
-            'Players',
-            style: textTheme.headline5,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Text(
+                  'Players',
+                  style: textTheme.headline5,
+                ),
+              ),
+              if (auth().loggedIn)
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: NeumorphicButton(
+                    style: NeumorphicStyle(
+                      depth: 2,
+                    ),
+                    onPressed: () {
+                      if (isCreator) {
+                        cubit.deleteGroup(group.id).then(_onDelete);
+                      } else if (group.hasPlayer(auth().userId!)) {
+                        cubit.leaveGroup(group.id).then(_onLeave);
+                      } else {
+                        cubit.joinGroup(group.id).then(_onJoin);
+                      }
+                    },
+                    child: SizedBox(
+                      width: 50,
+                      child: Text(
+                        isCreator
+                            ? 'Delete'
+                            : group.hasPlayer(auth().userId!)
+                                ? 'Leave'
+                                : 'Join',
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
+                )
+            ],
           ),
           Expanded(
             child: ListView.builder(

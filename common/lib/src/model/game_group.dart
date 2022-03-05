@@ -1,10 +1,12 @@
 import 'package:common/common.dart';
 import 'package:copy_with_extension/copy_with_extension.dart';
+import 'package:equatable/equatable.dart';
 
 part 'game_group.g.dart';
 
 @CopyWith()
-class GameGroup implements Entity {
+// ignore: must_be_immutable
+class GameGroup extends Equatable implements Entity {
   @override
   final String id;
   @override
@@ -14,7 +16,6 @@ class GameGroup implements Entity {
   final String creator;
   final String? code;
   final int state;
-  late final int created; // TODO: DEPRECATED, REMOVE
   final int? endTime;
 
   /// A list of player IDs.
@@ -26,13 +27,14 @@ class GameGroup implements Entity {
   /// Map player IDs to all of the games they currently have.
   final Map<String, List<GameStub>> games;
 
-  bool get started => state > MatchState.lobby;
-  bool get finished => state >= MatchState.finished;
-  bool get canBegin => state == MatchState.lobby && words.length == players.length && players.length > 1;
+  bool get started => state > GroupState.lobby;
+  bool get finished => state >= GroupState.finished;
+  bool get canBegin => state == GroupState.lobby && words.length == players.length && players.length > 1;
   Map<String, String> get hiddenWords => words.map((k, v) => MapEntry(k, '*' * v.length));
   bool playerReady(String id) => words.containsKey(id);
   Map<String, List<String>> get gameIds => games.map((k, v) => MapEntry(k, v.map((e) => e.id).toList()));
 
+  bool hasPlayer(String player) => players.contains(player);
   double playerProgress(String player) =>
       games[player]?.fold<double>(0.0, (a, b) => a + (b.progress / games[player]!.length)) ?? 0.0;
   int playerGuesses(String player) => games[player]?.fold<int>(0, (a, b) => a + b.guesses) ?? 0;
@@ -86,16 +88,13 @@ class GameGroup implements Entity {
     required this.config,
     required this.creator,
     this.code,
-    this.state = MatchState.lobby,
+    this.state = GroupState.lobby,
     this.players = const [],
     this.words = const {},
     this.games = const {},
-    int? created,
     this.endTime,
   })  : assert(players.contains(creator)),
-        timestamp = timestamp ?? nowMs() {
-    this.created = created ?? nowMs();
-  }
+        timestamp = timestamp ?? nowMs();
 
   factory GameGroup.fromJson(Map<String, dynamic> doc) {
     return GameGroup(
@@ -112,7 +111,6 @@ class GameGroup implements Entity {
         for (MapEntry entry in (doc[GroupFields.games] ?? {}).entries)
           entry.key: mapList<GameStub>(entry.value, (e) => GameStub.fromJson(e)),
       },
-      created: doc[GroupFields.created],
       endTime: doc[GroupFields.endTime],
     );
   }
@@ -132,7 +130,6 @@ class GameGroup implements Entity {
         for (MapEntry<String, List<GameStub>> entry in games.entries)
           entry.key: mapList<Map<String, dynamic>>(entry.value, (e) => e.toMap()),
       },
-      GroupFields.created: created,
       if (endTime != null) GroupFields.endTime: endTime,
     };
   }
@@ -148,13 +145,37 @@ class GameGroup implements Entity {
     return copyWith(games: _games);
   }
 
+  String stateString(String? player) {
+    if (state == GroupState.loading) return 'Loading';
+    if (state == GroupState.lobby) return 'Lobby - waiting for ${canBegin ? 'host' : 'players'}';
+    if (state == GroupState.playing) {
+      if (!players.contains(player)) return 'Playing';
+      return 'Playing - ${(playerProgress(player!) * 100).toStringAsFixed(0)}%';
+    }
+    if (state == GroupState.finished) return 'Finished';
+    return '';
+  }
+
   @override
   String toString() => 'GameGroup($id, title: $title, state: $state)';
+
+  @override
+  List<Object?> get props => [id, players, state, config];
 }
 
-class MatchState {
+class GroupState {
   static const int loading = -1; // used in the app when waiting for server
   static const int lobby = 0;
   static const int playing = 1;
   static const int finished = 2;
+
+  static String name(int state) {
+    return <int, String>{
+          loading: 'Loading',
+          lobby: 'Lobby',
+          playing: 'Playing',
+          finished: 'Finished',
+        }[state] ??
+        '';
+  }
 }

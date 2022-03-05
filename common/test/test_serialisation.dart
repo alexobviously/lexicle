@@ -37,7 +37,7 @@ void main() {
         if (t.numPlayers != null) {
           expect(g.players.length, t.numPlayers);
         }
-        if (g.state > MatchState.lobby && t.numPlayers != null) {
+        if (g.state > GroupState.lobby && t.numPlayers != null) {
           int nGames = g.games[g.players.first]!.length;
           if (nGames != t.numPlayers! - 1) {
             fail('Player ${g.players.first} has wrong number of games');

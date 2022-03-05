@@ -10,7 +10,6 @@ extension GameGroupCopyWith on GameGroup {
   GameGroup copyWith({
     String? code,
     GameConfig? config,
-    int? created,
     String? creator,
     int? endTime,
     Map<String, List<GameStub>>? games,
@@ -24,7 +23,6 @@ extension GameGroupCopyWith on GameGroup {
     return GameGroup(
       code: code ?? this.code,
       config: config ?? this.config,
-      created: created ?? this.created,
       creator: creator ?? this.creator,
       endTime: endTime ?? this.endTime,
       games: games ?? this.games,

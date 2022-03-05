@@ -105,7 +105,7 @@ class GameServer with ReadyManager {
     // todo: dispose?
     GameGroupController ggc = gameGroups[id]!;
     if (ggc.state.creator != player) return Result.error(Errors.unauthorised);
-    if (ggc.state.state > MatchState.lobby) return Result.error(Errors.groupStarted);
+    if (ggc.state.state > GroupState.lobby) return Result.error(Errors.groupStarted);
     if (ggc.state.code != null) {
       privateGroups.remove(ggc.state.code);
     }
@@ -186,7 +186,7 @@ class GameServer with ReadyManager {
   void updateGroupStatus(String id) {
     if (!gameGroups.containsKey(id)) return;
     GameGroupController ggc = gameGroups[id]!;
-    if (ggc.state.state == MatchState.playing) {
+    if (ggc.state.state == GroupState.playing) {
       bool finished = true;
       for (final playerGames in ggc.state.gameIds.entries) {
         if (!finished) break;
@@ -208,7 +208,7 @@ class GameServer with ReadyManager {
 
   void onGroupFinished(GameGroupController ggc) async {
     // update user ratings
-    ggc.setState(MatchState.finished);
+    ggc.setState(GroupState.finished);
     List<PlayerResult> pr = await Future.wait(
       ggc.state.standings
           .map((e) async => PlayerResult(

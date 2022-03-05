@@ -41,7 +41,11 @@ class GameGroupManager extends Cubit<GroupManagerState> {
   @override
   Future<void> close() {
     timer.cancel();
-    state.joined.forEach((v) => hasController(v.id) ? getControllerForGroup(v).close() : null);
+    for (GameGroup g in state.joined) {
+      if (hasController(g.id)) {
+        getControllerForGroup(g).close();
+      }
+    }
     return super.close();
   }
 
@@ -55,6 +59,22 @@ class GameGroupManager extends Cubit<GroupManagerState> {
     groupControllers[ggc.id] = ggc;
   }
 
+  void _removeController(String id) {
+    streams[id]?.cancel();
+    streams.remove(id);
+    groupControllers.remove(id);
+  }
+
+  void _processJoinedGroups(List<GameGroup> groups) {
+    for (GameGroup g in groups) {
+      if (hasController(g.id)) {
+        getControllerForGroup(g).update(g);
+      } else {
+        getGroup(g.id);
+      }
+    }
+  }
+
   void refresh() async {
     emit(state.copyWith(working: true));
     final available = await ApiClient.availableGroups();
@@ -63,25 +83,24 @@ class GameGroupManager extends Cubit<GroupManagerState> {
 
     final joined = await ApiClient.joinedGroups();
     if (!joined.ok || isClosed) return;
-    for (GameGroup g in joined.object!) {
-      if (hasController(g.id)) {
-        getControllerForGroup(g).refresh();
-      } else {
-        getGroup(g.id);
-      }
-    }
+    _processJoinedGroups(joined.object!);
     emit(state.copyWith(working: false));
   }
 
   void _updateGroup(GameGroup g) {
-    List<String> joined = List.from(state.joined);
-    if (g.players.contains(player) && !joined.contains(g.id)) {
-      joined.add(g.id);
-    } else if (!g.players.contains(player) && joined.contains(g.id)) {
-      joined.remove(g.id);
+    List<GameGroup> joined = [...state.joined];
+    List<GameGroup> available = [...state.available];
+    if (g.players.contains(player) && !state.joinedContains(g.id)) {
+      joined.add(g);
+      available.removeWhere((e) => e.id == g.id);
+      _processJoinedGroups([g]);
+    } else if (!g.players.contains(player) && state.joinedContains(g.id)) {
+      joined.removeWhere((e) => e.id == g.id);
+      if (!state.availableContains(g.id)) available.add(g);
+      _removeController(g.id);
     }
     if (isClosed) return;
-    emit(state.copyWith(groups: Map.from(state.groups)..[g.id] = g, joined: joined));
+    emit(state.copyWith(joined: joined, available: available));
   }
 
   Future<Result<GameGroup>> getGroup(String id) async {
@@ -92,33 +111,30 @@ class GameGroupManager extends Cubit<GroupManagerState> {
     return Result.ok(g);
   }
 
-  Future<bool> joinGroup(String id) async {
-    if (player == null) return false;
+  Future<GameGroupController?> joinGroup(String id) async {
+    if (player == null) return null;
     final _result = await ApiClient.joinGroup(id, player!);
-    if (!_result.ok) return false;
+    if (!_result.ok) return null;
     GameGroup g = _result.object!;
     _updateGroup(g);
-    return true;
+    return getControllerForGroup(g);
   }
 
-  Future<bool> leaveGroup(String id) async {
-    if (player == null) return false;
+  Future<GameGroup?> leaveGroup(String id) async {
+    if (player == null) return null;
     final _result = await ApiClient.leaveGroup(id, player!);
-    if (!_result.ok) return false;
+    if (!_result.ok) return null;
     GameGroup g = _result.object!;
-    print(g.players);
     _updateGroup(g);
-    return true;
+    return g;
   }
 
   Future<bool> deleteGroup(String id) async {
     if (player == null) return false;
     final _result = await ApiClient.deleteGroup(id, player!);
     if (!_result.ok) return false;
-    emit(state.copyWith(
-      groups: Map.from(state.groups)..remove(id),
-      joined: List.from(state.joined)..remove(id),
-    ));
+    _removeController(id);
+    emit(state.copyWith(joined: List.from(state.joined)..removeWhere((e) => e.id == id)));
     return true;
   }
 
@@ -136,6 +152,9 @@ class GroupManagerState {
   final List<GameGroup> joined;
   final bool working;
 
+  bool availableContains(String id) => available.where((e) => e.id == id).isNotEmpty;
+  bool joinedContains(String id) => joined.where((e) => e.id == id).isNotEmpty;
+
   GroupManagerState({
     this.available = const [],
     this.joined = const [],
@@ -144,13 +163,11 @@ class GroupManagerState {
   factory GroupManagerState.initial() => GroupManagerState();
 
   GroupManagerState copyWith({
-    Map<String, GameGroup>? groups,
     List<GameGroup>? available,
     List<GameGroup>? joined,
     bool? working,
   }) =>
       GroupManagerState(
-        // groups: groups ?? this.groups,
         available: available ?? this.available,
         joined: joined ?? this.joined,
         working: working ?? this.working,

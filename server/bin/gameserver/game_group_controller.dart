@@ -25,7 +25,7 @@ class GameGroupController extends Cubit<GameGroup> {
 
   Result<bool> addPlayer(String id) {
     if (state.players.contains(id)) return Result.error('already_in_group');
-    if (state.state > MatchState.lobby) return Result.error(Errors.groupStarted);
+    if (state.state > GroupState.lobby) return Result.error(Errors.groupStarted);
     emit(state.copyWith(
       players: List.from(state.players)..add(id),
     ));
@@ -35,7 +35,7 @@ class GameGroupController extends Cubit<GameGroup> {
   /// Removes a player with [id] from the group.
   /// Returns true if the group is to be deleted.
   Result<bool> removePlayer(String id) {
-    if (state.state > MatchState.lobby) return Result.error(Errors.groupStarted);
+    if (state.state > GroupState.lobby) return Result.error(Errors.groupStarted);
     if (!state.players.contains(id)) return Result.error(Errors.notInGroup);
     if (id == state.creator) {
       if (state.players.length > 1) {
@@ -53,7 +53,7 @@ class GameGroupController extends Cubit<GameGroup> {
   }
 
   Result<bool> get canStart {
-    if (state.state > MatchState.lobby) return Result.error(Errors.groupStarted);
+    if (state.state > GroupState.lobby) return Result.error(Errors.groupStarted);
     if (state.players.length < 2) return Result.error(Errors.notEnoughPlayers);
     if (unreadyPlayers.isNotEmpty) {
       return Result.error(Errors.playersNotReady, unreadyPlayers);
@@ -68,14 +68,14 @@ class GameGroupController extends Cubit<GameGroup> {
   void start(Map<String, List<GameStub>> games, int? endTime) {
     endTime ??= getEndTime();
     emit(state.copyWith(
-      state: MatchState.playing,
+      state: GroupState.playing,
       games: games,
       endTime: endTime,
     ));
   }
 
   Result<bool> setWord(String player, String word) {
-    if (state.state > MatchState.lobby) return Result.error(Errors.groupStarted);
+    if (state.state > GroupState.lobby) return Result.error(Errors.groupStarted);
     if (!state.players.contains(player)) return Result.error(Errors.notInGroup);
     if (word.length != state.config.wordLength) return Result.error(Errors.invalidWord);
     if (!dictionary().isValidWord(word)) return Result.error(Errors.invalidWord);
