@@ -8,8 +8,8 @@ class StatusHandler {
     return HttpUtils.buildResponse(
       data: {
         'version': env().version,
-        'appMinVersion': '0.4.1',
-        'appCurrentVersion': '0.4.4',
+        'appMinVersion': '0.5.0',
+        'appCurrentVersion': '0.5.0',
       },
     );
   }
