@@ -54,6 +54,9 @@ class _HomeViewState extends State<HomeView> {
         if (!state.loggedIn && _tab != _practice) {
           _setTab(_practice);
         }
+        if (state.loggedIn && _tab != _custom) {
+          _setTab(_custom);
+        }
       },
       child: StandardScaffold(
         showAppBar: false,
