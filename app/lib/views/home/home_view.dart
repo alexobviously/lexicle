@@ -35,37 +35,6 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
-  final List<GameGroup> dummyData = [
-    GameGroup(
-      id: 'asdf',
-      title: 'Steamed Clams',
-      config: GameConfig(wordLength: 5, timeLimit: 600000),
-      creator: 'buttsystems',
-      players: ['buttsystems', 'steve', 'bryce'],
-    ),
-    GameGroup(
-      id: 'qweqewr',
-      title: 'Bare Words',
-      config: GameConfig(wordLength: 6, timeLimit: 1500000),
-      creator: 'alex',
-      players: ['alex', 'gpe', 'franc', 'bryce'],
-    ),
-    GameGroup(
-      id: 'qweqewrz',
-      title: 'Bare Words 2',
-      config: GameConfig(wordLength: 6, timeLimit: 1500000),
-      creator: 'alex',
-      players: ['alex', 'gpe', 'franc', 'bryce'],
-    ),
-    GameGroup(
-      id: 'qweqewrz',
-      title: 'ninny',
-      config: GameConfig(wordLength: 5, timeLimit: 1800000),
-      creator: 'bryce',
-      players: ['bryce'],
-    ),
-  ];
-
   static const int _practice = 0;
   static const int _matchmaking = 1;
   static const int _custom = 2;
@@ -75,10 +44,6 @@ class _HomeViewState extends State<HomeView> {
   void _setTab(int tab) {
     setState(() => _tab = tab);
   }
-
-  void _onJoin(bool ok) => ok ? sound().play(Sound.clickUp) : null;
-  void _onDelete(bool ok) => ok ? sound().play(Sound.clickDown) : null;
-  void _onLeave(bool ok) => _onDelete(ok);
 
   @override
   Widget build(BuildContext context) {
@@ -93,82 +58,84 @@ class _HomeViewState extends State<HomeView> {
       child: StandardScaffold(
         showAppBar: false,
         showBackButton: false,
-        body: BlocBuilder<AuthController, AuthState>(builder: (context, state) {
-          return Center(
-            child: SafeArea(
-              child: Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                    child: AnimatedLogo(),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      IconButton(onPressed: () => context.push(Routes.settings), icon: Icon(MdiIcons.cog)),
-                      IconButton(onPressed: () {}, icon: Icon(MdiIcons.bell)),
-                    ],
-                  ),
-                  Expanded(
-                    child: ListView(
-                      shrinkWrap: true,
+        body: BlocBuilder<AuthController, AuthState>(
+          builder: (context, state) {
+            return Center(
+              child: SafeArea(
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      child: AnimatedLogo(),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        state.loggedIn
-                            ? UserDetails(
-                                user: state.user!,
-                                stats: state.stats ?? UserStats(id: state.userId!),
-                              )
-                            : LoginBox(),
-                        Container(height: 16),
-                        _activeGames(context),
-                        Container(height: 16),
-                        Neumorphic(
-                          style: NeumorphicStyle(depth: -2),
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Column(
-                              children: [
-                                NeumorphicToggle(
-                                  selectedIndex: _tab,
-                                  children: ['Practice', 'Matchmaking', 'Custom Games']
-                                      .map((e) => _toggleElement(context, e))
-                                      .toList(),
-                                  thumb: Neumorphic(
-                                    style: NeumorphicStyle(
-                                      boxShape: NeumorphicBoxShape.roundRect(BorderRadius.all(Radius.circular(12))),
-                                    ),
-                                  ),
-                                  onChanged: _setTab,
-                                ),
-                                if (_tab == _practice) _practiceView(),
-                                if (_tab == _matchmaking) _matchmakingView(),
-                                if (_tab == _custom) _customView(context),
-                              ],
-                            ),
-                          ),
-                        ),
+                        IconButton(onPressed: () => context.push(Routes.settings), icon: Icon(MdiIcons.cog)),
+                        IconButton(onPressed: () {}, icon: Icon(MdiIcons.bell)),
                       ],
                     ),
-                  ),
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: Padding(
-                      padding: const EdgeInsets.only(right: 16.0),
-                      child: SizedBox(
-                        width: 64,
-                        child: GestureDetector(
-                          onTap: () => context.push(Routes.about),
-                          child: Image.asset('assets/images/logo.png'),
+                    Expanded(
+                      child: ListView(
+                        shrinkWrap: true,
+                        children: [
+                          state.loggedIn
+                              ? UserDetails(
+                                  user: state.user!,
+                                  stats: state.stats ?? UserStats(id: state.userId!),
+                                )
+                              : LoginBox(),
+                          Container(height: 16),
+                          _activeGames(context),
+                          Container(height: 16),
+                          Neumorphic(
+                            style: NeumorphicStyle(depth: -2),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Column(
+                                children: [
+                                  NeumorphicToggle(
+                                    selectedIndex: _tab,
+                                    children: ['Practice', 'Matchmaking', 'Custom Games']
+                                        .map((e) => _toggleElement(context, e))
+                                        .toList(),
+                                    thumb: Neumorphic(
+                                      style: NeumorphicStyle(
+                                        boxShape: NeumorphicBoxShape.roundRect(BorderRadius.all(Radius.circular(12))),
+                                      ),
+                                    ),
+                                    onChanged: _setTab,
+                                  ),
+                                  if (_tab == _practice) _practiceView(),
+                                  if (_tab == _matchmaking) _matchmakingView(),
+                                  if (_tab == _custom) _customView(context),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: Padding(
+                        padding: const EdgeInsets.only(right: 16.0),
+                        child: SizedBox(
+                          width: 64,
+                          child: GestureDetector(
+                            onTap: () => context.push(Routes.about),
+                            child: Image.asset('assets/images/logo.png'),
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  _version(),
-                ],
+                    _version(),
+                  ],
+                ),
               ),
-            ),
-          );
-        }),
+            );
+          },
+        ),
       ),
     );
   }
