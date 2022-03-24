@@ -88,7 +88,7 @@ class MyApp extends StatelessWidget {
             },
             maximumSize: Size(475.0, 812.0),
             enabled: kIsWeb,
-            backgroundColor: Colours.wrong,
+            backgroundColor: settings.colourScheme.wrong,
           ),
         );
       }),
