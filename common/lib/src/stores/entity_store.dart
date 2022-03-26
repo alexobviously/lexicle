@@ -35,7 +35,6 @@ class EntityStore<T extends Entity> {
     for (T e in all) {
       onGet(e);
     }
-    print(all.length);
     lastGotAll = nowMs();
     return all;
   }
