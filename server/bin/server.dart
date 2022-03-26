@@ -50,6 +50,7 @@ Environment readEnvironment() {
     mongoDb: _getEnv('MONGO_DB'),
     mongoHost: _getEnv('MONGO_HOST'),
     jwtSecret: _getEnv('JWT_SECRET'),
+    serverName: _getEnv('SERVER_NAME', 'Lexicle'),
   );
 }
 

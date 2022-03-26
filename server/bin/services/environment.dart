@@ -6,6 +6,7 @@ class Environment {
   String mongoDb;
   String mongoHost;
   String jwtSecret;
+  String serverName;
 
   Environment({
     required this.version,
@@ -15,5 +16,6 @@ class Environment {
     required this.mongoDb,
     required this.mongoHost,
     required this.jwtSecret,
+    required this.serverName,
   });
 }

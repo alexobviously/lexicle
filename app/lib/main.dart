@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:flutter_web_frame/flutter_web_frame.dart';
-import 'package:word_game/app/colours.dart';
 import 'package:word_game/app/router.dart';
 import 'package:word_game/app/themes.dart';
 import 'package:word_game/cubits/auth_controller.dart';

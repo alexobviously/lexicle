@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:word_game/cubits/server_meta_cubit.dart';
+import 'package:word_game/services/api_client.dart';
 import 'package:word_game/ui/standard_scaffold.dart';
 
 class AboutView extends StatelessWidget {
@@ -39,9 +42,12 @@ class AboutView extends StatelessWidget {
                       style: textTheme.headline6,
                     ),
                   ),
-                  SizedBox(
-                    width: 64,
-                    child: Image.asset('assets/images/logo.png'),
+                  GestureDetector(
+                    onLongPress: () => _showDebugDialog(context),
+                    child: SizedBox(
+                      width: 64,
+                      child: Image.asset('assets/images/logo.png'),
+                    ),
                   ),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -81,6 +87,37 @@ class AboutView extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  void _showDebugDialog(BuildContext context) {
+    final meta = BlocProvider.of<ServerMetaCubit>(context).state;
+    Row _row(String left, String right) => Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(left),
+            SizedBox(width: 32),
+            Text(
+              right,
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+          ],
+        );
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _row('Server name', meta.serverName),
+              _row('Server version', meta.serverVersion),
+              _row('App min version', meta.appMinVersion),
+              _row('App current version', meta.appCurrentVersion),
+            ],
+          ),
+        );
+      },
     );
   }
 }

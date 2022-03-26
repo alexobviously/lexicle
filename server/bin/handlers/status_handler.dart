@@ -7,6 +7,7 @@ class StatusHandler {
   static Future<Response> meta(Request request) async {
     return HttpUtils.buildResponse(
       data: {
+        'serverName': env().serverName,
         'version': env().version,
         'appMinVersion': '0.5.0',
         'appCurrentVersion': '0.5.0',
