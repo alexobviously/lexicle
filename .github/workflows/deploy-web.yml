@@ -18,7 +18,7 @@ jobs:
         with:
           channel: 'stable'
       - name: Write .env
-        run: echo "${{ secrets.DOT_ENV }}" | base64 --decode > app/.env
+        run: echo "${{ secrets.DOT_ENV }}" > app/.env
       - name: Get Packages
         run: flutter pub get
         working-directory: app
