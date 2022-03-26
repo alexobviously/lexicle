@@ -379,7 +379,7 @@ packages:
       name: json_class
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.1.2+3"
+    version: "2.1.2+4"
   linked_scroll_controller:
     dependency: "direct main"
     description:
@@ -621,10 +621,12 @@ packages:
   rest_client:
     dependency: "direct main"
     description:
-      name: rest_client
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.0.1+6"
+      path: "."
+      ref: main
+      resolved-ref: "0db7709df6306779ea14d32e6ca19c50b1744aeb"
+      url: "https://github.com/alexobviously/rest_client"
+    source: git
+    version: "2.1.0"
   sasl_scram:
     dependency: transitive
     description:
