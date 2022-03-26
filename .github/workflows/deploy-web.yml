@@ -17,6 +17,8 @@ jobs:
       - uses: subosito/flutter-action@v1
         with:
           channel: 'stable'
+      - name: Write .env
+        run: echo "${{ secrets.DOT_ENV }}" | base64 --decode > app/.env
       - name: Get Packages
         run: flutter pub get
         working-directory: app
