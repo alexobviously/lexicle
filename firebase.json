@@ -16,7 +16,7 @@
           },
           {
             "key" : "Access-Control-Allow-Origin",
-            "value" : "*"
+            "value" : "https://api.lexicle.xyz"
           }
         ]
       }
