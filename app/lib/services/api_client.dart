@@ -9,7 +9,7 @@ import 'package:word_game/services/service_locator.dart';
 typedef Unwrapper<T> = T Function(Map<String, dynamic> data);
 
 class ApiClient {
-  static String host = 'https://word-w7y24cao7q-ew.a.run.app'; //'http://localhost:8080';
+  static String host = 'https://api.lexicle.xyz'; //'http://localhost:8080';
 
   static Future<ApiResult<ServerMeta>> getMeta() async => getAndUnwrap('/meta', unwrapper: unwrapServerMeta);
   static Future<ApiResult<User>> getUser(String id) => getAndUnwrap('/users/$id', unwrapper: unwrapUser);
