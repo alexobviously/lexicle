@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:word_game/model/game_creation_data.dart';
 import 'package:word_game/ui/game_creator.dart';
 
