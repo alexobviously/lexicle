@@ -78,7 +78,9 @@ class AboutView extends StatelessWidget {
                       maxWidth: MediaQuery.of(context).size.width * 0.7,
                       maxHeight: 150,
                     ),
-                    child: Image.asset('assets/images/gpg_logo.png'),
+                    child: dark
+                        ? Image.asset('assets/images/gpg_logo_darkmode.png')
+                        : Image.asset('assets/images/gpg_logo.png'),
                   ),
                 ],
               ),
