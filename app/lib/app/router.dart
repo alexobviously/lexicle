@@ -7,6 +7,7 @@ import 'package:word_game/views/game_view.dart';
 import 'package:word_game/views/group/group_view.dart';
 import 'package:word_game/views/groups_view.dart';
 import 'package:word_game/views/home/home_view.dart';
+import 'package:word_game/views/home/home_view.dart';
 import 'package:word_game/views/rush_view.dart';
 import 'package:word_game/views/settings_view.dart';
 import 'package:word_game/views/solo_view.dart';
@@ -53,10 +54,10 @@ GoRouter buildRouter() {
         path: Routes.solo,
         builder: (_, __) => const SoloView(),
       ),
-      GoRoute(
-        path: Routes.groups,
-        builder: (_, __) => const GroupsView(),
-      ),
+      // GoRoute(
+      //   path: Routes.groups,
+      //   builder: (_, __) => const GroupsView(),
+      // ),
       GoRoute(
         path: Routes.settings,
         builder: (_, __) => const SettingsView(),

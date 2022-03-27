@@ -168,9 +168,11 @@ class _GameViewState extends State<GameView> {
       );
     }
     return BlocBuilder<BaseGameController, Game>(
-        bloc: game!,
-        builder: (context, state) {
-          return BlocBuilder<SchemeCubit, ColourScheme>(builder: (context, scheme) {
+      bloc: game!,
+      builder: (context, state) {
+        return BlocBuilder<SchemeCubit, ColourScheme>(
+          builder: (context, scheme) {
+            final baseScheme = ColourScheme.base(context);
             return StandardScaffold(
               title: widget.data.title,
               appBarActions: [_copyButton(context)],
@@ -191,8 +193,8 @@ class _GameViewState extends State<GameView> {
                               depth: -10,
                               color: state.gameFinished
                                   ? state.endReason == EndReasons.solved
-                                      ? Colours.correct.withAlpha(100)
-                                      : Colours.wrong.withAlpha(150)
+                                      ? baseScheme.correct.withAlpha(100)
+                                      : baseScheme.wrong.withAlpha(150)
                                   : null,
                               // border: state.solved
                               //     ? NeumorphicBorder(color: Colours.correct, width: 0.5)
@@ -286,8 +288,10 @@ class _GameViewState extends State<GameView> {
                 ),
               ),
             );
-          });
-        });
+          },
+        );
+      },
+    );
   }
 
   Widget _observerBox(BuildContext context, Game game) {

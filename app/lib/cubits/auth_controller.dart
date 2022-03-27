@@ -92,7 +92,7 @@ class AuthController extends Cubit<AuthState> {
   }
 
   Future<Result<bool>> joinTeam(String id) async {
-    if (userId == null) return Result.error('unauthorised');
+    if (userId == null) return Result.error(Errors.unauthorised);
     final result = await ApiClient.joinTeam(id);
     if (result.ok) {
       emit(state.copyWith(user: result.object!));
@@ -104,7 +104,7 @@ class AuthController extends Cubit<AuthState> {
   }
 
   Future<Result<bool>> leaveTeam() async {
-    if (userId == null) return Result.error('unauthorised');
+    if (userId == null) return Result.error(Errors.unauthorised);
     final result = await ApiClient.leaveTeam();
     if (result.ok) {
       emit(state.copyWith(user: result.object!));

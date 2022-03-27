@@ -13,6 +13,7 @@ ThemeData darkTheme = ThemeData(
     decorationColor: Colors.grey[300],
   ),
   backgroundColor: const Color(0xFF252525),
+  iconTheme: IconThemeData(color: Colors.grey[300]),
 );
 
 NeumorphicThemeData neumorphicLight = NeumorphicThemeData(

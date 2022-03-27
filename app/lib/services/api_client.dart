@@ -9,7 +9,7 @@ import 'package:word_game/services/service_locator.dart';
 typedef Unwrapper<T> = T Function(Map<String, dynamic> data);
 
 class ApiClient {
-  static String host = 'https://word-w7y24cao7q-ew.a.run.app'; //'http://localhost:8080';
+  static String host = 'https://api.lexicle.xyz'; //'http://localhost:8080';
 
   static Future<ApiResult<ServerMeta>> getMeta() async => getAndUnwrap('/meta', unwrapper: unwrapServerMeta);
   static Future<ApiResult<User>> getUser(String id) => getAndUnwrap('/users/$id', unwrapper: unwrapUser);
@@ -18,8 +18,20 @@ class ApiClient {
   static Future<ApiResult<UserStats>> getMyStats() =>
       getAndUnwrap('/ustats/me', unwrapper: unwrapUserStats, authType: AuthType.required);
 
-  static Future<Result<List<String>>> allGroups() =>
-      getAndUnwrap('/groups/all', unwrapper: (data) => coerceList(data['groups']));
+  static Future<Result<List<String>>> allGroups() => getAndUnwrap(
+        '/groups/all',
+        unwrapper: (data) => coerceList(data['groups']),
+      );
+  static Future<Result<List<GameGroup>>> availableGroups() => getAndUnwrap(
+        '/groups/available',
+        unwrapper: unwrapGroupList,
+        authType: AuthType.optional,
+      );
+  static Future<Result<List<GameGroup>>> joinedGroups() => getAndUnwrap(
+        '/groups/joined',
+        unwrapper: unwrapGroupList,
+        authType: AuthType.required,
+      );
   static Future<Result<GameGroup>> getGroup(String id) => getAndUnwrap(
         '/groups/$id',
         unwrapper: unwrapGameGroup,
@@ -151,7 +163,7 @@ class ApiClient {
         if (auth().hasToken) {
           headers['Authorization'] = 'Bearer ${auth().token}';
         } else if (authType != AuthType.optional) {
-          return ApiResponse.error('unauthorised');
+          return ApiResponse.error(Errors.unauthorised);
         }
       }
 
@@ -180,7 +192,7 @@ class ApiClient {
         if (auth().hasToken) {
           headers['Authorization'] = 'Bearer ${auth().token}';
         } else if (authType != AuthType.optional) {
-          return ApiResponse.error('unauthorised');
+          return ApiResponse.error(Errors.unauthorised);
         }
       }
 
@@ -258,6 +270,10 @@ class ApiClient {
   static UserStats unwrapUserStats(Map<String, dynamic> data) => UserStats.fromJson(data['stats']);
   static Team unwrapTeam(Map<String, dynamic> data) => Team.fromJson(data['team']);
   static ServerMeta unwrapServerMeta(Map<String, dynamic> data) => ServerMeta.fromJson(data);
+  static List<T> unwrapList<T>(List<Map<String, dynamic>> data, Unwrapper unwrapper) =>
+      data.map<T>((e) => unwrapper(e)).toList();
+  static List<GameGroup> unwrapGroupList(Map<String, dynamic> data) =>
+      unwrapList<GameGroup>(coerceList<Map<String, dynamic>>(data['groups']), (data) => GameGroup.fromJson(data));
 }
 
 enum AuthType {

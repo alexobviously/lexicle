@@ -7,6 +7,7 @@ import 'package:word_game/cubits/settings_cubit.dart';
 class SchemeCubit extends Cubit<ColourScheme> {
   SchemeCubit({required SettingsCubit settingsCubit}) : super(ColourScheme.light) {
     settingsCubit.stream.listen(_onSettings);
+    _onSettings(settingsCubit.state);
   }
 
   void _onSettings(Settings settings) {

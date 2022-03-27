@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class GameClock extends StatelessWidget {
-  final int time;
+  final int? time;
   final bool fullDetail;
   final TextStyle? textStyle;
   final double? iconSize;
@@ -16,18 +16,17 @@ class GameClock extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final duration = Duration(milliseconds: time);
+    final duration = Duration(milliseconds: time ?? 0);
 
     return Row(
       children: [
         Icon(
           MdiIcons.clockOutline,
           size: iconSize,
-          color: Colors.black87,
         ),
         Container(width: 4),
         Text(
-          _formatTime(duration, fullDetail),
+          time != null ? _formatTime(duration, fullDetail) : '∞',
           style: textStyle ?? Theme.of(context).textTheme.headline6,
         ),
       ],

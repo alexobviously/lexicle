@@ -1,10 +1,11 @@
 import 'package:common/common.dart';
 import 'package:copy_with_extension/copy_with_extension.dart';
+import 'package:equatable/equatable.dart';
 
 part 'game_config.g.dart';
 
 @CopyWith()
-class GameConfig {
+class GameConfig extends Equatable {
   final int wordLength;
   final int? timeLimit;
 
@@ -23,4 +24,7 @@ class GameConfig {
 
   @override
   String toString() => 'GameConfig(length: $wordLength, timeLimit: $timeLimit)';
+
+  @override
+  List<Object?> get props => [wordLength, timeLimit];
 }

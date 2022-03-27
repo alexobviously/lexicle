@@ -1,7 +1,9 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:flutter_web_frame/flutter_web_frame.dart';
 import 'package:word_game/app/router.dart';
 import 'package:word_game/app/themes.dart';
 import 'package:word_game/cubits/auth_controller.dart';
@@ -70,15 +72,22 @@ class MyApp extends StatelessWidget {
           theme: neumorphicLight,
           darkTheme: neumorphicDark,
           themeMode: settings.themeMode,
-          child: MaterialApp.router(
-            key: _appKey,
-            title: 'Lexicle',
-            theme: lightTheme,
-            darkTheme: darkTheme,
-            themeMode: settings.themeMode,
-            debugShowCheckedModeBanner: false,
-            routeInformationParser: _router.routeInformationParser,
-            routerDelegate: _router.routerDelegate,
+          child: FlutterWebFrame(
+            builder: (context) {
+              return MaterialApp.router(
+                key: _appKey,
+                title: 'Lexicle',
+                theme: lightTheme,
+                darkTheme: darkTheme,
+                themeMode: settings.themeMode,
+                debugShowCheckedModeBanner: false,
+                routeInformationParser: _router.routeInformationParser,
+                routerDelegate: _router.routerDelegate,
+              );
+            },
+            maximumSize: Size(475.0, 812.0),
+            enabled: kIsWeb,
+            backgroundColor: settings.colourScheme.wrong,
           ),
         );
       }),

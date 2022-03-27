@@ -1,6 +1,6 @@
 name: common
 description: Common code shared between app and backend
-version: 0.1.5
+version: 0.2.1
 publish_to: 'none'
 
 environment:
@@ -9,6 +9,7 @@ environment:
 dependencies:
   bloc: ^8.0.2
   copy_with_extension: ^2.0.2
+  equatable: ^2.0.3
   mongo_dart: ^0.7.4
   validators: ^3.0.0
 

@@ -21,9 +21,9 @@ class AuthHandler {
       User user = User(username: username);
       AuthData authData = AuthData(id: user.id, password: password);
       final _uResult = await userStore().write(user);
-      if (!_uResult.ok) return HttpUtils.buildErrorResponse('unknown');
+      if (!_uResult.ok) return HttpUtils.buildErrorResponse(Errors.unknown);
       final _aResult = await authStore().write(authData);
-      if (!_aResult.ok) return HttpUtils.buildErrorResponse('unknown');
+      if (!_aResult.ok) return HttpUtils.buildErrorResponse(Errors.unknown);
       return HttpUtils.buildResponse(
         data: {'user': user.toMap()},
         tokenData: issueToken(user.id),
@@ -41,10 +41,10 @@ class AuthHandler {
       String username = data[UserFields.username];
       String password = data[UserFields.password];
       final u = await userStore().getByUsername(username);
-      if (!u.ok) return HttpUtils.buildErrorResponse('not_found');
+      if (!u.ok) return HttpUtils.buildErrorResponse(Errors.notFound);
       final user = u.object!;
       final a = await authStore().get(user.id);
-      if (!a.ok) return HttpUtils.buildErrorResponse('unknown');
+      if (!a.ok) return HttpUtils.buildErrorResponse(Errors.unknown);
       if (a.object!.password == null) return HttpUtils.buildErrorResponse('no_password');
       if (!checkpw(password, a.object!.password!)) return HttpUtils.buildErrorResponse('wrong_password');
       return HttpUtils.buildResponse(
@@ -67,11 +67,11 @@ class AuthHandler {
       String oldPass = data['old'];
       String newPass = data['new'];
       final aResult = await authStore().get(user.id);
-      if (!aResult.ok) return HttpUtils.buildErrorResponse('unknown');
-      if (!checkpw(oldPass, aResult.object!.password!)) return HttpUtils.buildErrorResponse('unauthorised');
+      if (!aResult.ok) return HttpUtils.buildErrorResponse(Errors.unknown);
+      if (!checkpw(oldPass, aResult.object!.password!)) return HttpUtils.buildErrorResponse(Errors.unauthorised);
       AuthData authData = aResult.object!.copyWith(password: encrypt(newPass));
       final wResult = await authStore().write(authData);
-      if (!wResult.ok) return HttpUtils.buildErrorResponse('unknown');
+      if (!wResult.ok) return HttpUtils.buildErrorResponse(Errors.unknown);
       return HttpUtils.buildResponse(
         // todo: maybe we should invalidate old tokens after this?
         tokenData: issueToken(user.id),

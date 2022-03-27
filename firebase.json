@@ -1,0 +1,25 @@
+{
+  "hosting": {
+    "public": "app/build/web",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "headers": [
+      {
+        "source": "**",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "no-cache"
+          },
+          {
+            "key" : "Access-Control-Allow-Origin",
+            "value" : "https://api.lexicle.xyz"
+          }
+        ]
+      }
+    ]
+  }
+}

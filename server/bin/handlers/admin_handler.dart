@@ -17,11 +17,11 @@ class AdminHandler {
       String username = data[UserFields.username];
       if (!isValidUsername(username)) return HttpUtils.buildErrorResponse('invalid_username');
       final userResult = await userStore().getByUsername(username);
-      if (!userResult.ok) return HttpUtils.buildErrorResponse('not_found');
+      if (!userResult.ok) return HttpUtils.buildErrorResponse(Errors.notFound);
       String password = data[UserFields.password];
       password = encrypt(password);
       final aResult = await authStore().get(userResult.object!.id);
-      if (!aResult.ok) return HttpUtils.buildErrorResponse('unknown');
+      if (!aResult.ok) return HttpUtils.buildErrorResponse(Errors.unknown);
       AuthData a = aResult.object!.copyWith(password: password);
       await authStore().write(a);
       return HttpUtils.buildResponse();

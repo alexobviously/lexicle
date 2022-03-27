@@ -10,7 +10,12 @@ class GameOverview extends StatefulWidget {
   final BaseGameController game;
   final VoidCallback? onRemove;
   final Widget? header;
-  const GameOverview(this.game, {this.onRemove, this.header, Key? key}) : super(key: key);
+  const GameOverview(
+    this.game, {
+    this.onRemove,
+    this.header,
+    Key? key,
+  }) : super(key: key);
 
   @override
   State<GameOverview> createState() => _GameOverviewState();
@@ -45,14 +50,15 @@ class _GameOverviewState extends State<GameOverview> {
     return BlocBuilder<BaseGameController, Game>(
         bloc: widget.game,
         builder: (context, state) {
+          final baseScheme = ColourScheme.base(context);
           return Neumorphic(
             padding: const EdgeInsets.symmetric(horizontal: 6.0),
             style: NeumorphicStyle(
               depth: -10,
               color: widget.game.state.gameFinished
                   ? widget.game.state.solved
-                      ? Colours.correct.withAlpha(100)
-                      : Colours.wrong.withAlpha(150)
+                      ? baseScheme.correct.withAlpha(100)
+                      : baseScheme.wrong.withAlpha(150)
                   : null,
             ),
             child: ListView(

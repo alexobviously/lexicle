@@ -1,17 +1,22 @@
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:go_router/go_router.dart';
+import 'package:word_game/app/router.dart';
 
 class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String? title;
   final bool showBackButton;
   final List<Widget> actions;
-  const MyAppBar({this.title, this.showBackButton = true, this.actions = const [], Key? key}) : super(key: key);
+  const MyAppBar({
+    this.title,
+    this.showBackButton = true,
+    this.actions = const [],
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    bool canGoBack =
-        showBackButton && (GoRouter.of(context).navigator?.canPop() ?? false); //Navigator.of(context).canPop();
+    bool canGoBack = GoRouter.of(context).navigator?.canPop() ?? false; //Navigator.of(context).canPop();
     return Container(
       decoration: BoxDecoration(
         border: Border(bottom: BorderSide(color: Colors.black12)),
@@ -23,11 +28,11 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              if (canGoBack)
+              if (showBackButton)
                 GestureDetector(
-                  onTap: () => context.pop(),
+                  onTap: () => canGoBack ? context.pop() : context.go(Routes.home),
                   child: Icon(
-                    MdiIcons.chevronLeft,
+                    canGoBack ? MdiIcons.chevronLeft : MdiIcons.home,
                     size: 30,
                   ),
                 ),

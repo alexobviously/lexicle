@@ -1,0 +1,37 @@
+on:
+  push:
+    branches:
+      - main
+
+name: Build and Deploy Web
+
+jobs:
+  build_web:
+    name: Build and Deploy Web
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-java@v1
+        with:
+          java-version: '12.x'
+      - uses: subosito/flutter-action@v1
+        with:
+          channel: 'stable'
+      - name: Write .env
+        run: echo "${{ secrets.DOT_ENV }}" > app/.env
+      - name: Get Packages
+        run: flutter pub get
+        working-directory: app
+      - name: Enable Flutter Web
+        run: flutter config --enable-web
+        working-directory: app
+      - name: 'Build Web App'
+        run: flutter build web
+        working-directory: app
+      - name: Deploy to Firebase Hosting
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: '${{ secrets.GITHUB_TOKEN }}'
+          firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_LEXICLE_C8984 }}'
+          projectId: lexicle-c8984
+          channelId: live
