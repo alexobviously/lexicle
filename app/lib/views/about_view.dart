@@ -79,7 +79,7 @@ class AboutView extends StatelessWidget {
                       maxHeight: 150,
                     ),
                     child: dark
-                        ? Image.asset('assets/images/gpg_logo_darkmode.png')
+                        ? Image.asset('assets/images/gpg_logo_dark.png')
                         : Image.asset('assets/images/gpg_logo.png'),
                   ),
                 ],
