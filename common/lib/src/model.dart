@@ -1,4 +1,5 @@
 export 'model/auth_data.dart';
+export 'model/challenge.dart';
 export 'model/constants.dart';
 export 'model/entity.dart';
 export 'model/errors.dart';

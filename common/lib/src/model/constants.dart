@@ -41,6 +41,7 @@ class StubFields {
 class ConfigFields {
   static const wordLength = 'l';
   static const timeLimit = 't';
+  static const challengeType = 'y';
 }
 
 class WordFields {
@@ -76,9 +77,22 @@ class TeamFields {
   static const members = 'm';
 }
 
+class ChallengeFields {
+  static const level = 'l';
+  static const endTime = 't';
+  static const answer = 'a';
+}
+
 class EndReasons {
   static const int solved = 0;
   static const int timeout = 1;
 }
 
+class ChallengeLevels {
+  static const int BRONZE = 0;
+  static const int SILVER = 1;
+  static const int GOLD = 2;
+}
+
 const int minTimeLimit = 60000;
+const int oneDay = 24 * 60 * 60 * 1000;

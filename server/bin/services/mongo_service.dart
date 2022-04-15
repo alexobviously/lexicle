@@ -99,4 +99,11 @@ class MongoService implements DatabaseService {
       return Result.error('write_error');
     }
   }
+
+  @override
+  Future<Challenge?> getCurrentChallenge(int level) async {
+    final selector = where.eq(ChallengeFields.level, level).sortBy(Fields.timestamp, descending: true).limit(1);
+    final r = await getAll<Challenge>(selector: selector);
+    return (r.isNotEmpty && !r.first.finished) ? r.first : null;
+  }
 }

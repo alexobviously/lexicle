@@ -36,4 +36,9 @@ class ApiService implements DatabaseService {
     // TODO: implement getAllByField
     throw UnimplementedError();
   }
+
+  @override
+  Future<Challenge> getCurrentChallenge(int level) async {
+    throw UnimplementedError();
+  }
 }

@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:common/common.dart';
 import 'package:dart_dotenv/dart_dotenv.dart';
 import 'package:shelf/shelf.dart';
 import 'package:shelf_cors_headers/shelf_cors_headers.dart';
@@ -114,6 +115,9 @@ Future main() async {
   );
 
   print('Serving at http://${server.address.host}:${server.port}');
+
+  final c = await challengeStore().getCurrent(ChallengeLevels.BRONZE);
+  print(c);
 }
 
 Response _echoRequest(Request request) => Response.ok('Request for "${request.url}"');

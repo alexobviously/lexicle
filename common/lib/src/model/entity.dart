@@ -13,6 +13,7 @@ abstract class Entity {
     AuthData: (doc) => AuthData.fromJson(doc),
     UserStats: (doc) => UserStats.fromJson(doc),
     Team: (doc) => Team.fromJson(doc),
+    Challenge: (doc) => Challenge.fromJson(doc),
   };
 
   static T build<T extends Entity>(Map<String, dynamic> doc) => builders[T]!(doc);
@@ -24,6 +25,7 @@ abstract class Entity {
     AuthData: 'auth',
     UserStats: 'ustats',
     Team: 'teams',
+    Challenge: 'challenges',
   };
 
   static String table(Type t) => entityTables[t] ?? '';
