@@ -10,6 +10,7 @@ import 'package:yaml/yaml.dart';
 
 import 'handlers/admin_handler.dart';
 import 'handlers/auth_handler.dart';
+import 'handlers/challenge_handler.dart';
 import 'handlers/dictionary_handler.dart';
 import 'handlers/game_handler.dart';
 import 'handlers/game_server_handler.dart';
@@ -102,6 +103,8 @@ Future main() async {
     ..get('/teams/<id>', TeamHandler.getTeam)
     ..post('/teams/<id>/join', TeamHandler.joinTeam)
     ..post('/teams/leave', TeamHandler.leaveTeam)
+    ..get('/challenges/<id_or_level>', ChallengeHandler.getChallenge)
+    ..get('/challenges/<level>/<sequence>', ChallengeHandler.getChallenge)
     ..post('/admin/change_pw', AdminHandler.changePassword)
     ..post('/admin/restore_group', AdminHandler.restoreGroup);
 
@@ -117,11 +120,6 @@ Future main() async {
   );
 
   print('Serving at http://${server.address.host}:${server.port}');
-
-  final c = await challengeStore().getCurrent(Challenges.bronze);
-  print(c);
-  challengeStore().getCurrent(Challenges.silver);
-  challengeStore().getCurrent(Challenges.gold);
 }
 
 Response _echoRequest(Request request) => Response.ok('Request for "${request.url}"');

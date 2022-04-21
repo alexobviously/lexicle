@@ -11,17 +11,25 @@ class ChallengeStore extends EntityStore<Challenge> {
     this.key,
   }) : super(db);
 
-  Future<Challenge?> getCurrent(int level) async {
+  Future<Result<Challenge>> getBySequence(int level, int sequence) async {
+    List<Challenge> matches = items.values.where((e) => e.level == level && e.sequence == sequence).toList();
+    if (matches.isNotEmpty) return Result.ok(matches.first);
+    final c = await db.getChallenge(level, sequence);
+    if (c.ok) return Result.ok(c.object!);
+    return Result.error(c.error!);
+  }
+
+  Future<Result<Challenge>> getCurrent(int level) async {
     List<Challenge> matches = items.values.where((e) => e.level == level).toList();
     matches.sort((a, b) => a.timestamp.compareTo(b.timestamp));
     if (matches.isNotEmpty && !matches.first.finished) {
-      return matches.first;
+      return Result.ok(matches.first);
     }
 
     final c = await db.getCurrentChallenge(level);
-    if (c.ok) return c.object!;
-    if (isAuthority) return create(level);
-    return null;
+    if (c.ok) return Result.ok(c.object!);
+    if (isAuthority) return Result.ok(create(level));
+    return Result.error(Errors.notFound);
   }
 
   Challenge create(int level) {
