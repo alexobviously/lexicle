@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:common/common.dart';
+import 'package:rxdart/subjects.dart';
 import '../mediators/server_mediator.dart';
 import '../services/service_locator.dart';
 import '../utils/string_utils.dart';
@@ -46,6 +47,18 @@ class GameServer with ReadyManager {
     }
   }
 
+  GameController _registerGame(Game game, {Mediator? mediator, BehaviorSubject<int>? highestGuessStream}) {
+    GameController gc = GameController(game, mediator ?? ServerMediator(answer: game.answer));
+    String id = gc.id;
+    games[id] = gc;
+    if (highestGuessStream != null) gc.registerHighestGuessStream(highestGuessStream);
+    if (!game.gameFinished) {
+      final sub = gc.stream.listen(_handleGameUpdate);
+      gameSubs[id] = sub;
+    }
+    return gc;
+  }
+
   Result<GameGroupController> createGameGroup({
     required String creator,
     required String title,
@@ -66,15 +79,23 @@ class GameServer with ReadyManager {
     return Result.ok(gameGroups[id]!);
   }
 
-  Result<GameController> getGameController(String id) {
-    if (!games.containsKey(id)) return Result.error(Errors.notFound);
+  Future<Result<GameController>> getGameController(String id, {bool checkStore = true}) async {
+    if (!games.containsKey(id)) {
+      if (checkStore) {
+        final result = await gameStore().get(id);
+        if (result.ok) {
+          return Result.ok(_registerGame(result.object!));
+        }
+      }
+      return Result.error(Errors.notFound);
+    }
     return Result.ok(games[id]!);
   }
 
-  Result<GameGroupController> getGroupForGameId(String id) {
-    final _result = getGameController(id);
-    if (_result.ok) {
-      return getGroupController(_result.object!.state.group ?? '');
+  Future<Result<GameGroupController>> getGroupForGameId(String id) async {
+    final result = await getGameController(id);
+    if (result.ok) {
+      return getGroupController(result.object!.state.group ?? '');
     }
     return Result.error(Errors.notFound);
   }
@@ -151,7 +172,6 @@ class GameServer with ReadyManager {
     GameGroup _group = controller.state;
     Map<String, List<GameStub>> _games = {};
     for (String p in _group.players) {
-      List<String> playerGames = [];
       _games[p] = [];
       for (String c in _group.players) {
         if (c == p) continue;
@@ -167,11 +187,7 @@ class GameServer with ReadyManager {
           endTime: endTime,
         );
         gameStore().set(g);
-        games[gid] = GameController(g, ServerMediator(answer: _group.words[c]!));
-        games[gid]!.registerHighestGuessStream(controller.highestGuessStream);
-        playerGames.add(gid);
-        final sub = games[gid]!.stream.listen(_handleGameUpdate);
-        gameSubs[gid] = sub;
+        _registerGame(g, highestGuessStream: controller.highestGuessStream);
         _games[p]!.add(g.stub);
       }
     }
@@ -183,7 +199,7 @@ class GameServer with ReadyManager {
   List<String> getAllActiveGameIds() =>
       games.entries.where((e) => !e.value.state.gameFinished).map((e) => e.value.state.id).toList();
 
-  void updateGroupStatus(String id) {
+  void updateGroupStatus(String id) async {
     if (!gameGroups.containsKey(id)) return;
     GameGroupController ggc = gameGroups[id]!;
     if (ggc.state.state == GroupState.playing) {
@@ -191,7 +207,7 @@ class GameServer with ReadyManager {
       for (final playerGames in ggc.state.gameIds.entries) {
         if (!finished) break;
         for (String g in playerGames.value) {
-          final _result = getGameController(g);
+          final _result = await getGameController(g);
           if (_result.ok) {
             if (!_result.object!.state.gameFinished) {
               finished = false;
@@ -262,16 +278,17 @@ class GameServer with ReadyManager {
     }
   }
 
-  void updateStub(String player, GameStub stub) {
+  void updateStub(String player, GameStub stub) async {
     String id = stub.id;
-    final _result = getGroupForGameId(id);
+    final _result = await getGroupForGameId(id);
     if (_result.ok) {
       _result.object!.updateStub(player, stub);
     }
   }
 
   Future<Result<WordValidationResult>> makeGuess(String gameId, String player, String word) async {
-    if (!games.containsKey(gameId)) return Result.error(Errors.notFound);
+    final result = await getGameController(gameId);
+    if (!result.ok) return Result.error(result.error!);
     GameController gc = games[gameId]!;
     if (gc.state.player != player) return Result.error(Errors.unauthorised);
     final _result = await gc.makeGuess(word);

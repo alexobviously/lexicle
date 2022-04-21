@@ -7,6 +7,7 @@ class Environment {
   String mongoHost;
   String jwtSecret;
   String serverName;
+  int challengeKey;
 
   Environment({
     required this.version,
@@ -17,5 +18,6 @@ class Environment {
     required this.mongoHost,
     required this.jwtSecret,
     required this.serverName,
+    required this.challengeKey,
   });
 }

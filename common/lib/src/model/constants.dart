@@ -1,3 +1,5 @@
+import 'package:common/common.dart';
+
 class Fields {
   static const id = 'id';
   static const timestamp = 'ts';
@@ -11,6 +13,7 @@ class GameFields {
   static const current = 'u';
   static const flags = 'f';
   static const group = 'h';
+  static const challenge = 'l';
   static const finished = 'n';
   static const endTime = 't';
   static const endReason = 'r';
@@ -78,7 +81,9 @@ class TeamFields {
 }
 
 class ChallengeFields {
+  static const title = 'i';
   static const level = 'l';
+  static const sequence = 's';
   static const endTime = 't';
   static const answer = 'a';
 }
@@ -88,11 +93,34 @@ class EndReasons {
   static const int timeout = 1;
 }
 
-class ChallengeLevels {
-  static const int BRONZE = 0;
-  static const int SILVER = 1;
-  static const int GOLD = 2;
+class Challenges {
+  static const int bronze = 0;
+  static const int silver = 1;
+  static const int gold = 2;
+  static const all = [bronze, silver]; // no gold just yet
+
+  static const Map<int, int> durations = {
+    bronze: oneDay,
+    silver: oneDay * 3,
+    gold: oneDay * 7,
+  };
+  static int duration(int level) => durations[level] ?? oneDay;
+
+  static const Map<int, String> names = {
+    bronze: 'Bronze',
+    silver: 'Silver',
+    gold: 'Gold',
+  };
+  static String name(int? level) => names[level] ?? 'Unknown';
+
+  static const Map<int, GameConfig> configs = {
+    bronze: GameConfig(wordLength: 6),
+    silver: GameConfig(wordLength: 8),
+  };
+  static GameConfig config(int? level) => configs[level] ?? GameConfig.initial();
 }
 
 const int minTimeLimit = 60000;
 const int oneDay = 24 * 60 * 60 * 1000;
+
+const int defaultChallengeKey = 111111111111;

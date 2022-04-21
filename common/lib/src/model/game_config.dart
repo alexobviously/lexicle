@@ -10,7 +10,7 @@ class GameConfig extends Equatable {
   final int? timeLimit;
 
   const GameConfig({required this.wordLength, this.timeLimit});
-  GameConfig.initial() : this(wordLength: 5);
+  const GameConfig.initial() : this(wordLength: 5);
 
   factory GameConfig.fromJson(Map<String, dynamic> doc) => GameConfig(
         wordLength: doc[ConfigFields.wordLength],

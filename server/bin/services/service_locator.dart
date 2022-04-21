@@ -32,6 +32,10 @@ Future<void> setUpServiceLocator({required Environment environment, required Dat
   getIt.registerSingleton<AuthStore>(AuthStore(db));
   getIt.registerSingleton<UserStatsStore>(UserStatsStore(db));
   getIt.registerSingleton<TeamStore>(TeamStore(db));
-  getIt.registerSingleton<ChallengeStore>(ChallengeStore(db, dictionary: dict, key: 1000));
+  getIt.registerSingleton<ChallengeStore>(ChallengeStore(
+    db,
+    dictionary: dict,
+    key: environment.challengeKey,
+  ));
   getIt.registerSingleton<CacheManager>(CacheManager(interval: Duration(minutes: 1)));
 }

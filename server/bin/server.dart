@@ -21,6 +21,7 @@ import 'services/environment.dart';
 import 'services/mongo_service.dart';
 import 'services/service_locator.dart';
 
+// We don't use this any more because our host handles it, but it's still here if you need it.
 SecurityContext getSecurityContext() {
   // Bind with a secure HTTPS connection
   final chain = Platform.script.resolve('cert.pem').toFilePath();
@@ -52,6 +53,7 @@ Environment readEnvironment() {
     mongoHost: _getEnv('MONGO_HOST'),
     jwtSecret: _getEnv('JWT_SECRET'),
     serverName: _getEnv('SERVER_NAME', 'Lexicle'),
+    challengeKey: int.parse(_getEnv('CHALLENGE_KEY', '$defaultChallengeKey')),
   );
 }
 
@@ -116,8 +118,10 @@ Future main() async {
 
   print('Serving at http://${server.address.host}:${server.port}');
 
-  final c = await challengeStore().getCurrent(ChallengeLevels.BRONZE);
+  final c = await challengeStore().getCurrent(Challenges.bronze);
   print(c);
+  challengeStore().getCurrent(Challenges.silver);
+  challengeStore().getCurrent(Challenges.gold);
 }
 
 Response _echoRequest(Request request) => Response.ok('Request for "${request.url}"');

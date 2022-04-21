@@ -6,6 +6,7 @@ import 'package:common/common.dart';
 
 class GameController extends Cubit<Game> implements BaseGameController {
   final Mediator mediator;
+  String get id => state.id;
   GameController(Game game, this.mediator) : super(game) {
     start();
   }

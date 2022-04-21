@@ -13,6 +13,7 @@ class Game implements Entity {
   final WordData current;
   final List<String> flags;
   final String? group;
+  final String? challenge;
   final int? endTime; // determined in advance by timelimited games, always set on finish
   final int? endReason;
   final int penalty;
@@ -49,6 +50,7 @@ class Game implements Entity {
     required this.current,
     this.flags = const [],
     this.group,
+    this.challenge,
     this.endTime,
     this.endReason,
     this.penalty = 0,
@@ -66,6 +68,14 @@ class Game implements Entity {
         endTime: endTime,
       );
 
+  factory Game.fromChallenge({required Challenge challenge, required String player}) => Game(
+        answer: challenge.answer,
+        endTime: challenge.endTime,
+        player: player,
+        guesses: [],
+        current: WordData.blank(),
+      );
+
   static const flagInvalid = 'i';
 
   factory Game.fromJson(Map<String, dynamic> doc) {
@@ -80,6 +90,7 @@ class Game implements Entity {
       current: WordData.fromJson(doc[GameFields.current] as Map<String, dynamic>),
       flags: coerceList(doc[GameFields.flags] ?? []),
       group: doc[GameFields.group],
+      challenge: doc[GameFields.challenge],
       endTime: doc[GameFields.endTime],
       endReason: doc[GameFields.endReason],
     );
@@ -96,6 +107,7 @@ class Game implements Entity {
       GameFields.current: current.toMap(hideContent: hideAnswer),
       GameFields.flags: flags,
       if (group != null) GameFields.group: group,
+      if (challenge != null) GameFields.challenge: challenge,
       if (endTime != null) GameFields.endTime: endTime,
       if (endReason != null) GameFields.endReason: endReason,
     };

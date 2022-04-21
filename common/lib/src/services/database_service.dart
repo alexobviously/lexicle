@@ -6,8 +6,11 @@ abstract class DatabaseService {
   Future<Result<T>> getByField<T extends Entity>(String field, dynamic value);
   Future<List<T>> getAll<T extends Entity>({SelectorBuilder? selector});
   Future<List<T>> getAllByField<T extends Entity>(String field, dynamic value);
+  Future<Result<T>> getOne<T extends Entity>({SelectorBuilder? selector});
   Future<Result<T>> write<T extends Entity>(T entity);
   Future<Result<bool>> delete<T extends Entity>(T entity);
 
-  Future<Challenge?> getCurrentChallenge(int level);
+  Future<Result<Challenge>> getCurrentChallenge(int level);
+  Future<Result<Challenge>> getChallenge(int level, int sequence);
+  Future<Result<Game>> getChallengeAttempt(String player, String challenge);
 }

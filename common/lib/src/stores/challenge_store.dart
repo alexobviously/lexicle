@@ -18,15 +18,23 @@ class ChallengeStore extends EntityStore<Challenge> {
       return matches.first;
     }
 
-    Challenge? c = await db.getCurrentChallenge(level);
-    if (c != null) return c;
+    final c = await db.getCurrentChallenge(level);
+    if (c.ok) return c.object!;
     if (isAuthority) return create(level);
     return null;
   }
 
   Challenge create(int level) {
     int _today = today().millisecondsSinceEpoch;
-    String word = dictionary.randomWord(6, seed: _today % (key ?? 1000));
-    return Challenge(level: level, timestamp: _today, endTime: _today + oneDay, answer: word);
+    final config = Challenges.config(level);
+    String word = dictionary.randomWord(config.wordLength, seed: _today % (key ?? defaultChallengeKey));
+    Challenge c = Challenge(
+      level: level,
+      timestamp: _today,
+      endTime: _today + Challenges.duration(level),
+      answer: word,
+    );
+    write(c);
+    return c;
   }
 }
