@@ -38,21 +38,14 @@ class ApiService implements DatabaseService {
   }
 
   @override
-  Future<Result<Challenge>> getCurrentChallenge(int level) async {
-    throw UnimplementedError();
-  }
+  Future<Result<Challenge>> getCurrentChallenge(int level) async => get<Challenge>(level.toString());
 
   @override
-  Future<Result<Challenge>> getChallenge(int level, int sequence) {
-    // TODO: implement getChallenge
-    throw UnimplementedError();
-  }
+  Future<Result<Challenge>> getChallenge(int level, int sequence) async => ApiClient.getChallenge(level, sequence);
 
   @override
-  Future<Result<Game>> getChallengeAttempt(String player, String challenge) {
-    // TODO: implement getChallengeAttempt
-    throw UnimplementedError();
-  }
+  Future<Result<Game>> getChallengeAttempt(String player, String challenge) async =>
+      ApiClient.getChallengeAttempt(challenge);
 
   @override
   Future<Result<T>> getOne<T extends Entity>({SelectorBuilder? selector}) {
