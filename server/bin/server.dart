@@ -104,6 +104,7 @@ Future main() async {
     ..post('/teams/<id>/join', TeamHandler.joinTeam)
     ..post('/teams/leave', TeamHandler.leaveTeam)
     ..get('/challenges/<id_or_level>', ChallengeHandler.getChallenge)
+    ..get('/challenges/<id>/attempt', ChallengeHandler.getChallengeAttempt)
     ..get('/challenges/<level>/<sequence>', ChallengeHandler.getChallenge)
     ..post('/admin/change_pw', AdminHandler.changePassword)
     ..post('/admin/restore_group', AdminHandler.restoreGroup);
