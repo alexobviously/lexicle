@@ -8,4 +8,5 @@ class Errors {
   static const notEnoughPlayers = 'not_enough_players';
   static const playersNotReady = 'players_not_ready';
   static const challengeFinished = 'challenge_finished';
+  static const invalidLevel = 'invalid_level';
 }

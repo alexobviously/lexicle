@@ -97,7 +97,7 @@ class Challenges {
   static const int bronze = 0;
   static const int silver = 1;
   static const int gold = 2;
-  static const all = [bronze, silver]; // no gold just yet
+  static const allLevels = [bronze, silver]; // no gold just yet
 
   static const Map<int, int> durations = {
     bronze: oneDay,

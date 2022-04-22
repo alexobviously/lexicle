@@ -28,6 +28,7 @@ class ChallengeHandler {
           challenge = result.object!;
         } else {
           int level = int.parse(first);
+          if (!Challenges.allLevels.contains(level)) return HttpUtils.buildErrorResponse(Errors.invalidLevel);
           final result = await challengeStore().getCurrent(level);
           if (!result.ok) return HttpUtils.buildErrorResponse(result.error!);
           challenge = result.object!;
