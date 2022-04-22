@@ -22,22 +22,25 @@ class ChallengeStore extends EntityStore<Challenge> {
   Future<Result<Challenge>> getCurrent(int level) async {
     List<Challenge> matches = items.values.where((e) => e.level == level).toList();
     matches.sort((a, b) => a.timestamp.compareTo(b.timestamp));
-    if (matches.isNotEmpty && !matches.first.finished) {
-      return Result.ok(matches.first);
+    int sequence = 0;
+    if (matches.isNotEmpty) {
+      if (!matches.first.finished) return Result.ok(matches.first);
+      if (matches.first.sequence != null) sequence = matches.first.sequence! + 1;
     }
 
     final c = await db.getCurrentChallenge(level);
     if (c.ok) return Result.ok(c.object!);
-    if (isAuthority) return Result.ok(create(level));
+    if (isAuthority) return Result.ok(create(level, sequence));
     return Result.error(Errors.notFound);
   }
 
-  Challenge create(int level) {
+  Challenge create(int level, int? sequence) {
     int _today = today().millisecondsSinceEpoch;
     final config = Challenges.config(level);
     String word = dictionary.randomWord(config.wordLength, seed: _today % (key ?? defaultChallengeKey));
     Challenge c = Challenge(
       level: level,
+      sequence: sequence,
       timestamp: _today,
       endTime: _today + Challenges.duration(level),
       answer: word,
