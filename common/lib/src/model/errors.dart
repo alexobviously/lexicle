@@ -7,4 +7,5 @@ class Errors {
   static const invalidWord = 'invalid_word';
   static const notEnoughPlayers = 'not_enough_players';
   static const playersNotReady = 'players_not_ready';
+  static const challengeFinished = 'challenge_finished';
 }

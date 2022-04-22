@@ -56,16 +56,19 @@ class ChallengeHandler {
       if (!authResult.ok) return authResult.errorResponse;
       final challengeResult = await db().get<Challenge>(challenge);
       if (!challengeResult.ok) return HttpUtils.buildErrorResponse(challengeResult.error!);
+      bool finished = challengeResult.object!.finished;
       final result = await db().getChallengeAttempt(authResult.user!.id, challenge);
       Game? game = result.object;
-      if (game == null) {
+      if (game == null && !finished) {
         game = Game.fromChallenge(challenge: challengeResult.object!, player: authResult.user!.id);
         gameStore().write(game);
       }
-      if (challengeResult.object!.finished) {}
+      if (game == null) {
+        return HttpUtils.buildErrorResponse(Errors.challengeFinished);
+      }
       return HttpUtils.buildResponse(
         data: {
-          'game': game.toMap(),
+          'game': game.toMap(hideAnswer: !finished),
         },
       );
     } catch (e, s) {
