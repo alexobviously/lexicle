@@ -69,6 +69,7 @@ class Game implements Entity {
       );
 
   factory Game.fromChallenge({required Challenge challenge, required String player}) => Game(
+        challenge: challenge.id,
         answer: challenge.answer,
         endTime: challenge.endTime,
         player: player,
