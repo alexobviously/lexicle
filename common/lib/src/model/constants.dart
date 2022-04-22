@@ -86,6 +86,7 @@ class ChallengeFields {
   static const sequence = 's';
   static const endTime = 't';
   static const answer = 'a';
+  static const hasAttempt = 'h';
 }
 
 class EndReasons {

@@ -34,16 +34,17 @@ class ChallengeHandler {
           challenge = result.object!;
         }
       }
-      Map<String, dynamic> data = {
-        'challenge': challenge.toMap(hideAnswer: !challenge.finished),
-      };
       final authResult = await authenticateRequest(request);
       if (authResult.ok) {
         final result = await db().getChallengeAttempt(authResult.user!.id, challenge.id);
         if (result.hasObject) {
-          data['game'] = result.object!.toMap(hideAnswer: !result.object!.gameFinished);
+          challenge = challenge.copyWith(hasAttempt: true);
         }
       }
+      Map<String, dynamic> data = {
+        'challenge': challenge.toMap(hideAnswer: !challenge.finished, showHasAttempt: true),
+      };
+
       return HttpUtils.buildResponse(data: data);
     } catch (e, s) {
       print('exception in getChallenge: $e\n$s');

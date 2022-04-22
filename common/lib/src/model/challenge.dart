@@ -2,6 +2,8 @@ import 'package:common/common.dart';
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:mongo_dart/mongo_dart.dart';
 
+part 'challenge.g.dart';
+
 /// A periodic challenge, which is the same for every at the same time, i.e. basic wordle functionality.
 /// Challenges generally come in a level-sequence form, i.e. level: 0, seq: 4 is bronze challenge day 5.
 /// They can also be one offs.
@@ -18,6 +20,9 @@ class Challenge implements Entity {
   final int endTime;
   final String answer;
 
+  // Only for API responses.
+  final bool hasAttempt;
+
   bool get finished => endTime < nowMs();
   int get length => answer.length;
   String get title {
@@ -33,6 +38,7 @@ class Challenge implements Entity {
     this.sequence,
     required this.endTime,
     required this.answer,
+    this.hasAttempt = false,
   })  : id = id ?? ObjectId().id.hexString,
         timestamp = timestamp ?? nowMs();
 
@@ -44,9 +50,10 @@ class Challenge implements Entity {
         sequence: doc[ChallengeFields.sequence],
         endTime: doc[ChallengeFields.endTime],
         answer: doc[ChallengeFields.answer],
+        hasAttempt: doc[ChallengeFields.hasAttempt] ?? false,
       );
 
-  Map<String, dynamic> toMap({bool hideAnswer = false}) => {
+  Map<String, dynamic> toMap({bool hideAnswer = false, bool showHasAttempt = false}) => {
         Fields.id: id,
         Fields.timestamp: timestamp,
         if (fixedTitle != null) ChallengeFields.title: fixedTitle,
@@ -54,6 +61,7 @@ class Challenge implements Entity {
         if (sequence != null) ChallengeFields.sequence: sequence,
         ChallengeFields.endTime: endTime,
         ChallengeFields.answer: hideAnswer ? ('*' * answer.length) : answer,
+        if (showHasAttempt) ChallengeFields.hasAttempt: hasAttempt,
       };
 
   @override
