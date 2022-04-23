@@ -1,12 +1,12 @@
 import 'package:go_router/go_router.dart';
+import 'package:validators/validators.dart';
 import 'package:word_game/views/about_view.dart';
 import 'package:word_game/views/auth/auth_view.dart';
+import 'package:word_game/views/challenge_view.dart';
 import 'package:word_game/views/change_password_view.dart';
 import 'package:word_game/views/dict_search_view.dart';
 import 'package:word_game/views/game_view.dart';
 import 'package:word_game/views/group/group_view.dart';
-import 'package:word_game/views/groups_view.dart';
-import 'package:word_game/views/home/home_view.dart';
 import 'package:word_game/views/home/home_view.dart';
 import 'package:word_game/views/rush_view.dart';
 import 'package:word_game/views/settings_view.dart';
@@ -29,10 +29,18 @@ class Routes {
   static const teams = '/teams';
   static const games = '/games';
   static const rush = '/rush';
+  static const challenges = '/challenges';
   static user(String id) => '$users/$id';
   static team(String id) => '$teams/$id';
   static group(String id) => '$groups/$id';
   static game(String id) => '$games/$id';
+  static challenge({String? id, int? level, int? sequence}) {
+    if (id != null) return '$challenges/$id';
+    if (level != null) {
+      return sequence == null ? '$challenges/$level' : '$challenges/$level/$sequence';
+    }
+    return challenges;
+  }
 }
 
 GoRouter buildRouter() {
@@ -109,11 +117,34 @@ GoRouter buildRouter() {
         },
       ),
       GoRoute(
-          path: Routes.rush,
+        path: Routes.rush,
+        builder: (context, state) {
+          if (state.extra is! RushRouteData) throw Exception('Missing/invalid rush route data');
+          RushRouteData data = state.extra as RushRouteData;
+          return RushView(id: data.game!.state.id, data: data);
+        },
+      ),
+      GoRoute(
+        path: '${Routes.challenges}/:first',
+        builder: (context, state) {
+          if (isInt(state.params['first']!)) {
+            return ChallengeView(
+              level: int.parse(state.params['first']!),
+            );
+          } else {
+            return ChallengeView(id: state.params['first']!);
+          }
+        },
+      ),
+      GoRoute(
+          path: '${Routes.challenges}/:level/:sequence',
           builder: (context, state) {
-            if (state.extra is! RushRouteData) throw Exception('Missing/invalid rush route data');
-            RushRouteData data = state.extra as RushRouteData;
-            return RushView(id: data.game!.state.id, data: data);
+            return ChallengeView(
+              level: int.parse(state.params['level']!),
+              sequence: int.parse(
+                state.params['sequence']!,
+              ),
+            );
           }),
     ],
   );

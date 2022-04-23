@@ -43,4 +43,15 @@ class WordData {
 
   @override
   String toString() => 'WordData($content, correct: $correct, semiCorrect: $semiCorrect, finalised: $finalised)';
+
+  String toEmojis() {
+    String _emojiAt(int index) {
+      if (correct.contains(index)) return '🟩';
+      if (semiCorrect.contains(index)) return '🟨';
+      return '⬛';
+    }
+
+    final range = List.generate(content.length, (i) => i);
+    return range.map((i) => _emojiAt(i)).join('');
+  }
 }

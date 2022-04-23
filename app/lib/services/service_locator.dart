@@ -2,6 +2,7 @@ import 'package:common/common.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
 import 'package:word_game/cubits/auth_controller.dart';
+import 'package:word_game/cubits/challenge_manager.dart';
 import 'package:word_game/services/app_dictionary.dart';
 import 'package:word_game/services/sound_service.dart';
 import 'package:word_game/stores/app_user_stats_store.dart';

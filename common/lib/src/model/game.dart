@@ -39,6 +39,7 @@ class Game implements Entity {
         guesses: score,
         endReason: endReason,
       );
+  WordData? get lastGuess => guesses.reversed.firstWhereOrNull((e) => e.finalised);
 
   Game({
     String? id,
@@ -156,15 +157,8 @@ class Game implements Entity {
   String toString() => 'Game($id, player; $player, creator: $creator, answer: $answer, guesses: ${guesses.length})';
 
   String toEmojis() {
-    String _emojiAt(WordData word, int index) {
-      if (word.correct.contains(index)) return '🟩';
-      if (word.semiCorrect.contains(index)) return '🟨';
-      return '⬛';
-    }
-
     if (guesses.isEmpty) return '';
-    final range = List.generate(length, (i) => i);
-    List<String> lines = guesses.map((e) => range.map((i) => _emojiAt(e, i)).join('')).toList();
+    List<String> lines = guesses.map((e) => e.toEmojis()).toList();
     return lines.join('\n');
   }
 }

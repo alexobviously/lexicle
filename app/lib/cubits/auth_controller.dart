@@ -3,18 +3,20 @@ import 'package:common/common.dart';
 import 'package:word_game/services/api_client.dart';
 import 'package:word_game/services/service_locator.dart';
 
-class AuthController extends Cubit<AuthState> {
+class AuthController extends Cubit<AuthState> with ReadyManager {
   AuthController() : super(AuthState.initial()) {
     init();
   }
 
-  void init() async {
+  @override
+  void initialise() async {
     final token = await storage().read(key: 'token');
     final expiry = int.parse(await storage().read(key: 'expiry') ?? '0');
     if (token != null && expiry > nowMs()) {
       emit(state.copyWith(token: token, expiry: expiry, working: true));
       final _result = await ApiClient.getMe();
       if (_result.ok) {
+        setReady();
         emit(state.copyWith(user: _result.object!, working: false));
         refreshUserStats();
       } else {

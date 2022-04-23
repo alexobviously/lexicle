@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:common/common.dart';
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:mongo_dart/mongo_dart.dart';
@@ -24,10 +26,11 @@ class Challenge implements Entity {
   final bool hasAttempt;
 
   bool get finished => endTime < nowMs();
+  int get timeLeft => max(0, endTime - nowMs());
   int get length => answer.length;
   String get title {
     if (fixedTitle != null) return fixedTitle!;
-    return '${Challenges.name(level)} Challenge ${sequence ?? 1}';
+    return '${Challenges.name(level)} Challenge ${(sequence ?? 0) + 1}';
   }
 
   Challenge({

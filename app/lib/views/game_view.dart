@@ -84,7 +84,7 @@ class _GameViewState extends State<GameView> {
 
   void _setTimeLeft() {
     if (endTime == null) return;
-    setState(() => timeLeft = max(endTime! - DateTime.now().millisecondsSinceEpoch, 0));
+    if (mounted) setState(() => timeLeft = max(endTime! - DateTime.now().millisecondsSinceEpoch, 0));
   }
 
   final ScrollController _controller = ScrollController();

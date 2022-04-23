@@ -83,7 +83,7 @@ class ApiClient {
         unwrapper: unwrapChallenge,
       );
   static getChallengeAttempt(String challenge) => getAndUnwrap(
-        '/challanges/$challenge/attempt',
+        '/challenges/$challenge/attempt',
         unwrapper: unwrapGame,
       );
 
