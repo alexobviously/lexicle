@@ -134,6 +134,7 @@ class Game implements Entity {
     int? endTime,
     int? endReason,
     int? penalty,
+    String? challenge,
   }) {
     return Game(
       id: id ?? this.id,
@@ -147,6 +148,7 @@ class Game implements Entity {
       endTime: endTime ?? this.endTime,
       endReason: endReason ?? this.endReason,
       penalty: penalty ?? this.penalty,
+      challenge: challenge ?? this.challenge,
     );
   }
 

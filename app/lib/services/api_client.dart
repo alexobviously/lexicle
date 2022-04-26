@@ -91,11 +91,7 @@ class ApiClient {
       getAndUnwrap('/games/all', unwrapper: (data) => coerceList(data['games']));
   static Future<Result<List<String>>> activeGames() =>
       getAndUnwrap('/games/active', unwrapper: (data) => coerceList(data['games']));
-  static Future<Result<Game>> getGame(String id) => getAndUnwrap(
-        '/games/$id',
-        unwrapper: unwrapGame,
-        authType: AuthType.optional,
-      );
+
   static Future<Result<WordValidationResult>> makeGuess(String game, String guess) => postAndUnwrap(
         '/games/$game/guess',
         body: {'guess': guess},

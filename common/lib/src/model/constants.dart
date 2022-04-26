@@ -72,6 +72,7 @@ class StatsFields {
   static const words = 'w';
   static const wins = 'q';
   static const timeouts = 't';
+  static const challengeStats = 'l';
 }
 
 class TeamFields {

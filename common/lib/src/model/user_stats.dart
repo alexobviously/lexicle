@@ -16,6 +16,7 @@ class UserStats implements Entity {
   final Map<int, Map<int, int>> guessCounts;
   final Map<int, int> timeouts;
   final List<WordDifficulty> words;
+  final Map<int, ChallengeStats> challengeStats;
 
   int get groupsTotal => numGroups.entries.fold(0, (a, b) => a + b.value);
   int get gamesTotal => numGames.entries.fold(0, (a, b) => a + b.value);
@@ -30,6 +31,7 @@ class UserStats implements Entity {
     this.words = const [],
     this.wins = const {},
     this.timeouts = const {},
+    this.challengeStats = const {},
   })  : id = id ?? ObjectId().id.hexString,
         timestamp = timestamp ?? nowMs();
 
@@ -51,6 +53,10 @@ class UserStats implements Entity {
       words: mapList<WordDifficulty>(doc[StatsFields.words] ?? [], (e) => WordDifficulty.fromJson(e)),
       wins: intifyMapKeys(doc[StatsFields.wins].cast<String, int>()),
       timeouts: intifyMapKeys((doc[StatsFields.timeouts] ?? {}).cast<String, int>()),
+      // TODO: I can't be bothered testing this rn
+      // challengeStats: intifyMapKeys((doc[StatsFields.challengeStats] ?? {})
+      //     .cast<String, dynamic>()
+      //     .map<String, ChallengeStats>((k, v) => MapEntry(k, ChallengeStats.fromJson(v as Map<String, dynamic>)))),
     );
   }
 
@@ -63,12 +69,14 @@ class UserStats implements Entity {
         StatsFields.words: words.map((e) => e.toMap()).toList(),
         StatsFields.wins: stringifyMapKeys(wins),
         StatsFields.timeouts: stringifyMapKeys(timeouts),
+        // StatsFields.challengeStats: stringifyMapKeys(challengeStats.map((k, v) => MapEntry(k, v.toMap()))),
       };
 
   @override
   Map<String, dynamic> export() => toMap(includeTimestamp: true);
 }
 
+@CopyWith()
 class WordDifficulty {
   final String word;
   final double difficulty;
@@ -78,4 +86,23 @@ class WordDifficulty {
       WordDifficulty(doc[WordFields.content], doc[WordFields.difficulty]);
 
   Map<String, dynamic> toMap() => {WordFields.content: word, WordFields.difficulty: difficulty};
+}
+
+@CopyWith()
+class ChallengeStats {
+  final int level;
+  final Map<int, int> guessCounts;
+  // TODO: streaks
+
+  const ChallengeStats({required this.level, this.guessCounts = const {}});
+
+  factory ChallengeStats.fromJson(Map<String, dynamic> doc) => ChallengeStats(
+        level: doc[ChallengeFields.level],
+        guessCounts: intifyMapKeys(doc[StatsFields.guessCounts].cast<String, int>()),
+      );
+
+  Map<String, dynamic> toMap() => {
+        ChallengeFields.level: level,
+        StatsFields.guessCounts: stringifyMapKeys(guessCounts),
+      };
 }
