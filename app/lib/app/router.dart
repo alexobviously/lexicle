@@ -129,7 +129,7 @@ GoRouter buildRouter() {
         builder: (context, state) {
           if (isInt(state.params['first']!)) {
             return ChallengeView(
-              level: int.parse(state.params['first']!),
+              level: int.parse(state.params['first']!) - 1,
             );
           } else {
             return ChallengeView(id: state.params['first']!);
@@ -140,10 +140,8 @@ GoRouter buildRouter() {
           path: '${Routes.challenges}/:level/:sequence',
           builder: (context, state) {
             return ChallengeView(
-              level: int.parse(state.params['level']!),
-              sequence: int.parse(
-                state.params['sequence']!,
-              ),
+              level: int.parse(state.params['level']!) - 1,
+              sequence: int.parse(state.params['sequence']!) - 1,
             );
           }),
     ],

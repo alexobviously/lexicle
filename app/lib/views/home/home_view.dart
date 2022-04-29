@@ -411,7 +411,7 @@ class _HomeViewState extends State<HomeView> {
 
   Widget _challengeRow(Challenge challenge, Color? backgroundColour, {String? emojis}) {
     return InkWell(
-      onTap: () => context.push(Routes.challenge(level: challenge.level, sequence: challenge.sequence)),
+      onTap: () => context.push(Routes.challenge(level: challenge.level! + 1, sequence: challenge.sequence! + 1)),
       child: Container(
         color: backgroundColour,
         child: Padding(
