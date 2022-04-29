@@ -29,13 +29,13 @@ class ChallengeStore extends EntityStore<Challenge> {
     int sequence = 0;
     if (matches.isNotEmpty) {
       if (!matches.first.finished) return Result.ok(matches.first);
-      if (matches.first.sequence != null) sequence = matches.first.sequence! + 1;
     }
 
-    final c = await db.getCurrentChallenge(level);
+    final c = await db.getCurrentChallenge(level, true);
     if (c.ok) {
       onGet(c.object!);
-      return Result.ok(c.object!);
+      if (c.object!.sequence != null) sequence = c.object!.sequence! + 1;
+      if (!c.object!.finished) return Result.ok(c.object!);
     }
     if (isAuthority) return Result.ok(create(level, sequence));
     return Result.error(Errors.notFound);

@@ -38,7 +38,8 @@ class ApiService implements DatabaseService {
   }
 
   @override
-  Future<Result<Challenge>> getCurrentChallenge(int level) async => get<Challenge>(level.toString());
+  Future<Result<Challenge>> getCurrentChallenge(int level, [bool returnFinished = false]) async =>
+      get<Challenge>(level.toString());
 
   @override
   Future<Result<Challenge>> getChallenge(int level, int sequence) async => ApiClient.getChallenge(level, sequence);

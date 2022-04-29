@@ -73,6 +73,10 @@ class StatsFields {
   static const wins = 'q';
   static const timeouts = 't';
   static const challengeStats = 'l';
+  static const bestStreak = 'b';
+  static const streak = 's';
+  static const streakExpiry = 'e';
+  static const lastCompleted = 'd';
 }
 
 class TeamFields {

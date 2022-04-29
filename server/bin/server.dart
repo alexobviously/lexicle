@@ -55,6 +55,7 @@ Environment readEnvironment() {
     jwtSecret: _getEnv('JWT_SECRET'),
     serverName: _getEnv('SERVER_NAME', 'Lexicle'),
     challengeKey: int.parse(_getEnv('CHALLENGE_KEY', '$defaultChallengeKey')),
+    cacheInterval: int.parse(_getEnv('CACHE_INTERVAL', '60000')),
   );
 }
 
@@ -66,6 +67,10 @@ Future main() async {
   await _db.init(env);
   print('MongoDB ready!');
   await setUpServiceLocator(environment: env, db: _db);
+
+  final t = today();
+  print(t);
+  print(t.millisecondsSinceEpoch);
 
   final _router = shelf_router.Router()
     ..get('/hello', _echoRequest)

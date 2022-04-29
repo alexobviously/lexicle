@@ -16,8 +16,8 @@ class ChallengeHandler {
     try {
       Challenge? challenge;
       if (second != null) {
-        int level = int.parse(first);
-        int sequence = int.parse(second);
+        int level = int.parse(first) + 1;
+        int sequence = int.parse(second) + 1;
         final result = await challengeStore().getBySequence(level, sequence);
         if (!result.ok) return HttpUtils.buildErrorResponse(result.error!);
         challenge = result.object!;

@@ -8,6 +8,7 @@ class Environment {
   String jwtSecret;
   String serverName;
   int challengeKey;
+  int cacheInterval;
 
   Environment({
     required this.version,
@@ -19,5 +20,6 @@ class Environment {
     required this.jwtSecret,
     required this.serverName,
     required this.challengeKey,
+    required this.cacheInterval,
   });
 }

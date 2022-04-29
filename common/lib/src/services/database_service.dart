@@ -10,7 +10,7 @@ abstract class DatabaseService {
   Future<Result<T>> write<T extends Entity>(T entity);
   Future<Result<bool>> delete<T extends Entity>(T entity);
 
-  Future<Result<Challenge>> getCurrentChallenge(int level);
+  Future<Result<Challenge>> getCurrentChallenge(int level, [bool returnFinished = false]);
   Future<Result<Challenge>> getChallenge(int level, int sequence);
   Future<Result<Game>> getChallengeAttempt(String player, String challenge);
 }

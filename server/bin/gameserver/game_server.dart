@@ -35,6 +35,7 @@ class GameServer with ReadyManager {
       final sub = gameSubs[g.id];
       sub?.cancel();
       gameSubs.remove(g.id);
+      if (g.challenge != null) updateChallengeStats(g);
     }
   }
 
@@ -276,6 +277,41 @@ class GameServer with ReadyManager {
       );
       ustatsStore().write(stats);
     }
+  }
+
+  void updateChallengeStats(Game g) async {
+    if (g.challenge == null) return;
+
+    final cResult = await challengeStore().get(g.challenge!);
+    if (!cResult.ok) return;
+    Challenge challenge = cResult.object!;
+    if (challenge.level == null || challenge.sequence == null) return; // maybe we want to handle this in future?
+
+    final uResult = await ustatsStore().get(g.player);
+    if (!uResult.ok) return;
+    UserStats stats = uResult.object!;
+
+    // don't need to update if the last completed was this one
+    if ((stats.challengeStats[challenge.level!]?.lastCompleted ?? -1) <= (challenge.sequence ?? 0)) return;
+
+    Map<int, ChallengeStats> cStatsMap = Map.from(stats.challengeStats);
+    ChallengeStats cStats = stats.challengeStats[challenge.level] ?? ChallengeStats(level: challenge.level!);
+    int streak = cStats.currentStreak + 1;
+    int bestStreak = max(cStats.bestStreak, streak);
+    int lastCompleted = challenge.sequence!;
+    Map<int, int> guessCounts = Map.from(cStats.guessCounts);
+    guessCounts[g.score] = (guessCounts[g.score] ?? 0) + 1;
+    cStats = cStats.copyWith(
+      streak: streak,
+      bestStreak: bestStreak,
+      lastCompleted: lastCompleted,
+      guessCounts: guessCounts,
+      streakExpiry: challenge.endTime + Challenges.duration(challenge.level!),
+    );
+    cStatsMap[challenge.level!] = cStats;
+
+    stats = stats.copyWith(challengeStats: cStatsMap);
+    ustatsStore().set(stats, true);
   }
 
   void updateStub(String player, GameStub stub) async {

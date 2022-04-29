@@ -37,5 +37,7 @@ Future<void> setUpServiceLocator({required Environment environment, required Dat
     dictionary: dict,
     key: environment.challengeKey,
   ));
-  getIt.registerSingleton<CacheManager>(CacheManager(interval: Duration(minutes: 5)));
+  getIt.registerSingleton<CacheManager>(CacheManager(
+    interval: Duration(milliseconds: environment.cacheInterval),
+  ));
 }

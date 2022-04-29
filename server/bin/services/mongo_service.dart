@@ -112,10 +112,10 @@ class MongoService implements DatabaseService {
   }
 
   @override
-  Future<Result<Challenge>> getCurrentChallenge(int level) async {
+  Future<Result<Challenge>> getCurrentChallenge(int level, [bool returnFinished = false]) async {
     final selector = where.eq(ChallengeFields.level, level).sortBy(Fields.timestamp, descending: true).limit(1);
     final r = await getAll<Challenge>(selector: selector);
-    return (r.isNotEmpty && !r.first.finished) ? Result.ok(r.first) : Result.error(Errors.notFound);
+    return (r.isNotEmpty && (!r.first.finished || returnFinished)) ? Result.ok(r.first) : Result.error(Errors.notFound);
   }
 
   @override

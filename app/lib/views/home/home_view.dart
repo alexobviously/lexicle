@@ -383,42 +383,52 @@ class _HomeViewState extends State<HomeView> {
     return Padding(
       padding: const EdgeInsets.only(top: 8, left: 8, right: 8),
       child: BlocBuilder<ChallengeManager, ChallengeManagerState>(
-        builder: (coontext, state) {
+        builder: (context, state) {
           if (state.challenges.isEmpty) return Container();
           return Column(
             children: state.challenges.values.map(
-              (e) {
-                String emojis = '⬛' * e.length;
+              (challenge) {
+                String? emojis = '⬛' * challenge.length;
                 BaseGameController? gc;
-                if (state.hasAttempt(e.id)) {
-                  gc = state.games[e.id]!;
-                  emojis = gc.state.lastGuess?.toEmojis() ?? emojis;
+                if (state.hasAttempt(challenge.id)) {
+                  gc = state.games[challenge.id]!;
+                  return BlocBuilder<BaseGameController, Game>(
+                    bloc: gc,
+                    builder: (context, game) {
+                      emojis = game.lastGuess?.toEmojis();
+                      return _challengeRow(challenge, colours[challenge.level], emojis: emojis);
+                    },
+                  );
                 }
-                return InkWell(
-                  onTap: () => context.push(Routes.challenge(level: e.level, sequence: e.sequence)),
-                  child: Container(
-                    color: colours[e.level],
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 2.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(e.title),
-                          Text(emojis),
-                          CountdownClock(
-                            e.endTime,
-                            fullDetail: true,
-                            clockSide: ClockSide.right,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                );
+                return _challengeRow(challenge, colours[challenge.level], emojis: emojis);
               },
             ).toList(),
           );
         },
+      ),
+    );
+  }
+
+  Widget _challengeRow(Challenge challenge, Color? backgroundColour, {String? emojis}) {
+    return InkWell(
+      onTap: () => context.push(Routes.challenge(level: challenge.level, sequence: challenge.sequence)),
+      child: Container(
+        color: backgroundColour,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 2.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(challenge.title),
+              Text(emojis ?? ('⬛' * challenge.length)),
+              CountdownClock(
+                challenge.endTime,
+                fullDetail: true,
+                clockSide: ClockSide.right,
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
