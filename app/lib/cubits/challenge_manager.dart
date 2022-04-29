@@ -25,25 +25,21 @@ class ChallengeManager extends Cubit<ChallengeManagerState> {
   }
 
   Future<void> getAttempt(Challenge challenge) async {
-    print('ChallengeManager.getAttempt($challenge)');
+    if (!auth().loggedIn) return;
     final result = await db().getChallengeAttempt(auth().userId ?? '', challenge.id);
-    print('getattempt result $result');
     if (!result.ok) return;
     Game game = result.object!;
-    print(' contains ${state.games.containsKey(game.id)}');
     if (state.games.containsKey(challenge.id)) {
       state.games[challenge.id]!.emit(game);
     } else {
       GameController gc = GameController(game, OnlineMediator(gameId: game.id, wordLength: game.answer.length));
       Map<String, BaseGameController> games = Map.from(state.games);
       games[challenge.id] = gc;
-      print('got game ${games[challenge.id]}');
       emit(state.copyWith(games: games));
     }
   }
 
   Future<Result<Challenge>> getChallenge({String? id, int? level, int? sequence}) async {
-    print('ChallengeManager.getChallenge(id: $id, level: $level, sequence: $sequence)');
     if (id == null && level == null) return Result.error(Errors.invalidRequest);
     Challenge? challenge;
     if (id != null) {
@@ -58,7 +54,6 @@ class ChallengeManager extends Cubit<ChallengeManagerState> {
       } else if (sequence == null) {
         result = await db().getCurrentChallenge(level!);
       } else {
-        print('get challenge $level $sequence');
         result = await db().getChallenge(level!, sequence);
       }
       if (result.ok) challenge = result.object!;
