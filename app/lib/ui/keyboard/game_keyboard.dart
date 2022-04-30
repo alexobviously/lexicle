@@ -106,7 +106,6 @@ class _GameKeyboardState extends State<GameKeyboard> {
 
   @override
   Widget build(BuildContext context) {
-    print(Theme.of(context).scaffoldBackgroundColor);
     return RawKeyboardListener(
       autofocus: true,
       focusNode: _focusNode,

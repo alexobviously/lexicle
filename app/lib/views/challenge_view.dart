@@ -45,7 +45,6 @@ class _ChallengeViewState extends State<ChallengeView> {
         Challenge challenge = result.object!;
         return BlocBuilder<ChallengeManager, ChallengeManagerState>(
           builder: (context, state) {
-            print(state.games);
             if (!state.hasAttempt(challenge.id)) return _loading();
             BaseGameController gc = state.games[challenge.id]!;
             return GameView(
