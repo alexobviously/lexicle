@@ -1,5 +1,6 @@
 import 'package:go_router/go_router.dart';
 import 'package:validators/validators.dart';
+import 'package:word_game/services/service_locator.dart';
 import 'package:word_game/views/about_view.dart';
 import 'package:word_game/views/auth/auth_view.dart';
 import 'package:word_game/views/challenge_view.dart';
@@ -41,11 +42,25 @@ class Routes {
     }
     return challenges;
   }
+
+  static const protectedRoutes = [
+    changePassword,
+    groups,
+    challenges,
+  ];
 }
 
 GoRouter buildRouter() {
   return GoRouter(
     urlPathStrategy: UrlPathStrategy.path,
+    redirect: (GoRouterState state) {
+      final loggedIn = auth().loggedIn;
+      if (loggedIn) return null;
+      for (String r in Routes.protectedRoutes) {
+        if (state.subloc.contains(r)) return '${Routes.auth}?r=${state.subloc}';
+      }
+      return null;
+    },
     routes: [
       GoRoute(
         path: Routes.home,
@@ -53,7 +68,9 @@ GoRouter buildRouter() {
       ),
       GoRoute(
         path: Routes.auth,
-        builder: (_, __) => const AuthView(),
+        builder: (_, state) {
+          return AuthView(redirect: state.queryParams['r']);
+        },
       ),
       GoRoute(
         path: Routes.changePassword,
