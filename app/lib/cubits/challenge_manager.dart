@@ -9,6 +9,7 @@ class ChallengeManager extends Cubit<ChallengeManagerState> {
   }
 
   void refresh() async {
+    emit(ChallengeManagerState.initial());
     await auth().ready; // because we want to submit the token if possible, for attempts
     Map<int, Challenge> challenges = {};
     for (int level in Challenges.allLevels) {

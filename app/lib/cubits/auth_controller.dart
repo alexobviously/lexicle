@@ -58,10 +58,12 @@ class AuthController extends Cubit<AuthState> with ReadyManager {
       working: false,
     ));
     refreshUserStats();
+    challengeManager().refresh();
   }
 
   void logout() {
     emit(AuthState.initial());
+    challengeManager().refresh();
   }
 
   void updateToken(String token, int expiry) {

@@ -68,7 +68,7 @@ class MyApp extends StatelessWidget {
           lazy: false,
         ),
         BlocProvider<ChallengeManager>(
-          create: (_) => ChallengeManager(),
+          create: (_) => challengeManager(),
           lazy: true,
         ),
       ],
