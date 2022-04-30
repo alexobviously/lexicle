@@ -45,6 +45,7 @@ class Routes {
 
 GoRouter buildRouter() {
   return GoRouter(
+    urlPathStrategy: UrlPathStrategy.path,
     routes: [
       GoRoute(
         path: Routes.home,
