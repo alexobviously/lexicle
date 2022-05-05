@@ -121,7 +121,7 @@ class Challenges {
 
   static const Map<int, GameConfig> configs = {
     bronze: GameConfig(wordLength: 6),
-    silver: GameConfig(wordLength: 8),
+    silver: GameConfig(wordLength: 7),
   };
   static GameConfig config(int? level) => configs[level] ?? GameConfig.initial();
 }
