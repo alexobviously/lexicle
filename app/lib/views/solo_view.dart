@@ -24,7 +24,7 @@ class _SoloViewState extends State<SoloView> {
   final ScrollController _controller = ScrollController();
 
   void _scrollUp([Duration duration = const Duration(milliseconds: 500)]) {
-    SchedulerBinding.instance!.addPostFrameCallback(
+    SchedulerBinding.instance.addPostFrameCallback(
       (_) {
         if (_controller.positions.isEmpty) return; // ???
         _controller.animateTo(

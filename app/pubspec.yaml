@@ -19,7 +19,7 @@ dependencies:
   bloc: ^8.0.2
   cupertino_icons: ^1.0.2
   duration: ^3.0.8
-  fl_chart: ^0.41.0
+  fl_chart: ^0.50.6
   flutter_bloc: ^8.0.1
   flutter_dotenv: ^5.0.2
   flutter_native_splash: ^2.0.2
