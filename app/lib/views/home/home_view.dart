@@ -384,7 +384,10 @@ class _HomeViewState extends State<HomeView> {
       padding: const EdgeInsets.only(top: 8, left: 8, right: 8),
       child: BlocBuilder<ChallengeManager, ChallengeManagerState>(
         builder: (context, state) {
-          if (state.challenges.isEmpty) return Container();
+          if (state.challenges.isEmpty) {
+            if (!state.loading) return Container();
+            return SpinKitFadingCircle(color: Colours.victory, size: 32);
+          }
           return Column(
             children: state.challenges.values.map(
               (challenge) {
