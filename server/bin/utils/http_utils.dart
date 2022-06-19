@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:common/common.dart';
 import 'package:shelf/shelf.dart';
 
 import 'auth_utils.dart';
@@ -57,7 +58,7 @@ class HttpUtils {
   static Response buildErrorResponse(String error, {List<String> warnings = const [], TokenData? tokenData}) =>
       buildResponse(error: error, warnings: warnings, tokenData: tokenData);
 
-  static Response invalidRequestResponse() => buildResponse(error: 'invalid_request');
+  static Response invalidRequestResponse() => buildResponse(error: Errors.invalidRequest);
 
   static Object? toEncodable(dynamic object) {
     if (object is Map) {
@@ -66,5 +67,6 @@ class HttpUtils {
         for (var k in object.keys) '$k': object[k],
       };
     }
+    return null;
   }
 }

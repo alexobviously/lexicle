@@ -78,16 +78,20 @@ class ApiClient {
         unwrapper: unwrapGameGroup,
         authType: AuthType.required,
       );
+  static Future<Result<Challenge>> getChallenge(int level, int sequence) => getAndUnwrap(
+        '/challenges/$level/$sequence',
+        unwrapper: unwrapChallenge,
+      );
+  static getChallengeAttempt(String challenge) => getAndUnwrap(
+        '/challenges/$challenge/attempt',
+        unwrapper: unwrapGame,
+      );
 
   static Future<Result<List<String>>> allGames() =>
       getAndUnwrap('/games/all', unwrapper: (data) => coerceList(data['games']));
   static Future<Result<List<String>>> activeGames() =>
       getAndUnwrap('/games/active', unwrapper: (data) => coerceList(data['games']));
-  static Future<Result<Game>> getGame(String id) => getAndUnwrap(
-        '/games/$id',
-        unwrapper: unwrapGame,
-        authType: AuthType.optional,
-      );
+
   static Future<Result<WordValidationResult>> makeGuess(String game, String guess) => postAndUnwrap(
         '/games/$game/guess',
         body: {'guess': guess},
@@ -137,6 +141,7 @@ class ApiClient {
     User: (id) => '/users/$id',
     UserStats: (id) => '/ustats/$id',
     Team: (id) => '/teams/$id',
+    Challenge: (id) => '/challenges/$id',
   };
 
   static Map<Type, Function(Map<String, dynamic>)> unwrappers = {
@@ -146,6 +151,7 @@ class ApiClient {
     UserStats: unwrapUserStats,
     Team: unwrapTeam,
     AuthData: AuthData.fromJson, // not used
+    Challenge: unwrapChallenge,
   };
 
   static T unwrap<T extends Entity>(Map<String, dynamic> doc) => unwrappers[T]!(doc);
@@ -269,6 +275,7 @@ class ApiClient {
   static User unwrapUser(Map<String, dynamic> data) => User.fromJson(data['user']);
   static UserStats unwrapUserStats(Map<String, dynamic> data) => UserStats.fromJson(data['stats']);
   static Team unwrapTeam(Map<String, dynamic> data) => Team.fromJson(data['team']);
+  static Challenge unwrapChallenge(Map<String, dynamic> data) => Challenge.fromJson(data['challenge']);
   static ServerMeta unwrapServerMeta(Map<String, dynamic> data) => ServerMeta.fromJson(data);
   static List<T> unwrapList<T>(List<Map<String, dynamic>> data, Unwrapper unwrapper) =>
       data.map<T>((e) => unwrapper(e)).toList();

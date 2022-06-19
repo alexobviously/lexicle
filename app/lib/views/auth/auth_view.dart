@@ -8,7 +8,8 @@ import 'package:word_game/views/auth/login_form.dart';
 import 'package:word_game/views/auth/register_form.dart';
 
 class AuthView extends StatefulWidget {
-  const AuthView({Key? key}) : super(key: key);
+  final String? redirect;
+  const AuthView({Key? key, this.redirect}) : super(key: key);
 
   @override
   _AuthViewState createState() => _AuthViewState();
@@ -45,7 +46,7 @@ class _AuthViewState extends State<AuthView> {
     return BlocListener<AuthController, AuthState>(
       listener: (context, state) {
         if (state.loggedIn) {
-          context.go(Routes.home);
+          context.go(widget.redirect ?? Routes.home);
         }
       },
       child: StandardScaffold(

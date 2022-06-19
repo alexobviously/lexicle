@@ -13,6 +13,7 @@ class Game implements Entity {
   final WordData current;
   final List<String> flags;
   final String? group;
+  final String? challenge;
   final int? endTime; // determined in advance by timelimited games, always set on finish
   final int? endReason;
   final int penalty;
@@ -38,6 +39,7 @@ class Game implements Entity {
         guesses: score,
         endReason: endReason,
       );
+  WordData? get lastGuess => guesses.reversed.firstWhereOrNull((e) => e.finalised);
 
   Game({
     String? id,
@@ -49,6 +51,7 @@ class Game implements Entity {
     required this.current,
     this.flags = const [],
     this.group,
+    this.challenge,
     this.endTime,
     this.endReason,
     this.penalty = 0,
@@ -66,6 +69,15 @@ class Game implements Entity {
         endTime: endTime,
       );
 
+  factory Game.fromChallenge({required Challenge challenge, required String player}) => Game(
+        challenge: challenge.id,
+        answer: challenge.answer,
+        endTime: challenge.endTime,
+        player: player,
+        guesses: [],
+        current: WordData.blank(),
+      );
+
   static const flagInvalid = 'i';
 
   factory Game.fromJson(Map<String, dynamic> doc) {
@@ -80,6 +92,7 @@ class Game implements Entity {
       current: WordData.fromJson(doc[GameFields.current] as Map<String, dynamic>),
       flags: coerceList(doc[GameFields.flags] ?? []),
       group: doc[GameFields.group],
+      challenge: doc[GameFields.challenge],
       endTime: doc[GameFields.endTime],
       endReason: doc[GameFields.endReason],
     );
@@ -96,6 +109,7 @@ class Game implements Entity {
       GameFields.current: current.toMap(hideContent: hideAnswer),
       GameFields.flags: flags,
       if (group != null) GameFields.group: group,
+      if (challenge != null) GameFields.challenge: challenge,
       if (endTime != null) GameFields.endTime: endTime,
       if (endReason != null) GameFields.endReason: endReason,
     };
@@ -120,6 +134,7 @@ class Game implements Entity {
     int? endTime,
     int? endReason,
     int? penalty,
+    String? challenge,
   }) {
     return Game(
       id: id ?? this.id,
@@ -133,6 +148,7 @@ class Game implements Entity {
       endTime: endTime ?? this.endTime,
       endReason: endReason ?? this.endReason,
       penalty: penalty ?? this.penalty,
+      challenge: challenge ?? this.challenge,
     );
   }
 
@@ -143,15 +159,8 @@ class Game implements Entity {
   String toString() => 'Game($id, player; $player, creator: $creator, answer: $answer, guesses: ${guesses.length})';
 
   String toEmojis() {
-    String _emojiAt(WordData word, int index) {
-      if (word.correct.contains(index)) return '🟩';
-      if (word.semiCorrect.contains(index)) return '🟨';
-      return '⬛';
-    }
-
     if (guesses.isEmpty) return '';
-    final range = List.generate(length, (i) => i);
-    List<String> lines = guesses.map((e) => range.map((i) => _emojiAt(e, i)).join('')).toList();
+    List<String> lines = guesses.map((e) => e.toEmojis()).toList();
     return lines.join('\n');
   }
 }

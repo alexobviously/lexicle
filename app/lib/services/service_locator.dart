@@ -2,6 +2,7 @@ import 'package:common/common.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
 import 'package:word_game/cubits/auth_controller.dart';
+import 'package:word_game/cubits/challenge_manager.dart';
 import 'package:word_game/services/app_dictionary.dart';
 import 'package:word_game/services/sound_service.dart';
 import 'package:word_game/stores/app_user_stats_store.dart';
@@ -19,6 +20,7 @@ AppUserStatsStore ustatsStore() => getIt.get<AppUserStatsStore>();
 TeamStore teamStore() => getIt.get<TeamStore>();
 GameStore gameStore() => getIt.get<GameStore>();
 GameGroupStore groupStore() => getIt.get<GameGroupStore>();
+ChallengeManager challengeManager() => getIt.get<ChallengeManager>();
 
 Future<void> setUpServiceLocator({required DatabaseService db}) async {
   getIt.registerSingleton<FlutterSecureStorage>(FlutterSecureStorage(
@@ -33,4 +35,5 @@ Future<void> setUpServiceLocator({required DatabaseService db}) async {
   getIt.registerSingleton<TeamStore>(TeamStore(db));
   getIt.registerSingleton<GameStore>(GameStore(db));
   getIt.registerSingleton<GameGroupStore>(GameGroupStore(db));
+  getIt.registerSingleton<ChallengeManager>(ChallengeManager());
 }

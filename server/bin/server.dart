@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:common/common.dart';
 import 'package:dart_dotenv/dart_dotenv.dart';
 import 'package:shelf/shelf.dart';
 import 'package:shelf_cors_headers/shelf_cors_headers.dart';
@@ -9,6 +10,7 @@ import 'package:yaml/yaml.dart';
 
 import 'handlers/admin_handler.dart';
 import 'handlers/auth_handler.dart';
+import 'handlers/challenge_handler.dart';
 import 'handlers/dictionary_handler.dart';
 import 'handlers/game_handler.dart';
 import 'handlers/game_server_handler.dart';
@@ -20,6 +22,7 @@ import 'services/environment.dart';
 import 'services/mongo_service.dart';
 import 'services/service_locator.dart';
 
+// We don't use this any more because our host handles it, but it's still here if you need it.
 SecurityContext getSecurityContext() {
   // Bind with a secure HTTPS connection
   final chain = Platform.script.resolve('cert.pem').toFilePath();
@@ -51,6 +54,8 @@ Environment readEnvironment() {
     mongoHost: _getEnv('MONGO_HOST'),
     jwtSecret: _getEnv('JWT_SECRET'),
     serverName: _getEnv('SERVER_NAME', 'Lexicle'),
+    challengeKey: int.parse(_getEnv('CHALLENGE_KEY', '$defaultChallengeKey')),
+    cacheInterval: int.parse(_getEnv('CACHE_INTERVAL', '60000')),
   );
 }
 
@@ -62,6 +67,10 @@ Future main() async {
   await _db.init(env);
   print('MongoDB ready!');
   await setUpServiceLocator(environment: env, db: _db);
+
+  final t = today();
+  print(t);
+  print(t.millisecondsSinceEpoch);
 
   final _router = shelf_router.Router()
     ..get('/hello', _echoRequest)
@@ -99,6 +108,9 @@ Future main() async {
     ..get('/teams/<id>', TeamHandler.getTeam)
     ..post('/teams/<id>/join', TeamHandler.joinTeam)
     ..post('/teams/leave', TeamHandler.leaveTeam)
+    ..get('/challenges/<id_or_level>', ChallengeHandler.getChallenge)
+    ..get('/challenges/<id>/attempt', ChallengeHandler.getChallengeAttempt)
+    ..get('/challenges/<level>/<sequence>', ChallengeHandler.getChallenge)
     ..post('/admin/change_pw', AdminHandler.changePassword)
     ..post('/admin/restore_group', AdminHandler.restoreGroup);
 

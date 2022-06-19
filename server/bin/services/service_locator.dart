@@ -17,10 +17,12 @@ UserStore userStore() => getIt.get<UserStore>();
 AuthStore authStore() => getIt.get<AuthStore>();
 UserStatsStore ustatsStore() => getIt.get<UserStatsStore>();
 TeamStore teamStore() => getIt.get<TeamStore>();
+ChallengeStore challengeStore() => getIt.get<ChallengeStore>();
 CacheManager cacheManager() => getIt.get<CacheManager>();
 
 Future<void> setUpServiceLocator({required Environment environment, required DatabaseService db}) async {
-  getIt.registerSingleton<ServerDictionary>(ServerDictionary());
+  ServerDictionary dict = ServerDictionary();
+  getIt.registerSingleton<ServerDictionary>(dict);
   getIt.registerSingleton<GameServer>(GameServer());
   getIt.registerSingleton<Environment>(environment);
   getIt.registerSingleton<DatabaseService>(db);
@@ -30,5 +32,12 @@ Future<void> setUpServiceLocator({required Environment environment, required Dat
   getIt.registerSingleton<AuthStore>(AuthStore(db));
   getIt.registerSingleton<UserStatsStore>(UserStatsStore(db));
   getIt.registerSingleton<TeamStore>(TeamStore(db));
-  getIt.registerSingleton<CacheManager>(CacheManager(interval: Duration(minutes: 1)));
+  getIt.registerSingleton<ChallengeStore>(ChallengeStore(
+    db,
+    dictionary: dict,
+    key: environment.challengeKey,
+  ));
+  getIt.registerSingleton<CacheManager>(CacheManager(
+    interval: Duration(milliseconds: environment.cacheInterval),
+  ));
 }

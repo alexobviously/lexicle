@@ -11,8 +11,10 @@ import 'package:go_router/go_router.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:word_game/app/colours.dart';
 import 'package:word_game/app/router.dart';
+import 'package:word_game/cubits/challenge_manager.dart';
 import 'package:word_game/cubits/observer_game_controller.dart';
 import 'package:word_game/cubits/scheme_cubit.dart';
+import 'package:word_game/model/constants.dart';
 import 'package:word_game/services/service_locator.dart';
 import 'package:word_game/services/sound_service.dart';
 import 'package:word_game/ui/entity_future_builder.dart';
@@ -46,6 +48,7 @@ class _GameViewState extends State<GameView> {
   int? endTime;
   int? timeLeft;
   Timer? timer;
+  Challenge? challenge;
 
   bool get isObserving => game is ObserverGameController;
 
@@ -67,11 +70,18 @@ class _GameViewState extends State<GameView> {
       }
     }
     if (game != null) {
+      _initChallenge();
       _initTimer();
       game!.stream.map((e) => e.endTime).distinct().listen((_) => _initTimer());
       game!.numRowsStream.listen((_) => _scrollDown());
       WidgetsBinding.instance!.addPostFrameCallback((_) => _scrollDown(Duration(milliseconds: 750)));
     }
+  }
+
+  void _initChallenge() async {
+    if (game?.state.challenge == null) return;
+    final result = await BlocProvider.of<ChallengeManager>(context).getChallenge(id: game!.state.challenge!);
+    if (result.ok) challenge = result.object!;
   }
 
   void _initTimer() {
@@ -84,7 +94,7 @@ class _GameViewState extends State<GameView> {
 
   void _setTimeLeft() {
     if (endTime == null) return;
-    setState(() => timeLeft = max(endTime! - DateTime.now().millisecondsSinceEpoch, 0));
+    if (mounted) setState(() => timeLeft = max(endTime! - DateTime.now().millisecondsSinceEpoch, 0));
   }
 
   final ScrollController _controller = ScrollController();
@@ -337,6 +347,12 @@ class _GameViewState extends State<GameView> {
   Widget _copyButton(BuildContext context) {
     bool enabled = game!.state.guesses.isNotEmpty;
     String title = widget.data.title != null ? 'Lexicle: ${widget.data.title!}' : 'Lexicle';
+    if (challenge != null) {
+      String url = (challenge!.level != null && challenge!.sequence != null)
+          ? '$lexicleUrl/challenges/${challenge!.level! + 1}/${challenge!.sequence! + 1}'
+          : '$lexicleUrl/challenges/${challenge!.id}';
+      title = '$title\n$url';
+    }
     return IconButton(
       onPressed: enabled
           ? () {

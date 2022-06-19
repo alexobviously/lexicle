@@ -7,6 +7,7 @@ import 'package:flutter_web_frame/flutter_web_frame.dart';
 import 'package:word_game/app/router.dart';
 import 'package:word_game/app/themes.dart';
 import 'package:word_game/cubits/auth_controller.dart';
+import 'package:word_game/cubits/challenge_manager.dart';
 import 'package:word_game/cubits/game_group_manager.dart';
 import 'package:word_game/cubits/local_game_manager.dart';
 import 'package:word_game/cubits/scheme_cubit.dart';
@@ -65,6 +66,10 @@ class MyApp extends StatelessWidget {
         BlocProvider<SchemeCubit>(
           create: (_) => SchemeCubit(settingsCubit: _settingsCubit),
           lazy: false,
+        ),
+        BlocProvider<ChallengeManager>(
+          create: (_) => challengeManager(),
+          lazy: true,
         ),
       ],
       child: BlocBuilder<SettingsCubit, Settings>(builder: (context, settings) {

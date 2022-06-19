@@ -28,11 +28,13 @@ class CacheManager {
     final _groups = await groupStore().pushCache();
     final _users = await userStore().pushCache();
     final _auths = await authStore().pushCache();
+    final _ustats = await ustatsStore().pushCache();
     final _teams = await teamStore().pushCache();
     print('[Cache Manager]: finished');
     print(_unwrap('Games', _games));
     print(_unwrap('Groups', _groups));
     print(_unwrap('Users', _users));
+    print(_unwrap('User Stats', _ustats));
     print(_unwrap('Teams', _teams));
     print(':::::::::::::::::::::::::::::::');
   }

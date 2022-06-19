@@ -52,6 +52,17 @@ class MongoService implements DatabaseService {
   }
 
   @override
+  Future<Result<T>> getOne<T extends Entity>({SelectorBuilder? selector}) async {
+    await connected;
+    final coll = db.collection(Entity.table(T));
+    Map<String, dynamic>? data = await coll.findOne(selector);
+    if (data == null) return Result.error(Errors.notFound);
+    ObjectId? objectId = data['_id'];
+    data['id'] = objectId?.id.hexString;
+    return Result.ok(Entity.build<T>(data));
+  }
+
+  @override
   Future<List<T>> getAllByField<T extends Entity>(String field, dynamic value) async {
     SelectorBuilder selector = where.eq(field, value);
     return getAll<T>(selector: selector);
@@ -98,5 +109,24 @@ class MongoService implements DatabaseService {
     } else {
       return Result.error('write_error');
     }
+  }
+
+  @override
+  Future<Result<Challenge>> getCurrentChallenge(int level, [bool returnFinished = false]) async {
+    final selector = where.eq(ChallengeFields.level, level).sortBy(Fields.timestamp, descending: true).limit(1);
+    final r = await getAll<Challenge>(selector: selector);
+    return (r.isNotEmpty && (!r.first.finished || returnFinished)) ? Result.ok(r.first) : Result.error(Errors.notFound);
+  }
+
+  @override
+  Future<Result<Challenge>> getChallenge(int level, int sequence) async {
+    final selector = where.eq(ChallengeFields.level, level).eq(ChallengeFields.sequence, sequence);
+    return getOne<Challenge>(selector: selector);
+  }
+
+  @override
+  Future<Result<Game>> getChallengeAttempt(String player, String challenge) async {
+    final selector = where.eq(GameFields.player, player).eq(GameFields.challenge, challenge);
+    return getOne<Game>(selector: selector);
   }
 }

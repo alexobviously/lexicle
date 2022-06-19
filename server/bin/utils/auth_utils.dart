@@ -58,7 +58,7 @@ TokenData verifyToken(String token, [bool forceRenew = false]) {
       }
     }
   } on JwtException {
-    print('Invalid token');
+    // print('Invalid token');
   } catch (e) {
     print('Unhandled exception in verifyToken: $e');
   }

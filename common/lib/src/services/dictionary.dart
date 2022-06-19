@@ -52,8 +52,8 @@ class Dictionary with ReadyManager {
     return getDict(dict)[word.length]!.contains(word);
   }
 
-  String randomWord(int length, [DictionaryType dict = DictionaryType.common]) {
-    int i = Random().nextInt(getDict(dict)[length]!.length);
+  String randomWord(int length, {DictionaryType dict = DictionaryType.common, int? seed}) {
+    int i = Random(seed).nextInt(getDict(dict)[length]!.length);
     return getDict(dict)[length]![i];
   }
 

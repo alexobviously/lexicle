@@ -54,7 +54,7 @@ class GameGroupController extends Cubit<GameGroupState> {
   bool hasGameController(String gid) => state.games.containsKey(gid);
 
   void _createGameController(String gid) async {
-    final _result = await ApiClient.getGame(gid);
+    final _result = await ApiClient.getEntity<Game>(gid);
     if (!_result.ok) return; // should we do something here maybe?
     final gc = observing
         ? ObserverGameController(_result.object!)

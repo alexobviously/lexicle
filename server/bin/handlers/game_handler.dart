@@ -203,7 +203,7 @@ class GameHandler {
 
   static Future<Response> getGame(Request request, String id) async {
     try {
-      final result = gameServer().getGameController(id);
+      final result = await gameServer().getGameController(id);
       if (!result.ok) {
         final result2 = await gameStore().get(id);
         if (result2.ok) {
