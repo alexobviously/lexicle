@@ -25,7 +25,7 @@ class _GameOverviewState extends State<GameOverview> {
   final ScrollController _controller = ScrollController();
 
   void _scrollDown() {
-    SchedulerBinding.instance!.addPostFrameCallback(
+    SchedulerBinding.instance.addPostFrameCallback(
       (_) {
         if (_controller.positions.isEmpty) return; // ???
         _controller.animateTo(

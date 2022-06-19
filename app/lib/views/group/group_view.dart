@@ -94,7 +94,7 @@ class _GroupViewState extends State<GroupView> {
       for (int i = 0; i < 50; i++) {
         _scrollControllers.add(_scrollControllerGroup.addAndGet());
       }
-      SchedulerBinding.instance!.addPostFrameCallback((_) {
+      SchedulerBinding.instance.addPostFrameCallback((_) {
         final _controller = _scrollControllers.first;
         if (_controller.positions.isEmpty) return; // ???
         _controller.animateTo(

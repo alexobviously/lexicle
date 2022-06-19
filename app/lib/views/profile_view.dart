@@ -150,14 +150,18 @@ class _ProfileViewState extends State<ProfileView> {
               x: i,
               barRods: [
                 BarChartRodData(
-                  y: ((_counts[i + 1] ?? 0) / maxCount) * maxCount,
+                  toY: ((_counts[i + 1] ?? 0) / maxCount) * maxCount,
                   width: 41,
-                  colors: [_difficultyColour(i + 1, scheme: ColourScheme.base(context))],
+                  color: _difficultyColour(i + 1, scheme: ColourScheme.base(context)),
                   borderRadius: const BorderRadius.vertical(top: Radius.circular(2.0)),
                   borderSide: BorderSide(width: 0.3, color: borderColour.withOpacity(0.5)),
                 ),
               ],
             ));
+
+    final noShowTitles = AxisTitles(
+      sideTitles: SideTitles(showTitles: false),
+    );
 
     return SizedBox(
       width: 350,
@@ -167,21 +171,30 @@ class _ProfileViewState extends State<ProfileView> {
           borderData: FlBorderData(show: false),
           gridData: FlGridData(show: false),
           titlesData: FlTitlesData(
-            bottomTitles: SideTitles(
-              showTitles: true,
-              getTitles: (v) => '${(v + 1).toStringAsFixed(0)}${v == 7 ? '+' : ''}',
-              getTextStyles: (_, __) => textTheme.headline6,
+            bottomTitles: AxisTitles(
+              sideTitles: SideTitles(
+                showTitles: true,
+                getTitlesWidget: (v, meta) => Text(
+                  '${(v + 1).toStringAsFixed(0)}${v == 7 ? '+' : ''}',
+                  style: textTheme.headline6,
+                ),
+              ),
             ),
-            leftTitles: SideTitles(showTitles: false),
-            topTitles: SideTitles(showTitles: false),
-            rightTitles: SideTitles(showTitles: false),
+            // bottomTitles: SideTitles(
+            //   showTitles: true,
+            //   getTitles: (v) => '${(v + 1).toStringAsFixed(0)}${v == 7 ? '+' : ''}',
+            //   getTextStyles: (_, __) => textTheme.headline6,
+            // ),
+            leftTitles: noShowTitles,
+            topTitles: noShowTitles,
+            rightTitles: noShowTitles,
           ),
           barTouchData: BarTouchData(
             enabled: true,
             touchTooltipData: BarTouchTooltipData(
               tooltipBgColor: Colors.white,
               fitInsideVertically: true,
-              getTooltipItem: (_, __, c, ___) => BarTooltipItem(c.y.toStringAsFixed(0), textTheme.bodyText2!),
+              getTooltipItem: (_, __, c, ___) => BarTooltipItem(c.fromY.toStringAsFixed(0), textTheme.bodyText2!),
             ),
           ),
           barGroups: _groups,

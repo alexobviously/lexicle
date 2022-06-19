@@ -8,15 +8,18 @@ class ChallengeManager extends Cubit<ChallengeManagerState> {
     refresh();
   }
 
-  void refresh() async {
-    emit(ChallengeManagerState.initial());
+  void refresh({bool clear = false}) async {
+    if (clear) emit(ChallengeManagerState.initial());
+    emit(state.copyWith(loading: true));
     await auth().ready; // because we want to submit the token if possible, for attempts
     Map<int, Challenge> challenges = {};
-    for (int level in Challenges.allLevels) {
-      final result = await db().getCurrentChallenge(level);
-      if (result.ok) challenges[level] = result.object!;
+    final results = await Future.wait(
+      Challenges.allLevels.map((e) => db().getCurrentChallenge(e)),
+    );
+    for (Result<Challenge> r in results) {
+      if (r.ok) challenges[r.object!.level!] = r.object!;
     }
-    emit(ChallengeManagerState(challenges: challenges));
+    emit(ChallengeManagerState(challenges: challenges, loading: false));
 
     for (Challenge c in challenges.values) {
       if (c.hasAttempt) {
@@ -68,20 +71,27 @@ class ChallengeManager extends Cubit<ChallengeManagerState> {
 }
 
 class ChallengeManagerState {
+  final bool loading;
   final Map<int, Challenge> challenges;
   final Map<String, BaseGameController> games;
 
   Challenge? challengeWithId(String id) => challenges.values.firstWhereOrNull((e) => e.id == id);
   bool hasAttempt(String id) => games.containsKey(id);
 
-  const ChallengeManagerState({this.challenges = const {}, this.games = const {}});
+  const ChallengeManagerState({
+    this.loading = false,
+    this.challenges = const {},
+    this.games = const {},
+  });
   factory ChallengeManagerState.initial() => ChallengeManagerState();
 
   ChallengeManagerState copyWith({
+    bool? loading,
     Map<int, Challenge>? challenges,
     Map<String, BaseGameController>? games,
   }) =>
       ChallengeManagerState(
+        loading: loading ?? this.loading,
         challenges: challenges ?? this.challenges,
         games: games ?? this.games,
       );

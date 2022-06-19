@@ -6,7 +6,7 @@ import 'package:word_game/app/colours.dart';
 
 class SettingsCubit extends Cubit<Settings> {
   late SharedPreferences prefs;
-  final window = WidgetsBinding.instance!.window;
+  final window = WidgetsBinding.instance.window;
   Brightness get platformBrightness => window.platformBrightness;
   ThemeMode get themeMode => state.themeMode;
 

@@ -73,7 +73,7 @@ class _RushViewState extends State<RushView> {
       _initTimer(game!.state.endTime);
       game!.endTimeStream.listen((t) => _initTimer(t));
       game!.numRowsStream.listen((_) => _scrollDown());
-      WidgetsBinding.instance!.addPostFrameCallback((_) => _scrollDown(Duration(milliseconds: 750)));
+      WidgetsBinding.instance.addPostFrameCallback((_) => _scrollDown(Duration(milliseconds: 750)));
     }
   }
 
@@ -93,7 +93,7 @@ class _RushViewState extends State<RushView> {
   final ScrollController _controller = ScrollController();
 
   void _scrollDown([Duration duration = const Duration(milliseconds: 250)]) {
-    SchedulerBinding.instance!.addPostFrameCallback(
+    SchedulerBinding.instance.addPostFrameCallback(
       (_) {
         if (_controller.positions.isEmpty) return; // ???
         _controller.animateTo(
