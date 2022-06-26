@@ -78,9 +78,39 @@ class Dictionary with ReadyManager {
         throw ('Invalid dictionary type $dict');
     }
   }
+
+  List<String> getSolutions({
+    DictionaryType dict = DictionaryType.expanded,
+    required int length,
+    List<String> included = const [],
+    List<String> excluded = const [],
+    List<LetterPosition> correct = const [],
+    List<LetterPosition> incorrect = const [],
+  }) {
+    List<String> words = [...getDict(dict)[length]!];
+    for (String letter in included) {
+      words.removeWhere((e) => !e.contains(letter));
+    }
+    for (String letter in excluded) {
+      words.removeWhere((e) => e.contains(letter));
+    }
+    for (LetterPosition lp in correct) {
+      words.removeWhere((e) => e[lp.position] != lp.letter);
+    }
+    for (LetterPosition lp in incorrect) {
+      words.removeWhere((e) => e[lp.position] == lp.letter);
+    }
+    return words;
+  }
 }
 
 enum DictionaryType {
   common,
   expanded,
+}
+
+class LetterPosition {
+  final String letter;
+  final int position;
+  const LetterPosition(this.letter, this.position) : assert(letter.length == 1, 'Must be a single letter');
 }
