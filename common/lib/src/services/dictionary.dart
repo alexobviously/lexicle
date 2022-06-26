@@ -79,7 +79,7 @@ class Dictionary with ReadyManager {
     }
   }
 
-  List<String> getSolutions({
+  List<String> search({
     DictionaryType dict = DictionaryType.expanded,
     required int length,
     List<String> included = const [],
