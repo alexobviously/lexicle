@@ -16,7 +16,6 @@ class AuthController extends Cubit<AuthState> with ReadyManager {
       emit(state.copyWith(token: token, expiry: expiry, working: true));
       final _result = await ApiClient.getMe();
       if (_result.ok) {
-        setReady();
         emit(state.copyWith(user: _result.object!, working: false));
         refreshUserStats();
       } else {
@@ -25,6 +24,7 @@ class AuthController extends Cubit<AuthState> with ReadyManager {
         storage().delete(key: 'expiry');
       }
     }
+    setReady();
   }
 
   Future<Result<User>> login(String username, String password) async {

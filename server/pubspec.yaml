@@ -1,6 +1,6 @@
 name: word_game_server
 description: A simple command-line application.
-version: 0.5.4
+version: 0.5.5
 publish_to: 'none'
 
 environment:

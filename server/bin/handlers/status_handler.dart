@@ -9,8 +9,9 @@ class StatusHandler {
       data: {
         'serverName': env().serverName,
         'version': env().version,
-        'appMinVersion': '0.5.9',
-        'appCurrentVersion': '0.5.9',
+        'appMinVersion': '0.5.10',
+        'appCurrentVersion': '0.5.10',
+        // TODO: store this online somewhere so we don't need to rebuild for app-only changes
       },
     );
   }
