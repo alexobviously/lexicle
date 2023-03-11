@@ -1,4 +1,4 @@
-import 'package:badges/badges.dart';
+import 'package:badges/badges.dart' as badges;
 import 'package:common/common.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
@@ -178,10 +178,10 @@ class _HomeViewState extends State<HomeView> {
               depth: 2,
               boxShape: NeumorphicBoxShape.roundRect(BorderRadius.circular(16)),
             ),
-            child: Badge(
-              position: BadgePosition.topEnd(top: -6, end: -15),
+            child: badges.Badge(
+              position: badges.BadgePosition.topEnd(top: -6, end: -15),
               toAnimate: false,
-              shape: BadgeShape.square,
+              shape: badges.BadgeShape.square,
               badgeColor: Colours.victory.darken(0.5).withOpacity(0.5),
               borderRadius: BorderRadius.circular(8),
               padding: EdgeInsets.all(2.0),
