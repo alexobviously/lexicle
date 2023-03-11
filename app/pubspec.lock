@@ -61,10 +61,10 @@ packages:
     dependency: transitive
     description:
       name: bson
-      sha256: b660352c1912b8c2578c6b0278834dfbe408475726aa6c7acdcff69827dc4e98
+      sha256: "884c53a58564f4d0ed4a5ebe659ca9743603fe13c22908a5facbee2e21424c23"
       url: "https://pub.dev"
     source: hosted
-    version: "4.0.0"
+    version: "3.0.1"
   buffer:
     dependency: transitive
     description:
@@ -523,18 +523,18 @@ packages:
     dependency: "direct main"
     description:
       name: mongo_dart
-      sha256: "9ab99ef8989e7c358a4bc5f5d4b98d4c2b77d90da5c173f5bdd4d120df2f5d45"
+      sha256: b7af1e1a0a0e7c026dfd9602251bf00247e8d9edf730a8bfdbf10c659021fb6d
       url: "https://pub.dev"
     source: hosted
-    version: "0.9.0"
+    version: "0.8.2"
   mongo_dart_query:
     dependency: transitive
     description:
       name: mongo_dart_query
-      sha256: ccb2875f84a33afe72025ba447956cf4dbad5c7776e5e7cb00f39a1b5234291b
+      sha256: b8374cf4bb3bd9d7885d7af2d946a6020a2871651917f65f459c46d8f791c09b
       url: "https://pub.dev"
     source: hosted
-    version: "4.0.0"
+    version: "3.0.0"
   nested:
     dependency: transitive
     description:

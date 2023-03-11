@@ -52,8 +52,7 @@ class Routes {
 
 GoRouter buildRouter() {
   return GoRouter(
-    urlPathStrategy: UrlPathStrategy.path,
-    redirect: (GoRouterState state) {
+    redirect: (context, state) async {
       final loggedIn = auth().loggedIn;
       if (loggedIn) return null;
       for (String r in Routes.protectedRoutes) {

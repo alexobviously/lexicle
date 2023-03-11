@@ -10,7 +10,7 @@ dependencies:
   bloc: ^8.0.2
   copy_with_extension: ^2.0.2
   equatable: ^2.0.3
-  mongo_dart: ^0.9.0
+  mongo_dart: 0.8.2
   validators: ^3.0.0
 
 dev_dependencies:

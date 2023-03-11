@@ -4,7 +4,7 @@ class ServerMeta {
   final String appCurrentVersion;
   final String appMinVersion;
   final String serverName;
-  ServerMeta({
+  const ServerMeta({
     this.loaded = true,
     required this.serverVersion,
     required this.appCurrentVersion,

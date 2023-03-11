@@ -16,7 +16,7 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-    bool canGoBack = GoRouter.of(context).navigator?.canPop() ?? false; //Navigator.of(context).canPop();
+    bool canGoBack = Navigator.of(context).canPop(); //Navigator.of(context).canPop();
     return Container(
       decoration: BoxDecoration(
         border: Border(bottom: BorderSide(color: Colors.black12)),
