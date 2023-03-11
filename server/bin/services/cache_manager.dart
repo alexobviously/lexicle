@@ -17,25 +17,35 @@ class CacheManager {
   }
 
   void pushCaches() async {
-    String _unwrap(String title, Result<Iterable<String>> result) {
+    String unwrap(String title, Result<Iterable<String>> result) {
       String r = result.ok ? result.object!.length.toString() : 'Error: ${result.error}';
       return ('::::: $title: $r');
     }
 
+    int total = gameStore().cache.length +
+        groupStore().cache.length +
+        userStore().cache.length +
+        authStore().cache.length +
+        ustatsStore().cache.length +
+        teamStore().cache.length;
+
+    if (total < 1) return;
+
     print(':::::::::::::::::::::::::::::::');
     print('[Cache Manager]: pushing caches');
-    final _games = await gameStore().pushCache();
-    final _groups = await groupStore().pushCache();
-    final _users = await userStore().pushCache();
-    final _auths = await authStore().pushCache();
-    final _ustats = await ustatsStore().pushCache();
-    final _teams = await teamStore().pushCache();
+    final games = await gameStore().pushCache();
+    final groups = await groupStore().pushCache();
+    final users = await userStore().pushCache();
+    final auths = await authStore().pushCache();
+    final ustats = await ustatsStore().pushCache();
+    final teams = await teamStore().pushCache();
     print('[Cache Manager]: finished');
-    print(_unwrap('Games', _games));
-    print(_unwrap('Groups', _groups));
-    print(_unwrap('Users', _users));
-    print(_unwrap('User Stats', _ustats));
-    print(_unwrap('Teams', _teams));
+    print(unwrap('Games', games));
+    print(unwrap('Groups', groups));
+    print(unwrap('Users', users));
+    print(unwrap('Auths', auths));
+    print(unwrap('User Stats', ustats));
+    print(unwrap('Teams', teams));
     print(':::::::::::::::::::::::::::::::');
   }
 }
