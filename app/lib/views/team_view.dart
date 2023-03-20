@@ -13,7 +13,7 @@ import 'package:word_game/ui/standard_scaffold.dart';
 
 class TeamView extends StatefulWidget {
   final String id;
-  const TeamView(this.id, {Key? key}) : super(key: key);
+  const TeamView(this.id, {super.key});
 
   @override
   State<TeamView> createState() => _TeamViewState();

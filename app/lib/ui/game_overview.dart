@@ -14,8 +14,8 @@ class GameOverview extends StatefulWidget {
     this.game, {
     this.onRemove,
     this.header,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   State<GameOverview> createState() => _GameOverviewState();

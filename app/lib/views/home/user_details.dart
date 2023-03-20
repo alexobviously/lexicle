@@ -9,7 +9,7 @@ import 'package:word_game/services/sound_service.dart';
 class UserDetails extends StatelessWidget {
   final User user;
   final UserStats stats;
-  const UserDetails({Key? key, required this.user, required this.stats}) : super(key: key);
+  const UserDetails({super.key, required this.user, required this.stats});
 
   @override
   Widget build(BuildContext context) {

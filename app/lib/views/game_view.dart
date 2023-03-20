@@ -34,7 +34,7 @@ class GameRouteData {
 class GameView extends StatefulWidget {
   final String id;
   final GameRouteData data;
-  const GameView({Key? key, required this.id, required this.data}) : super(key: key);
+  const GameView({super.key, required this.id, required this.data});
 
   @override
   _GameViewState createState() => _GameViewState();

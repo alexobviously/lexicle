@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:word_game/cubits/server_meta_cubit.dart';
+import 'package:word_game/cubits/server_cubit.dart';
 import 'package:word_game/ui/standard_scaffold.dart';
 
 class AboutView extends StatelessWidget {
-  const AboutView({Key? key}) : super(key: key);
+  const AboutView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -90,7 +90,7 @@ class AboutView extends StatelessWidget {
   }
 
   void _showDebugDialog(BuildContext context) {
-    final meta = BlocProvider.of<ServerMetaCubit>(context).state;
+    final meta = BlocProvider.of<ServerCubit>(context).state;
     Row _row(String left, String right) => Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [

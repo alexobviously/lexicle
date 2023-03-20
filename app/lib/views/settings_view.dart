@@ -11,7 +11,7 @@ import 'package:word_game/cubits/settings_cubit.dart';
 import 'package:word_game/ui/standard_scaffold.dart';
 
 class SettingsView extends StatefulWidget {
-  const SettingsView({Key? key}) : super(key: key);
+  const SettingsView({super.key});
 
   @override
   _SettingsViewState createState() => _SettingsViewState();

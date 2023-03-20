@@ -10,7 +10,7 @@ import 'package:word_game/ui/neumorphic_text_field.dart';
 import 'package:word_game/ui/standard_scaffold.dart';
 
 class ChangePasswordView extends StatefulWidget {
-  const ChangePasswordView({Key? key}) : super(key: key);
+  const ChangePasswordView({super.key});
 
   @override
   State<ChangePasswordView> createState() => _ChangePasswordViewState();
@@ -31,7 +31,7 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
 }
 
 class ChangePasswordForm extends StatefulWidget {
-  const ChangePasswordForm({Key? key}) : super(key: key);
+  const ChangePasswordForm({super.key});
 
   @override
   State<ChangePasswordForm> createState() => _ChangePasswordFormState();

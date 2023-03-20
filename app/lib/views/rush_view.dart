@@ -31,7 +31,7 @@ class RushRouteData {
 class RushView extends StatefulWidget {
   final String id;
   final RushRouteData data;
-  const RushView({Key? key, required this.id, required this.data}) : super(key: key);
+  const RushView({super.key, required this.id, required this.data});
 
   @override
   _RushViewState createState() => _RushViewState();

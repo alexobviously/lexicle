@@ -12,15 +12,14 @@ class EntityFutureBuilder<T extends Entity> extends StatefulWidget {
   final Widget Function(T) resultWidget;
 
   const EntityFutureBuilder({
-    Key? key,
+    super.key,
     this.id,
     this.store,
     this.future,
     required this.loadingWidget,
     required this.errorWidget,
     required this.resultWidget,
-  })  : assert((id != null && store != null) || future != null),
-        super(key: key);
+  }) : assert((id != null && store != null) || future != null);
 
   @override
   State<EntityFutureBuilder<T>> createState() => _EntityFutureBuilderState<T>();

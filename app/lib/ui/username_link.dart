@@ -16,8 +16,8 @@ class UsernameLink extends StatelessWidget {
     required this.id,
     UserWidgetBuilder? content,
     this.innerKey,
-    Key? key,
-  }) : super(key: key) {
+    super.key,
+  }) {
     this.content = content ?? (c, u) => Text(u.username, style: Theme.of(c).textTheme.headline6);
   }
 

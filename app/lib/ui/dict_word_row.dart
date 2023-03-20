@@ -6,10 +6,10 @@ class DictWordRow extends StatelessWidget {
   final VoidCallback? onTap;
   int get length => content.length;
   const DictWordRow({
-    Key? key,
+    super.key,
     this.content = '',
     this.onTap,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

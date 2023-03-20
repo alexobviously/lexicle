@@ -10,12 +10,12 @@ class ResultFutureBuilder<T> extends StatefulWidget {
   final Widget Function(T) resultWidget;
 
   const ResultFutureBuilder({
-    Key? key,
+    super.key,
     this.future,
     required this.loadingWidget,
     required this.errorWidget,
     required this.resultWidget,
-  }) : super(key: key);
+  });
 
   @override
   State<ResultFutureBuilder<T>> createState() => _ResultFutureBuilderState<T>();

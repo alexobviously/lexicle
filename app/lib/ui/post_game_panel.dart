@@ -7,10 +7,10 @@ class PostGamePanel extends StatelessWidget {
   final int? reason;
 
   const PostGamePanel({
-    Key? key,
+    super.key,
     required this.guesses,
     required this.reason,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

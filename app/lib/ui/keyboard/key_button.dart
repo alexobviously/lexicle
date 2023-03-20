@@ -12,7 +12,7 @@ class KeyButton extends StatefulWidget {
   final double blurRadius;
   final Color? colour;
   const KeyButton({
-    Key? key,
+    super.key,
     required this.child,
     this.width = 50,
     this.height = 75,
@@ -22,7 +22,7 @@ class KeyButton extends StatefulWidget {
     this.blurRadius = 10.0,
     this.animationDuration = const Duration(milliseconds: 100),
     this.colour,
-  }) : super(key: key);
+  });
 
   @override
   State<KeyButton> createState() => _KeyButtonState();

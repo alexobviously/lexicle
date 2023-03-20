@@ -18,7 +18,7 @@ class NeumorphicTextField extends StatelessWidget {
   final int? maxLength;
   final List<TextInputFormatter>? inputFormatters;
   const NeumorphicTextField({
-    Key? key,
+    super.key,
     this.depth = -2,
     this.enabled,
     this.padding = const EdgeInsets.symmetric(horizontal: 16.0),
@@ -34,7 +34,7 @@ class NeumorphicTextField extends StatelessWidget {
     this.obscureText = false,
     this.maxLength,
     this.inputFormatters,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

@@ -20,7 +20,7 @@ class WordRow extends StatelessWidget {
   final Duration? animationDuration;
   final VoidCallback? onLongPress;
   const WordRow({
-    Key? key,
+    super.key,
     required this.length,
     this.content = '',
     this.correct = const [],
@@ -36,8 +36,7 @@ class WordRow extends StatelessWidget {
     this.correctOnTop = false,
     this.animationDuration,
     this.onLongPress,
-  })  : assert(content.length <= length),
-        super(key: key);
+  }) : assert(content.length <= length);
 
   @override
   Widget build(BuildContext context) {

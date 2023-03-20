@@ -38,7 +38,7 @@ class GroupView extends StatefulWidget {
   // groups from demand by id if no controller is provided
   final String id;
   final GroupRouteData data;
-  const GroupView({required this.id, required this.data, Key? key}) : super(key: key);
+  const GroupView({required this.id, required this.data, super.key});
 
   @override
   State<GroupView> createState() => _GroupViewState();

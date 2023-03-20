@@ -13,12 +13,12 @@ class CountdownClock extends StatefulWidget {
   final ClockSide clockSide;
   const CountdownClock(
     this.endTime, {
-    Key? key,
+    super.key,
     this.fullDetail = false,
     this.textStyle,
     this.iconSize,
     this.clockSide = ClockSide.left,
-  }) : super(key: key);
+  });
 
   @override
   State<CountdownClock> createState() => _CountdownClockState();

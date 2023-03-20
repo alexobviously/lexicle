@@ -12,7 +12,7 @@ import 'package:word_game/cubits/auth_controller.dart';
 import 'package:word_game/cubits/challenge_manager.dart';
 import 'package:word_game/cubits/game_group_manager.dart';
 import 'package:word_game/cubits/scheme_cubit.dart';
-import 'package:word_game/cubits/server_meta_cubit.dart';
+import 'package:word_game/cubits/server_cubit.dart';
 import 'package:word_game/mediator/rush_mediator.dart';
 import 'package:word_game/model/server_meta.dart';
 import 'package:word_game/services/service_locator.dart';
@@ -30,7 +30,7 @@ import 'package:go_router/go_router.dart';
 import 'package:word_game/views/rush_view.dart';
 
 class HomeView extends StatefulWidget {
-  const HomeView({Key? key}) : super(key: key);
+  const HomeView({super.key});
 
   @override
   _HomeViewState createState() => _HomeViewState();
@@ -441,7 +441,7 @@ class _HomeViewState extends State<HomeView> {
       future: PackageInfo.fromPlatform(),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          return BlocBuilder<ServerMetaCubit, ServerMeta>(
+          return BlocBuilder<ServerCubit, ServerMeta>(
             builder: (context, meta) {
               Version localVersion = Version.parse(snapshot.data!.version);
               bool updateAvailable = meta.loaded && localVersion < Version.parse(meta.appCurrentVersion);

@@ -8,13 +8,13 @@ class StandardScaffold extends StatelessWidget {
   final bool showBackButton;
   final List<Widget> appBarActions;
   const StandardScaffold({
-    Key? key,
+    super.key,
     required this.body,
     this.showAppBar = true,
     this.showBackButton = true,
     this.title,
     this.appBarActions = const [],
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

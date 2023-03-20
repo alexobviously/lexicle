@@ -14,12 +14,12 @@ class GameClock extends StatelessWidget {
   final ClockSide clockSide;
   const GameClock(
     this.time, {
-    Key? key,
+    super.key,
     this.fullDetail = false,
     this.textStyle,
     this.iconSize,
     this.clockSide = ClockSide.left,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

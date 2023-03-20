@@ -11,9 +11,8 @@ class ChallengeView extends StatefulWidget {
   final String? id;
   final int? level;
   final int? sequence;
-  const ChallengeView({this.id, this.level, this.sequence, Key? key})
-      : assert(id != null || level != null, 'Provide at least a level or an ID.'),
-        super(key: key);
+  const ChallengeView({this.id, this.level, this.sequence, super.key})
+      : assert(id != null || level != null, 'Provide at least a level or an ID.');
 
   @override
   State<ChallengeView> createState() => _ChallengeViewState();

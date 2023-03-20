@@ -13,7 +13,7 @@ import 'package:word_game/ui/standard_scaffold.dart';
 
 class ProfileView extends StatefulWidget {
   final String id;
-  const ProfileView({required this.id, Key? key}) : super(key: key);
+  const ProfileView({required this.id, super.key});
 
   @override
   State<ProfileView> createState() => _ProfileViewState();

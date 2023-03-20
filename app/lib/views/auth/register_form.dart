@@ -5,7 +5,7 @@ import 'package:word_game/services/service_locator.dart';
 import 'package:word_game/ui/neumorphic_text_field.dart';
 
 class RegisterForm extends StatefulWidget {
-  RegisterForm({Key? key}) : super(key: key);
+  RegisterForm({super.key});
 
   @override
   State<RegisterForm> createState() => _RegisterFormState();

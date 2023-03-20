@@ -9,7 +9,7 @@ import 'package:word_game/views/auth/register_form.dart';
 
 class AuthView extends StatefulWidget {
   final String? redirect;
-  const AuthView({Key? key, this.redirect}) : super(key: key);
+  const AuthView({super.key, this.redirect});
 
   @override
   _AuthViewState createState() => _AuthViewState();

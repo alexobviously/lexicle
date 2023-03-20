@@ -12,7 +12,7 @@ import 'package:word_game/ui/result_future_builder.dart';
 import 'package:word_game/ui/standard_scaffold.dart';
 
 class TopPlayersView extends StatefulWidget {
-  const TopPlayersView({Key? key}) : super(key: key);
+  const TopPlayersView({super.key});
 
   @override
   State<TopPlayersView> createState() => _TopPlayersViewState();

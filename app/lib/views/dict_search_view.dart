@@ -9,7 +9,7 @@ import 'package:word_game/ui/standard_scaffold.dart';
 import 'package:word_game/ui/word_row.dart';
 
 class DictSearchView extends StatefulWidget {
-  const DictSearchView({Key? key}) : super(key: key);
+  const DictSearchView({super.key});
 
   @override
   State<DictSearchView> createState() => _DictSearchViewState();

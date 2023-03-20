@@ -13,7 +13,7 @@ import 'package:word_game/cubits/challenge_manager.dart';
 import 'package:word_game/cubits/game_group_manager.dart';
 import 'package:word_game/cubits/local_game_manager.dart';
 import 'package:word_game/cubits/scheme_cubit.dart';
-import 'package:word_game/cubits/server_meta_cubit.dart';
+import 'package:word_game/cubits/server_cubit.dart';
 import 'package:word_game/cubits/settings_cubit.dart';
 import 'package:word_game/services/api_client.dart';
 import 'package:word_game/services/api_service.dart';
@@ -40,7 +40,7 @@ Future<void> loadEnv() async {
 }
 
 class MyApp extends StatelessWidget {
-  MyApp({Key? key}) : super(key: key);
+  MyApp({super.key});
 
   final _appKey = GlobalKey();
   final _router = buildRouter();
@@ -59,8 +59,8 @@ class MyApp extends StatelessWidget {
         BlocProvider<GameGroupManager>(
           create: (_) => GameGroupManager(),
         ),
-        BlocProvider<ServerMetaCubit>(
-          create: (_) => ServerMetaCubit(),
+        BlocProvider<ServerCubit>(
+          create: (_) => ServerCubit(),
         ),
         BlocProvider<SettingsCubit>(
           create: (_) => _settingsCubit,

@@ -6,7 +6,7 @@ import 'package:word_game/ui/word_row.dart';
 class WordRowButton extends StatefulWidget {
   final String text;
   final VoidCallback onTap;
-  const WordRowButton({required this.text, required this.onTap, Key? key}) : super(key: key);
+  const WordRowButton({required this.text, required this.onTap, super.key});
 
   @override
   State<WordRowButton> createState() => _WordRowButtonState();

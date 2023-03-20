@@ -7,7 +7,7 @@ import 'package:word_game/services/service_locator.dart';
 import 'package:word_game/services/sound_service.dart';
 
 class LoginBox extends StatelessWidget {
-  const LoginBox({Key? key}) : super(key: key);
+  const LoginBox({super.key});
 
   @override
   Widget build(BuildContext context) {

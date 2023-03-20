@@ -14,7 +14,7 @@ import 'package:word_game/views/game_view.dart';
 import 'package:word_game/ui/standard_scaffold.dart';
 
 class SoloView extends StatefulWidget {
-  const SoloView({Key? key}) : super(key: key);
+  const SoloView({super.key});
 
   @override
   _SoloViewState createState() => _SoloViewState();

@@ -20,7 +20,7 @@ class GameKeyboard extends StatefulWidget {
   final bool wordEmpty;
 
   const GameKeyboard({
-    Key? key,
+    super.key,
     required this.onTap,
     required this.onEnter,
     required this.onBackspace,
@@ -30,7 +30,7 @@ class GameKeyboard extends StatefulWidget {
     this.wrong = const [],
     this.wordReady = false,
     this.wordEmpty = false,
-  }) : super(key: key);
+  });
 
   @override
   State<GameKeyboard> createState() => _GameKeyboardState();

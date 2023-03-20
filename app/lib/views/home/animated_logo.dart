@@ -7,7 +7,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:word_game/ui/word_row.dart';
 
 class AnimatedLogo extends StatefulWidget {
-  const AnimatedLogo({Key? key}) : super(key: key);
+  const AnimatedLogo({super.key});
 
   @override
   State<AnimatedLogo> createState() => _AnimatedLogoState();

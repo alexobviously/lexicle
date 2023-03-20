@@ -19,8 +19,8 @@ class GameCreator extends StatefulWidget {
     this.showTitle = false,
     required this.onCreate,
     this.showTimeLimit = false,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   _GameCreatorState createState() => _GameCreatorState();

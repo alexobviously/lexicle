@@ -16,7 +16,7 @@
 // import 'package:word_game/views/group/group_view.dart';
 
 // class GroupsView extends StatefulWidget {
-//   const GroupsView({Key? key}) : super(key: key);
+//   const GroupsView({super.key});
 
 //   @override
 //   State<GroupsView> createState() => _GroupsViewState();

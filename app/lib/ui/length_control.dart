@@ -7,12 +7,12 @@ class LengthControl extends StatelessWidget {
   final int max;
   final Function(int) onChanged;
   const LengthControl({
-    Key? key,
+    super.key,
     required this.length,
     this.min = 4,
     this.max = 8,
     required this.onChanged,
-  }) : super(key: key);
+  });
   static const double iconSize = 24;
 
   bool get canDecrease => length > min;
