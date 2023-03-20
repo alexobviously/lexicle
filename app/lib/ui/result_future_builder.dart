@@ -39,7 +39,7 @@ class _ResultFutureBuilderState<T> extends State<ResultFutureBuilder<T>> {
           return widget.errorWidget(snapshot.data!.error!.toString());
         }
 
-        return widget.resultWidget(snapshot.data!.object!);
+        return widget.resultWidget(snapshot.data!.object as T);
       },
     );
   }

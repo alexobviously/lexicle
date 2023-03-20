@@ -45,7 +45,7 @@ class _ProfileViewState extends State<ProfileView> {
                 errorWidget: (_) => Icon(Icons.error),
                 resultWidget: (u) => Column(
                   children: [
-                    Text(u.username, style: textTheme.headline4),
+                    Text(u.username, style: textTheme.headlineMedium),
                     Text('Rating: ${u.rating.rating.toStringAsFixed(1)} ± ${u.rating.deviation.toStringAsFixed(0)}'),
                     if (u.team != null) _team(context, u.team!),
                   ],
@@ -142,7 +142,7 @@ class _ProfileViewState extends State<ProfileView> {
     }
     int maxCount = max(1, _counts.entries.fold(0, (a, b) => max(a, b.value)));
 
-    Color borderColour = Theme.of(context).textTheme.bodyText1?.color ?? Colors.black87;
+    Color borderColour = Theme.of(context).textTheme.bodyLarge?.color ?? Colors.black87;
 
     List<BarChartGroupData> _groups = List.generate(
         8,
@@ -176,14 +176,14 @@ class _ProfileViewState extends State<ProfileView> {
                 showTitles: true,
                 getTitlesWidget: (v, meta) => Text(
                   '${(v + 1).toStringAsFixed(0)}${v == 7 ? '+' : ''}',
-                  style: textTheme.headline6,
+                  style: textTheme.titleLarge,
                 ),
               ),
             ),
             // bottomTitles: SideTitles(
             //   showTitles: true,
             //   getTitles: (v) => '${(v + 1).toStringAsFixed(0)}${v == 7 ? '+' : ''}',
-            //   getTextStyles: (_, __) => textTheme.headline6,
+            //   getTextStyles: (_, __) => textTheme.titleLarge,
             // ),
             leftTitles: noShowTitles,
             topTitles: noShowTitles,
@@ -194,7 +194,7 @@ class _ProfileViewState extends State<ProfileView> {
             touchTooltipData: BarTouchTooltipData(
               tooltipBgColor: Colors.white,
               fitInsideVertically: true,
-              getTooltipItem: (_, __, c, ___) => BarTooltipItem(c.fromY.toStringAsFixed(0), textTheme.bodyText2!),
+              getTooltipItem: (_, __, c, ___) => BarTooltipItem(c.fromY.toStringAsFixed(0), textTheme.bodyMedium!),
             ),
           ),
           barGroups: _groups,
@@ -217,7 +217,7 @@ class _ProfileViewState extends State<ProfileView> {
     List<WordDifficulty> _words = [...words];
     _words.sort((a, b) => b.difficulty.compareTo(a.difficulty));
 
-    TextStyle textStyle = textTheme.headline6!.copyWith(color: Colors.black87);
+    TextStyle textStyle = textTheme.titleLarge!.copyWith(color: Colors.black87);
 
     return Column(
         children: _words
@@ -244,7 +244,7 @@ class _ProfileViewState extends State<ProfileView> {
       resultWidget: (team) => InkWell(
         child: Text(
           team.name,
-          style: Theme.of(context).textTheme.headline6!.copyWith(color: Colours.correct.darken(0.4)),
+          style: Theme.of(context).textTheme.titleLarge!.copyWith(color: Colours.correct.darken(0.4)),
         ),
         onTap: () => context.push(Routes.team(id)),
       ),

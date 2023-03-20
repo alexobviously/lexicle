@@ -96,7 +96,7 @@ class WordRow extends StatelessWidget {
           child: Center(
             child: Text(
               letter,
-              style: textStyle ?? Theme.of(context).textTheme.headline4,
+              style: textStyle ?? Theme.of(context).textTheme.headlineMedium,
             ),
           ),
         ),

@@ -106,7 +106,7 @@ class _ChangePasswordFormState extends State<ChangePasswordForm> {
               ),
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 32),
-                child: Text('Change Password', style: Theme.of(context).textTheme.headline6),
+                child: Text('Change Password', style: Theme.of(context).textTheme.titleLarge),
               ),
               onPressed: _submit,
             ),

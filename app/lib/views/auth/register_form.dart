@@ -5,7 +5,7 @@ import 'package:word_game/services/service_locator.dart';
 import 'package:word_game/ui/neumorphic_text_field.dart';
 
 class RegisterForm extends StatefulWidget {
-  RegisterForm({super.key});
+  const RegisterForm({super.key});
 
   @override
   State<RegisterForm> createState() => _RegisterFormState();
@@ -106,7 +106,7 @@ class _RegisterFormState extends State<RegisterForm> {
               ),
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 32),
-                child: Text('Register', style: Theme.of(context).textTheme.headline6),
+                child: Text('Register', style: Theme.of(context).textTheme.titleLarge),
               ),
               onPressed: _register,
             ),

@@ -139,7 +139,7 @@ class _GameKeyboardState extends State<GameKeyboard> {
   }
 
   Widget _key(BuildContext context, String letter, {Color? colour}) {
-    TextStyle textStyle = Theme.of(context).textTheme.headline4!;
+    TextStyle textStyle = Theme.of(context).textTheme.headlineMedium!;
     bool dark = Theme.of(context).brightness == Brightness.dark;
     if (dark) textStyle = textStyle.copyWith(color: Colors.white);
     return KeyButton(

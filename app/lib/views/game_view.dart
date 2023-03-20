@@ -151,11 +151,11 @@ class _GameViewState extends State<GameView> {
                     children: [
                       Text(
                         'Error getting game',
-                        style: Theme.of(context).textTheme.headline5,
+                        style: Theme.of(context).textTheme.headlineSmall,
                       ),
                       Text(
                         error!,
-                        style: Theme.of(context).textTheme.headline6,
+                        style: Theme.of(context).textTheme.titleLarge,
                       ),
                       OutlinedButton.icon(
                         onPressed: () => context.go(Routes.home),
@@ -230,7 +230,7 @@ class _GameViewState extends State<GameView> {
                                             textStyle: dark
                                                 ? Theme.of(context)
                                                     .textTheme
-                                                    .headline4!
+                                                    .headlineMedium!
                                                     .copyWith(color: Colors.grey.shade200)
                                                 : null,
                                           ),
@@ -249,7 +249,7 @@ class _GameViewState extends State<GameView> {
                                         textStyle: dark
                                             ? Theme.of(context)
                                                 .textTheme
-                                                .headline4!
+                                                .headlineMedium!
                                                 .copyWith(color: Colors.grey.shade200)
                                             : null,
                                       ),
@@ -335,7 +335,7 @@ class _GameViewState extends State<GameView> {
                     ),
                   ],
                 ),
-                Text('${game.guesses.length}', style: Theme.of(context).textTheme.headline5),
+                Text('${game.guesses.length}', style: Theme.of(context).textTheme.headlineSmall),
               ],
             ),
           ),

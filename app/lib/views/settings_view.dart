@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:go_router/go_router.dart';
@@ -39,14 +38,14 @@ class _SettingsViewState extends State<SettingsView> {
                   child: Text('Change Password'),
                 ),
                 Container(height: 32),
-                Text('Theme Mode', style: textTheme.headline6),
+                Text('Theme Mode', style: textTheme.titleLarge),
                 ToggleButtons(
                   children: _themeModes.map((e) => _themeModeBox(context, e)).toList(),
                   isSelected: _themeModes.map((e) => e == settings.themeMode).toList(),
                   onPressed: (i) => cubit.setThemeMode(_themeModes[i]),
                 ),
                 Container(height: 16),
-                Text('Colour Scheme', style: textTheme.headline6),
+                Text('Colour Scheme', style: textTheme.titleLarge),
                 BlocBuilder<SchemeCubit, ColourScheme>(
                   builder: (context, scheme) {
                     return ToggleButtons(
@@ -74,7 +73,7 @@ class _SettingsViewState extends State<SettingsView> {
     };
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: Container(
+      child: SizedBox(
         // decoration: BoxDecoration(
         //   border: Border.all(width: 1.0, color: Colors.white38),
         // ),
@@ -98,7 +97,7 @@ class _SettingsViewState extends State<SettingsView> {
 
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: Container(
+      child: SizedBox(
         // decoration: BoxDecoration(
         //   border: Border.all(width: 1.0, color: Colors.white38),
         // ),

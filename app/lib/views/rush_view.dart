@@ -142,11 +142,11 @@ class _RushViewState extends State<RushView> {
                     children: [
                       Text(
                         'Error getting game',
-                        style: Theme.of(context).textTheme.headline5,
+                        style: Theme.of(context).textTheme.headlineSmall,
                       ),
                       Text(
                         error!,
-                        style: Theme.of(context).textTheme.headline6,
+                        style: Theme.of(context).textTheme.titleLarge,
                       ),
                       OutlinedButton.icon(
                         onPressed: () => context.go(Routes.home),
@@ -283,7 +283,7 @@ class _RushViewState extends State<RushView> {
                     ),
                   ],
                 ),
-                Text('${game.guesses.length}', style: Theme.of(context).textTheme.headline5),
+                Text('${game.guesses.length}', style: Theme.of(context).textTheme.headlineSmall),
               ],
             ),
           ),

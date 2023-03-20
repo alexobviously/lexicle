@@ -1,10 +1,6 @@
-import 'package:common/common.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:go_router/go_router.dart';
 import 'package:word_game/app/router.dart';
-import 'package:word_game/services/service_locator.dart';
-import 'package:word_game/services/sound_service.dart';
 
 class LoginBox extends StatelessWidget {
   const LoginBox({super.key});
@@ -24,7 +20,7 @@ class LoginBox extends StatelessWidget {
           padding: const EdgeInsets.all(16.0),
           child: Column(
             children: [
-              Text('Log in to play online', style: textTheme.headline6),
+              Text('Log in to play online', style: textTheme.titleLarge),
               Container(height: 16),
               NeumorphicButton(
                 onPressed: () => context.push(Routes.auth),
@@ -32,7 +28,7 @@ class LoginBox extends StatelessWidget {
                   depth: 2,
                   boxShape: NeumorphicBoxShape.roundRect(BorderRadius.circular(16)),
                 ),
-                child: Text('Login', style: textTheme.headline6),
+                child: Text('Login', style: textTheme.titleLarge),
               ),
             ],
           ),

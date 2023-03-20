@@ -87,12 +87,13 @@ class _TeamViewState extends State<TeamView> {
                         alignment: Alignment.center,
                         child: Text(
                           team.name,
-                          style: textTheme.headline4,
+                          style: textTheme.headlineMedium,
                         ),
                       ),
                       BlocBuilder<AuthController, AuthState>(builder: (context, state) {
-                        if (state.loggedIn && state.user!.team != null && state.user!.team != team.id)
+                        if (state.loggedIn && state.user!.team != null && state.user!.team != team.id) {
                           return Container();
+                        }
                         bool joined = state.loggedIn && state.user!.team == team.id;
                         return Align(
                           alignment: Alignment.centerRight,
@@ -114,11 +115,11 @@ class _TeamViewState extends State<TeamView> {
                     children: [
                       Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: Text('Members', style: textTheme.headline5),
+                        child: Text('Members', style: textTheme.headlineSmall),
                       ),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: Text('${team.members.length}', style: textTheme.headline6),
+                        child: Text('${team.members.length}', style: textTheme.titleLarge),
                       ),
                     ],
                   ),
@@ -139,9 +140,9 @@ class _TeamViewState extends State<TeamView> {
                                 padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
                                 child: Row(
                                   children: [
-                                    Text(user.username, style: textTheme.headline5),
+                                    Text(user.username, style: textTheme.headlineSmall),
                                     Spacer(),
-                                    Text(user.rating.rating.toStringAsFixed(0), style: textTheme.headline5),
+                                    Text(user.rating.rating.toStringAsFixed(0), style: textTheme.headlineSmall),
                                   ],
                                 ),
                               ),

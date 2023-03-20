@@ -9,14 +9,14 @@ Future<bool> showConfirmationDialog(
   String? negativeText,
 }) async {
   final textTheme = Theme.of(context).textTheme;
-  final buttonTextStyle = textTheme.headline6!.copyWith(color: Colours.correct.darken(0.4));
+  final buttonTextStyle = textTheme.titleLarge!.copyWith(color: Colours.correct.darken(0.4));
   return await showDialog<bool>(
         context: context,
         builder: (context) {
           return AlertDialog(
             title: Text(
               title,
-              style: textTheme.headline5,
+              style: textTheme.headlineSmall,
             ),
             content: Text(body),
             actions: [

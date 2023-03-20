@@ -90,7 +90,7 @@
 //                                       GameClock(
 //                                         g.started ? (g.endTime! - nowMs()) : g.config.timeLimit!,
 //                                         fullDetail: !g.started,
-//                                         textStyle: textTheme.bodyText1,
+//                                         textStyle: textTheme.bodyLarge,
 //                                         iconSize: 16,
 //                                       ),
 //                                   ],
@@ -105,7 +105,7 @@
 //                             leading: Padding(
 //                               padding: const EdgeInsets.all(8.0),
 //                               child:
-//                                   Text('${g.players.length}', style: textTheme.headline5, textAlign: TextAlign.center),
+//                                   Text('${g.players.length}', style: textTheme.headlineSmall, textAlign: TextAlign.center),
 //                             ),
 //                             trailing: !g.started
 //                                 ? NeumorphicButton(

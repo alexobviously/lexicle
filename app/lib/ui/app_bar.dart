@@ -40,7 +40,7 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
               if (title != null)
                 Text(
                   title!,
-                  style: Theme.of(context).textTheme.headline6,
+                  style: Theme.of(context).textTheme.titleLarge,
                 ),
               ...actions,
             ],

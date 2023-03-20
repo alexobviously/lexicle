@@ -24,21 +24,21 @@ class AboutView extends StatelessWidget {
                 children: [
                   Text(
                     'Lexicle is a multiplayer word guessing game, inspired by Wordle.',
-                    style: textTheme.headline5,
+                    style: textTheme.headlineSmall,
                     textAlign: TextAlign.center,
                   ),
                   Container(height: 32),
                   Text(
                     'It is free, open source, and licensed under the GPL. You can find the code on Github; contributions are welcome and you can generally do what you want with it.',
-                    style: textTheme.headline6,
+                    style: textTheme.titleLarge,
                     textAlign: TextAlign.center,
                   ),
                   OutlinedButton.icon(
-                    onPressed: () => launch('https://github.com/alexobviously/lexicle'),
+                    onPressed: () => launchUrl(Uri.parse('https://github.com/alexobviously/lexicle')),
                     icon: Image.asset('assets/images/github_${dark ? 'white' : 'black'}.png'),
                     label: Text(
                       'View Code on Github',
-                      style: textTheme.headline6,
+                      style: textTheme.titleLarge,
                     ),
                   ),
                   GestureDetector(
@@ -54,14 +54,14 @@ class AboutView extends StatelessWidget {
                     children: [
                       Column(
                         children: [
-                          Text('Code etc', style: textTheme.headline6),
+                          Text('Code etc', style: textTheme.titleLarge),
                           Text('Alex Baker'),
                           Text('Steve Beville'),
                         ],
                       ),
                       Column(
                         children: [
-                          Text('Good Pals', style: textTheme.headline6),
+                          Text('Good Pals', style: textTheme.titleLarge),
                           Text('Gary & Gril'),
                           Text('Franc'),
                           Text('Evan'),

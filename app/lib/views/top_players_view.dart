@@ -68,10 +68,10 @@ class _TopPlayersViewState extends State<TopPlayersView> {
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
-                                    SizedBox(width: 50, child: Text('${i + 1}', style: textTheme.headline4)),
-                                    Text(u.username, style: textTheme.headline4),
+                                    SizedBox(width: 50, child: Text('${i + 1}', style: textTheme.headlineMedium)),
+                                    Text(u.username, style: textTheme.headlineMedium),
                                     Spacer(),
-                                    Text(u.rating.rating.toStringAsFixed(0), style: textTheme.headline4),
+                                    Text(u.rating.rating.toStringAsFixed(0), style: textTheme.headlineMedium),
                                   ],
                                 ),
                               ),

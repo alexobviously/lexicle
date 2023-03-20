@@ -29,6 +29,7 @@ class _LoginFormState extends State<LoginForm> {
       final _result = await auth().login(_username, _password);
       sound().play(_result.ok ? Sound.clickUp : Sound.bad);
       HapticFeedback.mediumImpact();
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(_result.ok ? 'Logged in as ${_result.object!.username}!' : 'Login failed: ${_result.error}'),
@@ -72,7 +73,7 @@ class _LoginFormState extends State<LoginForm> {
               ),
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 32),
-                child: Text('Login', style: Theme.of(context).textTheme.headline6),
+                child: Text('Login', style: Theme.of(context).textTheme.titleLarge),
               ),
               onPressed: _login,
             ),

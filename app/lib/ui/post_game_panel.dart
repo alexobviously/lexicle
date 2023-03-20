@@ -26,10 +26,10 @@ class PostGamePanel extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              Text(reason == EndReasons.solved ? 'Congratulations!' : 'Too slow!', style: textTheme.headline4),
+              Text(reason == EndReasons.solved ? 'Congratulations!' : 'Too slow!', style: textTheme.headlineMedium),
               Text(
                 reason == EndReasons.solved ? 'You figured out the word in $guesses guesses' : 'You ran out of time',
-                style: textTheme.headline5,
+                style: textTheme.headlineSmall,
                 textAlign: TextAlign.center,
               ),
             ],

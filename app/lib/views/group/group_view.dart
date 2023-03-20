@@ -262,11 +262,11 @@ class _GroupViewState extends State<GroupView> {
                     children: [
                       Text(
                         'Error getting group',
-                        style: Theme.of(context).textTheme.headline5,
+                        style: Theme.of(context).textTheme.headlineSmall,
                       ),
                       Text(
                         error!,
-                        style: Theme.of(context).textTheme.headline6,
+                        style: Theme.of(context).textTheme.titleLarge,
                       ),
                       OutlinedButton.icon(
                         onPressed: () => context.go(Routes.home),
@@ -341,7 +341,7 @@ class _GroupViewState extends State<GroupView> {
           children: [
             Text(
               'Set Word',
-              style: textTheme.headline5,
+              style: textTheme.headlineSmall,
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8.0),
@@ -394,7 +394,7 @@ class _GroupViewState extends State<GroupView> {
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: Text(
                   'Players',
-                  style: textTheme.headline5,
+                  style: textTheme.headlineSmall,
                 ),
               ),
               if (auth().loggedIn)
@@ -474,14 +474,14 @@ class _GroupViewState extends State<GroupView> {
               onPressed: controller!.start,
               child: Text(
                 'Start Group',
-                style: textTheme.headline5,
+                style: textTheme.headlineSmall,
               ),
             ),
           if (isCreator && !group.canBegin)
             Neumorphic(
               padding: EdgeInsets.all(16.0),
               style: NeumorphicStyle(depth: 2),
-              child: Text('Waiting for players..', style: textTheme.headline5),
+              child: Text('Waiting for players..', style: textTheme.headlineSmall),
             ),
           _created(context, group),
         ],
@@ -505,7 +505,7 @@ class _GroupViewState extends State<GroupView> {
             if (timeLeft != null) GameClock(timeLeft!),
             Text(
               'Standings',
-              style: textTheme.headline5,
+              style: textTheme.headlineSmall,
             ),
             SizedBox(
               width: c.maxWidth,
@@ -533,7 +533,7 @@ class _GroupViewState extends State<GroupView> {
           children: [
             Text(
               'Results',
-              style: textTheme.headline5,
+              style: textTheme.headlineSmall,
             ),
             Container(height: 32),
             SizedBox(
@@ -580,7 +580,7 @@ class _GroupViewState extends State<GroupView> {
   }
 
   ToggleElement _toggleElement(BuildContext context, String text) {
-    final _style = Theme.of(context).textTheme.headline5;
+    final _style = Theme.of(context).textTheme.headlineSmall;
     return ToggleElement(
       foreground: Center(
           child: Text(
@@ -623,9 +623,9 @@ class _GroupViewState extends State<GroupView> {
                       id: e.player,
                     ),
                   ),
-                  Text(e.word, style: textTheme.headline6),
+                  Text(e.word, style: textTheme.titleLarge),
                   Spacer(),
-                  Text(e.difficulty.toStringAsFixed(2), style: textTheme.headline6),
+                  Text(e.difficulty.toStringAsFixed(2), style: textTheme.titleLarge),
                 ],
               ),
             ),
@@ -733,7 +733,7 @@ class _GroupViewState extends State<GroupView> {
                                           mainAxisAlignment: MainAxisAlignment.center,
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
-                                            Text(u.username, style: textTheme.headline6),
+                                            Text(u.username, style: textTheme.titleLarge),
                                             if (u.team != null) _team(context, u.team!, scheme),
                                           ],
                                         )
@@ -741,7 +741,7 @@ class _GroupViewState extends State<GroupView> {
                           ],
                         ),
                       ),
-                      Text('${e.guesses}', style: textTheme.headline6),
+                      Text('${e.guesses}', style: textTheme.titleLarge),
                       Container(width: 32),
                       Expanded(
                         child: ListView(
@@ -792,7 +792,7 @@ class _GroupViewState extends State<GroupView> {
       errorWidget: (_) => Icon(Icons.error),
       resultWidget: (team) => Text(
         team.name,
-        style: Theme.of(context).textTheme.bodyText2!.copyWith(fontStyle: FontStyle.italic),
+        style: Theme.of(context).textTheme.bodyMedium!.copyWith(fontStyle: FontStyle.italic),
       ),
     );
   }

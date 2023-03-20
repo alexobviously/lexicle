@@ -13,7 +13,7 @@ class MongoService implements DatabaseService {
   }
 
   Future<void> get connected async {
-    while (db.state == State.OPENING) {
+    while (db.state == State.opening) {
       await Future.delayed(Duration(milliseconds: 100));
     }
     if (db.isConnected) return;

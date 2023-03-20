@@ -38,7 +38,7 @@ class GameClock extends StatelessWidget {
         if (clockSide == ClockSide.left) _icon,
         Text(
           time != null ? _formatTime(duration, fullDetail) : '∞',
-          style: textStyle ?? Theme.of(context).textTheme.headline6,
+          style: textStyle ?? Theme.of(context).textTheme.titleLarge,
         ),
         if (clockSide == ClockSide.right) _icon,
       ],

@@ -26,7 +26,7 @@ class UserDetails extends StatelessWidget {
           padding: const EdgeInsets.all(16.0),
           child: Column(
             children: [
-              Text(user.username, style: textTheme.headline5),
+              Text(user.username, style: textTheme.headlineSmall),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [

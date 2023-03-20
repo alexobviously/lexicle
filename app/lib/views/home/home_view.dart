@@ -161,7 +161,7 @@ class _HomeViewState extends State<HomeView> {
               depth: 2,
               boxShape: NeumorphicBoxShape.roundRect(BorderRadius.circular(16)),
             ),
-            child: Text('Practice', style: textTheme.headline6),
+            child: Text('Practice', style: textTheme.titleLarge),
           ),
           Container(height: 20),
           NeumorphicButton(
@@ -187,7 +187,7 @@ class _HomeViewState extends State<HomeView> {
               padding: EdgeInsets.all(2.0),
               elevation: 0,
               badgeContent: Text('new', style: TextStyle(color: Colors.white70)),
-              child: Text('  Rush  ', style: textTheme.headline6),
+              child: Text('  Rush  ', style: textTheme.titleLarge),
             ),
           ),
         ],
@@ -264,7 +264,7 @@ class _HomeViewState extends State<HomeView> {
             children: [
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Text('Active Games', style: textTheme.headline6),
+                child: Text('Active Games', style: textTheme.titleLarge),
               ),
               _gameList(context, state.joined, showState: true),
             ],
@@ -313,7 +313,7 @@ class _HomeViewState extends State<HomeView> {
                         child: Center(
                           child: Text(
                             group.players.length.toString(),
-                            style: textTheme.headline6,
+                            style: textTheme.titleLarge,
                           ),
                         ),
                       ),
@@ -353,13 +353,13 @@ class _HomeViewState extends State<HomeView> {
                           height: 28,
                           decoration: BoxDecoration(
                             border: Border.all(
-                              color: textTheme.bodyText2!.color!,
+                              color: textTheme.bodyMedium!.color!,
                             ),
                           ),
                           child: Center(
                             child: Text(
                               group.config.wordLength.toString(),
-                              style: textTheme.headline6,
+                              style: textTheme.titleLarge,
                             ),
                           ),
                         ),

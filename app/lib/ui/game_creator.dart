@@ -69,7 +69,7 @@ class _GameCreatorState extends State<GameCreator> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Container(width: 48),
-                  Text('New Custom Game', style: textTheme.headline6),
+                  Text('New Custom Game', style: textTheme.titleLarge),
                   IconButton(
                     icon: Icon(MdiIcons.close),
                     onPressed: widget.onCancel,
@@ -107,7 +107,7 @@ class _GameCreatorState extends State<GameCreator> {
                   title: _titleController.text,
                 ));
               },
-              child: Text('Create New Game', style: textTheme.headline6!.copyWith(color: Colours.correct.darken(0.4))),
+              child: Text('Create New Game', style: textTheme.titleLarge!.copyWith(color: Colours.correct.darken(0.4))),
             ),
           ],
         ),

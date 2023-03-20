@@ -99,7 +99,7 @@ class _GameOverviewState extends State<GameOverview> {
                           shape: NeumorphicShape.convex,
                           surfaceIntensity: 0.15,
                           textStyle: dark
-                              ? Theme.of(context).textTheme.headline4!.copyWith(color: Colors.grey.shade200)
+                              ? Theme.of(context).textTheme.headlineMedium!.copyWith(color: Colors.grey.shade200)
                               : null,
                         ),
                       ),
@@ -110,8 +110,9 @@ class _GameOverviewState extends State<GameOverview> {
                     child: WordRow(
                       length: state.length,
                       content: state.word,
-                      textStyle:
-                          dark ? Theme.of(context).textTheme.headline4!.copyWith(color: Colors.grey.shade200) : null,
+                      textStyle: dark
+                          ? Theme.of(context).textTheme.headlineMedium!.copyWith(color: Colors.grey.shade200)
+                          : null,
                     ),
                   ),
                 Container(height: 10),
