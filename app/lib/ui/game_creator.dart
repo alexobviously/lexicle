@@ -1,7 +1,7 @@
 import 'package:common/common.dart';
 import 'package:duration/duration.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:word_game/app/colours.dart';
 import 'package:word_game/model/game_creation_data.dart';
@@ -56,12 +56,8 @@ class _GameCreatorState extends State<GameCreator> {
     final textTheme = theme.textTheme;
     return SizedBox(
       width: MediaQuery.of(context).size.width * 0.8,
-      child: Neumorphic(
-        style: NeumorphicStyle(
-          depth: widget.depth,
-          // boxShape: NeumorphicBoxShape.roundRect(BorderRadius.circular(25.0)),
-        ),
-        padding: const EdgeInsets.all(12.0),
+      child: Padding(
+        padding: const EdgeInsets.all(12),
         child: Column(
           children: [
             if (widget.onCancel != null)
@@ -77,9 +73,8 @@ class _GameCreatorState extends State<GameCreator> {
                 ],
               ),
             if (widget.showTitle)
-              Neumorphic(
-                style: NeumorphicStyle(depth: -2),
-                padding: EdgeInsets.symmetric(horizontal: 16.0),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16),
                 child: TextField(
                   controller: _titleController,
                   decoration: InputDecoration(

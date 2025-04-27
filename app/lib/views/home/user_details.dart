@@ -1,6 +1,6 @@
 import 'package:common/common.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:go_router/go_router.dart';
 import 'package:word_game/app/router.dart';
 import 'package:word_game/services/service_locator.dart';
@@ -18,11 +18,7 @@ class UserDetails extends StatelessWidget {
       onTap: () => context.push(Routes.user(user.id)),
       child: SizedBox(
         width: MediaQuery.of(context).size.width * 0.95,
-        child: Neumorphic(
-          style: const NeumorphicStyle(
-            depth: -4.0,
-            // boxShape: NeumorphicBoxShape.roundRect(BorderRadius.circular(25.0)),
-          ),
+        child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
             children: [
@@ -43,8 +39,7 @@ class UserDetails extends StatelessWidget {
                   Flexible(
                     child: Column(
                       children: [
-                        NeumorphicButton(
-                          style: NeumorphicStyle(depth: 3),
+                        ElevatedButton(
                           child: Text('Log Out'),
                           onPressed: () {
                             auth().logout();

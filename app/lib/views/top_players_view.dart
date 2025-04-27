@@ -1,6 +1,6 @@
 import 'package:common/common.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -43,7 +43,7 @@ class _TopPlayersViewState extends State<TopPlayersView> {
                   alignment: Alignment.topRight,
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: NeumorphicButton(
+                    child: ElevatedButton(
                       onPressed: () => setState(() {}),
                       child: Icon(MdiIcons.refresh),
                     ),

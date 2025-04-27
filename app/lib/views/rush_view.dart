@@ -1,12 +1,12 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:duration/duration.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:common/common.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -189,16 +189,10 @@ class _RushViewState extends State<RushView> {
                     Expanded(
                       child: Padding(
                         padding: const EdgeInsets.all(4.0),
-                        child: Neumorphic(
+                        child: AnimatedContainer(
                           padding: const EdgeInsets.symmetric(horizontal: 4.0),
                           duration: const Duration(milliseconds: 2000),
-                          style: NeumorphicStyle(
-                            depth: -10,
-                            color: state.finished ? Colours.correct.withAlpha(100) : null,
-                            // border: state.solved
-                            //     ? NeumorphicBorder(color: Colours.correct, width: 1.0)
-                            //     : const NeumorphicBorder.none(),
-                          ),
+                          color: state.finished ? Colours.correct.withAlpha(100) : null,
                           child: SingleChildScrollView(
                             controller: _controller,
                             child: Column(
@@ -258,9 +252,8 @@ class _RushViewState extends State<RushView> {
         padding: const EdgeInsets.symmetric(vertical: 4.0),
         child: SizedBox(
           width: constraints.maxWidth * 0.95,
-          child: Neumorphic(
-            style: NeumorphicStyle(depth: -2),
-            padding: const EdgeInsets.all(16.0),
+          child: Padding(
+            padding: const EdgeInsets.all(16),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -303,7 +296,6 @@ class _RushViewState extends State<RushView> {
                 correct: e.correct,
                 semiCorrect: e.semiCorrect,
                 finalised: e.finalised,
-                shape: NeumorphicShape.convex,
                 surfaceIntensity: e.solved ? 0.4 : 0.25,
               ),
             ),
@@ -316,7 +308,6 @@ class _RushViewState extends State<RushView> {
             content: g.word,
             valid: !g.invalid,
             surfaceIntensity: 0,
-            shape: NeumorphicShape.convex,
             onLongPress: _clearInput,
           ),
         ),

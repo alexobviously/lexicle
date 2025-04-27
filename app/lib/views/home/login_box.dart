@@ -1,4 +1,4 @@
-import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:word_game/app/router.dart';
 
@@ -12,22 +12,14 @@ class LoginBox extends StatelessWidget {
       onTap: () => context.push(Routes.auth),
       child: SizedBox(
         width: MediaQuery.of(context).size.width * 0.95,
-        child: Neumorphic(
-          style: const NeumorphicStyle(
-            depth: -4.0,
-            // boxShape: NeumorphicBoxShape.roundRect(BorderRadius.circular(25.0)),
-          ),
-          padding: const EdgeInsets.all(16.0),
+        child: Padding(
+          padding: const EdgeInsets.all(16),
           child: Column(
             children: [
               Text('Log in to play online', style: textTheme.titleLarge),
               Container(height: 16),
-              NeumorphicButton(
+              ElevatedButton(
                 onPressed: () => context.push(Routes.auth),
-                style: NeumorphicStyle(
-                  depth: 2,
-                  boxShape: NeumorphicBoxShape.roundRect(BorderRadius.circular(16)),
-                ),
                 child: Text('Login', style: textTheme.titleLarge),
               ),
             ],

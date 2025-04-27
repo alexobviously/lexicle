@@ -1,6 +1,6 @@
 import 'package:common/common.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -96,29 +96,26 @@ class _HomeViewState extends State<HomeView> {
                             _activeGames(context),
                             _challengeList(scheme),
                             Container(height: 16),
-                            Neumorphic(
-                              style: NeumorphicStyle(depth: -2),
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Column(
-                                  children: [
-                                    NeumorphicToggle(
-                                      selectedIndex: _tab,
-                                      children: ['Practice', 'Matchmaking', 'Custom Games']
-                                          .map((e) => _toggleElement(context, e))
-                                          .toList(),
-                                      thumb: Neumorphic(
-                                        style: NeumorphicStyle(
-                                          boxShape: NeumorphicBoxShape.roundRect(BorderRadius.all(Radius.circular(12))),
-                                        ),
-                                      ),
-                                      onChanged: _setTab,
-                                    ),
-                                    if (_tab == _practice) _practiceView(),
-                                    if (_tab == _matchmaking) _matchmakingView(),
-                                    if (_tab == _custom) _customView(context),
-                                  ],
-                                ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Column(
+                                children: [
+                                  // NeumorphicToggle(
+                                  //   selectedIndex: _tab,
+                                  //   children: ['Practice', 'Matchmaking', 'Custom Games']
+                                  //       .map((e) => _toggleElement(context, e))
+                                  //       .toList(),
+                                  //   thumb: Neumorphic(
+                                  //     style: NeumorphicStyle(
+                                  //       boxShape: NeumorphicBoxShape.roundRect(BorderRadius.all(Radius.circular(12))),
+                                  //     ),
+                                  //   ),
+                                  //   onChanged: _setTab,
+                                  // ),
+                                  if (_tab == _practice) _practiceView(),
+                                  if (_tab == _matchmaking) _matchmakingView(),
+                                  if (_tab == _custom) _customView(context),
+                                ],
                               ),
                             ),
                           ],
@@ -156,16 +153,12 @@ class _HomeViewState extends State<HomeView> {
       padding: const EdgeInsets.all(8.0),
       child: Column(
         children: [
-          NeumorphicButton(
+          ElevatedButton(
             onPressed: () => context.push(Routes.solo),
-            style: NeumorphicStyle(
-              depth: 2,
-              boxShape: NeumorphicBoxShape.roundRect(BorderRadius.circular(16)),
-            ),
             child: Text('Practice', style: textTheme.titleLarge),
           ),
           Container(height: 20),
-          NeumorphicButton(
+          ElevatedButton(
             onPressed: () => context.push(
               Routes.rush,
               extra: RushRouteData(
@@ -174,10 +167,6 @@ class _HomeViewState extends State<HomeView> {
                   RushMediator(getWord: () => dictionary().randomWord(5)),
                 ),
               ),
-            ),
-            style: NeumorphicStyle(
-              depth: 2,
-              boxShape: NeumorphicBoxShape.roundRect(BorderRadius.circular(16)),
             ),
             child: Text('  Rush  ', style: textTheme.titleLarge),
           ),
@@ -209,15 +198,14 @@ class _HomeViewState extends State<HomeView> {
               children: [
                 Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: NeumorphicButton(
-                    style: NeumorphicStyle(depth: 2),
+                  child: ElevatedButton(
                     onPressed: _onCreate,
                     child: Text('Create Game'),
                   ),
                 ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: NeumorphicButton(
+                  child: ElevatedButton(
                     onPressed: () => state.working ? null : cubit.refresh(),
                     child:
                         state.working ? SpinKitFadingCircle(size: 24, color: Colors.black87) : Icon(MdiIcons.refresh),
@@ -232,34 +220,20 @@ class _HomeViewState extends State<HomeView> {
     );
   }
 
-  ToggleElement _toggleElement(BuildContext context, String text) {
-    return ToggleElement(
-      foreground: Center(
-          child: Text(
-        text,
-        style: TextStyle(fontWeight: FontWeight.bold),
-      )),
-      background: Center(child: Text(text)),
-    );
-  }
-
   Widget _activeGames(BuildContext context) {
     final theme = Theme.of(context);
     final textTheme = theme.textTheme;
     return BlocBuilder<GameGroupManager, GroupManagerState>(
       builder: (context, state) {
         if (state.joined.isEmpty) return Container();
-        return Neumorphic(
-          style: NeumorphicStyle(depth: -2),
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text('Active Games', style: textTheme.titleLarge),
-              ),
-              _gameList(context, state.joined, showState: true),
-            ],
-          ),
+        return Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text('Active Games', style: textTheme.titleLarge),
+            ),
+            _gameList(context, state.joined, showState: true),
+          ],
         );
       },
     );

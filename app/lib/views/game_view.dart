@@ -1,11 +1,11 @@
 import 'dart:async';
 import 'dart:math';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:common/common.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -196,20 +196,14 @@ class _GameViewState extends State<GameView> {
                       Expanded(
                         child: Padding(
                           padding: const EdgeInsets.all(4.0),
-                          child: Neumorphic(
+                          child: AnimatedContainer(
                             padding: const EdgeInsets.symmetric(horizontal: 4.0),
                             duration: const Duration(milliseconds: 2000),
-                            style: NeumorphicStyle(
-                              depth: -10,
-                              color: state.gameFinished
-                                  ? state.endReason == EndReasons.solved
-                                      ? baseScheme.correct.withAlpha(100)
-                                      : baseScheme.wrong.withAlpha(150)
-                                  : null,
-                              // border: state.solved
-                              //     ? NeumorphicBorder(color: Colours.correct, width: 0.5)
-                              //     : const NeumorphicBorder.none(),
-                            ),
+                            color: state.gameFinished
+                                ? state.endReason == EndReasons.solved
+                                    ? baseScheme.correct.withAlpha(100)
+                                    : baseScheme.wrong.withAlpha(150)
+                                : null,
                             child: SingleChildScrollView(
                               controller: _controller,
                               child: Column(
@@ -225,7 +219,6 @@ class _GameViewState extends State<GameView> {
                                             correct: e.correct,
                                             semiCorrect: e.semiCorrect,
                                             finalised: e.finalised,
-                                            shape: NeumorphicShape.convex,
                                             surfaceIntensity: e.solved ? 0.4 : 0.25,
                                             textStyle: dark
                                                 ? Theme.of(context)
@@ -244,7 +237,6 @@ class _GameViewState extends State<GameView> {
                                         content: state.word,
                                         valid: !state.invalid,
                                         surfaceIntensity: 0,
-                                        shape: NeumorphicShape.convex,
                                         onLongPress: game!.canAct ? _clearInput : null,
                                         textStyle: dark
                                             ? Theme.of(context)
@@ -310,8 +302,7 @@ class _GameViewState extends State<GameView> {
         padding: const EdgeInsets.symmetric(vertical: 4.0),
         child: SizedBox(
           width: constraints.maxWidth * 0.95,
-          child: Neumorphic(
-            style: NeumorphicStyle(depth: -2),
+          child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,

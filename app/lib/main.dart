@@ -1,10 +1,10 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 // ignore: depend_on_referenced_packages
 import 'package:flutter_web_plugins/url_strategy.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:flutter_web_frame/flutter_web_frame.dart';
 import 'package:word_game/app/router.dart';
 import 'package:word_game/app/themes.dart';
@@ -76,27 +76,23 @@ class MyApp extends StatelessWidget {
         ),
       ],
       child: BlocBuilder<SettingsCubit, Settings>(builder: (context, settings) {
-        return NeumorphicTheme(
-          theme: neumorphicLight,
-          darkTheme: neumorphicDark,
-          themeMode: settings.themeMode,
-          child: FlutterWebFrame(
-            builder: (context) {
-              return MaterialApp.router(
-                key: _appKey,
-                title: 'Lexicle',
-                theme: lightTheme,
-                darkTheme: darkTheme,
-                themeMode: settings.themeMode,
-                debugShowCheckedModeBanner: false,
-                routeInformationParser: _router.routeInformationParser,
-                routerDelegate: _router.routerDelegate,
-              );
-            },
-            maximumSize: Size(475.0, 812.0),
-            enabled: kIsWeb,
-            backgroundColor: settings.colourScheme.wrong,
-          ),
+        return FlutterWebFrame(
+          builder: (context) {
+            return MaterialApp.router(
+              key: _appKey,
+              title: 'Lexicle',
+              theme: lightTheme,
+              darkTheme: darkTheme,
+              themeMode: settings.themeMode,
+              debugShowCheckedModeBanner: false,
+              routeInformationParser: _router.routeInformationParser,
+              routerDelegate: _router.routerDelegate,
+              routeInformationProvider: _router.routeInformationProvider,
+            );
+          },
+          maximumSize: Size(475.0, 812.0),
+          enabled: kIsWeb,
+          backgroundColor: settings.colourScheme.wrong,
         );
       }),
     );

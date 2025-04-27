@@ -1,7 +1,7 @@
 import 'package:common/common.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:word_game/app/colours.dart';
 import 'package:word_game/ui/word_row.dart';
@@ -10,6 +10,7 @@ class GameOverview extends StatefulWidget {
   final BaseGameController game;
   final VoidCallback? onRemove;
   final Widget? header;
+
   const GameOverview(
     this.game, {
     this.onRemove,
@@ -51,16 +52,13 @@ class _GameOverviewState extends State<GameOverview> {
         bloc: widget.game,
         builder: (context, state) {
           final baseScheme = ColourScheme.base(context);
-          return Neumorphic(
-            padding: const EdgeInsets.symmetric(horizontal: 6.0),
-            style: NeumorphicStyle(
-              depth: -10,
-              color: widget.game.state.gameFinished
-                  ? widget.game.state.solved
-                      ? baseScheme.correct.withAlpha(100)
-                      : baseScheme.wrong.withAlpha(150)
-                  : null,
-            ),
+          return Container(
+            padding: const EdgeInsets.symmetric(horizontal: 6),
+            color: widget.game.state.gameFinished
+                ? widget.game.state.solved
+                    ? baseScheme.correct.withAlpha(100)
+                    : baseScheme.wrong.withAlpha(150)
+                : null,
             child: ListView(
               controller: _controller,
               children: [
@@ -96,7 +94,6 @@ class _GameOverviewState extends State<GameOverview> {
                           correct: e.correct,
                           semiCorrect: e.semiCorrect,
                           finalised: e.finalised,
-                          shape: NeumorphicShape.convex,
                           surfaceIntensity: 0.15,
                           textStyle: dark
                               ? Theme.of(context).textTheme.headlineMedium!.copyWith(color: Colors.grey.shade200)

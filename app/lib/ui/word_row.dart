@@ -1,5 +1,5 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:word_game/app/colours.dart';
 import 'package:word_game/cubits/scheme_cubit.dart';
 
@@ -13,12 +13,12 @@ class WordRow extends StatelessWidget {
   final bool valid;
   final Color? borderColour;
   final double? borderWidth;
-  final NeumorphicShape shape;
   final double surfaceIntensity;
   final TextStyle? textStyle;
   final bool correctOnTop;
   final Duration? animationDuration;
   final VoidCallback? onLongPress;
+
   const WordRow({
     super.key,
     required this.length,
@@ -30,7 +30,6 @@ class WordRow extends StatelessWidget {
     this.valid = true,
     this.borderColour,
     this.borderWidth,
-    this.shape = NeumorphicShape.flat,
     this.surfaceIntensity = 0.25,
     this.textStyle,
     this.correctOnTop = false,
@@ -70,29 +69,15 @@ class WordRow extends StatelessWidget {
 
   Widget _letter(BuildContext context, String letter, {Color? colour}) {
     final theme = Theme.of(context);
-    bool dark = theme.brightness == Brightness.dark;
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: SizedBox(
         width: 60,
         height: 80,
-        child: Neumorphic(
+        child: AnimatedContainer(
           duration: animationDuration ?? Duration(milliseconds: valid ? 1000 : 250),
-          padding: const EdgeInsets.all(12.0),
-          style: NeumorphicStyle(
-            surfaceIntensity: surfaceIntensity,
-            shape: shape,
-            color: colour ?? theme.scaffoldBackgroundColor,
-            border: (!valid || (!finalised && letter.isNotEmpty))
-                ? NeumorphicBorder(
-                    width: borderWidth ?? 1.0,
-                    color: borderColour ?? (valid ? Colors.grey.shade500 : Colours.invalid),
-                  )
-                : const NeumorphicBorder.none(),
-            boxShape: NeumorphicBoxShape.roundRect(BorderRadius.circular(6.0)),
-            depth: dark ? 2.0 : 4.0,
-            intensity: 0.6,
-          ),
+          padding: const EdgeInsets.all(12),
+          color: colour ?? theme.scaffoldBackgroundColor,
           child: Center(
             child: Text(
               letter,

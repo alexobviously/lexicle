@@ -18,11 +18,12 @@ class Standing {
   bool get finished => progress >= 1.0;
   double get orderWeight => guesses == 0 ? 999999 : (1 / (progress + 0.0001)) * guesses;
 
-  Standing({
+  const Standing({
     required this.player,
     this.guesses = 0,
     this.progress = 0.0,
   });
+
   factory Standing.initial(String player) => Standing(player: player);
 
   factory Standing.fromJson(Map<String, dynamic> doc) => Standing(

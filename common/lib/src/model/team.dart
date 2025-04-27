@@ -25,7 +25,7 @@ class Team implements Entity {
 
   factory Team.fromJson(Map<String, dynamic> doc) => Team(
         id: doc[Fields.id],
-        timestamp: doc[Fields.timestamp] ?? nowMs(),
+        timestamp: doc[Fields.timestamp]?.toInt() ?? nowMs(),
         name: doc[TeamFields.name],
         leader: doc[TeamFields.leader],
         members: coerceList<String>(doc[TeamFields.members] ?? []),

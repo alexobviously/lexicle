@@ -1,9 +1,9 @@
 import 'dart:math';
 
 import 'package:common/common.dart';
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:fl_chart/fl_chart.dart';
-import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:word_game/app/colours.dart';
 import 'package:word_game/app/router.dart';
@@ -70,24 +70,27 @@ class _ProfileViewState extends State<ProfileView> {
 
                   return Column(
                     children: [
-                      if (guessCounts.entries.length > 1)
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 32.0),
-                          child: NeumorphicToggle(
-                            selectedIndex: lengthIndex!,
-                            displayForegroundOnlyIfSelected: true,
-                            children: guessCounts.keys.map((e) => _toggleElement(context, e.toString())).toList(),
-                            thumb: Neumorphic(
-                              style: NeumorphicStyle(
-                                boxShape: NeumorphicBoxShape.roundRect(BorderRadius.all(Radius.circular(12))),
-                              ),
-                            ),
-                            onChanged: setLengthIndex,
-                          ),
-                        ),
-                      Neumorphic(
-                        padding: const EdgeInsets.all(8.0),
-                        style: NeumorphicStyle(depth: -2),
+                      // if (guessCounts.entries.length > 1)
+                      //   Padding(
+                      //     padding: const EdgeInsets.symmetric(horizontal: 32.0),
+                      //     child: TabBar(
+                      //       tabs: guessCounts.keys.map((e) => _toggleElement(context, e.toString())).toList(),
+                      //       onTap: ,
+                      //     ),
+                      //     // child: NeumorphicToggle(
+                      //     //   selectedIndex: lengthIndex!,
+                      //     //   displayForegroundOnlyIfSelected: true,
+                      //     //   children: guessCounts.keys.map((e) => _toggleElement(context, e.toString())).toList(),
+                      //     //   thumb: Neumorphic(
+                      //     //     style: NeumorphicStyle(
+                      //     //       boxShape: NeumorphicBoxShape.roundRect(BorderRadius.all(Radius.circular(12))),
+                      //     //     ),
+                      //     //   ),
+                      //     //   onChanged: setLengthIndex,
+                      //     // ),
+                      //   ),
+                      Padding(
+                        padding: const EdgeInsets.all(8),
                         child: Column(
                           children: [
                             Row(
@@ -117,17 +120,6 @@ class _ProfileViewState extends State<ProfileView> {
           ),
         ),
       ),
-    );
-  }
-
-  ToggleElement _toggleElement(BuildContext context, String text) {
-    return ToggleElement(
-      foreground: Center(
-          child: Text(
-        text,
-        style: TextStyle(fontWeight: FontWeight.bold),
-      )),
-      background: Center(child: Text(text)),
     );
   }
 

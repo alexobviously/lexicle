@@ -1,4 +1,4 @@
-import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:flutter/material.dart';
 import 'package:word_game/ui/app_bar.dart';
 
 class StandardScaffold extends StatelessWidget {
@@ -26,7 +26,7 @@ class StandardScaffold extends StatelessWidget {
               actions: appBarActions,
             )
           : null,
-      backgroundColor: NeumorphicTheme.baseColor(context),
+      // backgroundColor: NeumorphicTheme.baseColor(context),
       body: body,
     );
   }

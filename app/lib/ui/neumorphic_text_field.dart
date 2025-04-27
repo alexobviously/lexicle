@@ -1,6 +1,7 @@
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 
+// TODO: it's not neumorphic now, figure out what to do with it
 class NeumorphicTextField extends StatelessWidget {
   final double depth;
   final EdgeInsets padding;
@@ -38,10 +39,7 @@ class NeumorphicTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Neumorphic(
-      style: NeumorphicStyle(
-        depth: -2,
-      ),
+    return Padding(
       padding: padding,
       child: TextFormField(
         inputFormatters: inputFormatters,

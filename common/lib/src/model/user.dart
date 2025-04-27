@@ -29,9 +29,12 @@ class User implements Entity {
         rating = rating ?? Rating.initial();
 
   factory User.fromJson(Map<String, dynamic> doc) {
+    print('User.fromJson: $doc');
+    print('timestamp: ${doc[Fields.timestamp]}, type: ${doc[Fields.timestamp]?.runtimeType}');
+
     return User(
       id: doc[Fields.id],
-      timestamp: doc[Fields.timestamp] ?? nowMs(),
+      timestamp: doc[Fields.timestamp]?.toInt() ?? nowMs(),
       username: doc[UserFields.username],
       rating: doc[UserFields.rating] != null ? Rating.fromJson(doc[UserFields.rating]) : Rating.initial(),
       team: doc[UserFields.team],

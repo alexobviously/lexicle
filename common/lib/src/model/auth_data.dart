@@ -19,7 +19,7 @@ class AuthData implements Entity {
 
   factory AuthData.fromJson(Map<String, dynamic> doc) => AuthData(
         id: doc[Fields.id],
-        timestamp: doc[Fields.timestamp] ?? nowMs(),
+        timestamp: doc[Fields.timestamp]?.toInt() ?? nowMs(),
         password: doc[UserFields.password],
       );
 

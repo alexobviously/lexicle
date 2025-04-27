@@ -1,4 +1,4 @@
-import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 ThemeData lightTheme = ThemeData(
@@ -16,18 +16,18 @@ ThemeData darkTheme = ThemeData(
   iconTheme: IconThemeData(color: Colors.grey[300]),
 );
 
-NeumorphicThemeData neumorphicLight = NeumorphicThemeData(
-  baseColor: const Color(0xFFEEEEEE),
-  lightSource: LightSource.topLeft,
-  depth: 10,
-  boxShape: NeumorphicBoxShape.roundRect(BorderRadius.circular(25.0)),
-);
+// NeumorphicThemeData neumorphicLight = NeumorphicThemeData(
+//   baseColor: const Color(0xFFEEEEEE),
+//   lightSource: LightSource.topLeft,
+//   depth: 10,
+//   boxShape: NeumorphicBoxShape.roundRect(BorderRadius.circular(25.0)),
+// );
 
-NeumorphicThemeData neumorphicDark = NeumorphicThemeData(
-  baseColor: const Color(0xFF252525),
-  lightSource: LightSource.topLeft,
-  intensity: 0.35,
-  buttonStyle: NeumorphicStyle(shape: NeumorphicShape.convex),
-  depth: 2,
-  boxShape: NeumorphicBoxShape.roundRect(BorderRadius.circular(25.0)),
-);
+// NeumorphicThemeData neumorphicDark = NeumorphicThemeData(
+//   baseColor: const Color(0xFF252525),
+//   lightSource: LightSource.topLeft,
+//   intensity: 0.35,
+//   buttonStyle: NeumorphicStyle(shape: NeumorphicShape.convex),
+//   depth: 2,
+//   boxShape: NeumorphicBoxShape.roundRect(BorderRadius.circular(25.0)),
+// );

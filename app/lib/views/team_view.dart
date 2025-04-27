@@ -1,6 +1,6 @@
 import 'package:common/common.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:go_router/go_router.dart';
 import 'package:word_game/app/colours.dart';
@@ -99,8 +99,7 @@ class _TeamViewState extends State<TeamView> {
                           alignment: Alignment.centerRight,
                           child: Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 2.0),
-                            child: NeumorphicButton(
-                              style: NeumorphicStyle(depth: 2),
+                            child: ElevatedButton(
                               child: Text(joined ? 'Leave' : 'Join'),
                               onPressed: joined ? _leave : _join,
                             ),

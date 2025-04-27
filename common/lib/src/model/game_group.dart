@@ -99,7 +99,7 @@ class GameGroup extends Equatable implements Entity {
   factory GameGroup.fromJson(Map<String, dynamic> doc) {
     return GameGroup(
       id: parseObjectId(doc[Fields.id])!,
-      timestamp: doc[Fields.timestamp] ?? nowMs(),
+      timestamp: doc[Fields.timestamp]?.toInt() ?? nowMs(),
       title: doc[GroupFields.title],
       config: GameConfig.fromJson(doc[GroupFields.config]),
       creator: doc[GroupFields.creator],

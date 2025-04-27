@@ -3,10 +3,10 @@ import 'dart:math';
 
 import 'package:common/common.dart';
 import 'package:duration/duration.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:go_router/go_router.dart';
 import 'package:linked_scroll_controller/linked_scroll_controller.dart';
@@ -331,12 +331,8 @@ class _GroupViewState extends State<GroupView> {
         : UnderlineInputBorder(borderSide: BorderSide(color: Colours.invalid));
     return SizedBox(
       width: MediaQuery.of(context).size.width * 0.9,
-      child: Neumorphic(
-        padding: EdgeInsets.all(8.0),
-        style: NeumorphicStyle(
-          depth: 2,
-          boxShape: NeumorphicBoxShape.roundRect(BorderRadius.circular(12.0)),
-        ),
+      child: Padding(
+        padding: EdgeInsets.all(8),
         child: Column(
           children: [
             Text(
@@ -362,7 +358,7 @@ class _GroupViewState extends State<GroupView> {
                     ),
                   ),
                   Container(width: 16.0),
-                  NeumorphicButton(
+                  ElevatedButton(
                     onPressed: canSubmit ? _submitWord : null,
                     child: Icon(MdiIcons.keyboardReturn),
                   ),
@@ -400,10 +396,7 @@ class _GroupViewState extends State<GroupView> {
               if (auth().loggedIn)
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: NeumorphicButton(
-                    style: NeumorphicStyle(
-                      depth: 2,
-                    ),
+                  child: ElevatedButton(
                     onPressed: () {
                       if (isCreator) {
                         cubit.deleteGroup(group.id).then(_onDelete);
@@ -470,7 +463,7 @@ class _GroupViewState extends State<GroupView> {
           ),
           // Spacer(),
           if (isCreator && group.canBegin)
-            NeumorphicButton(
+            ElevatedButton(
               onPressed: controller!.start,
               child: Text(
                 'Start Group',
@@ -478,9 +471,8 @@ class _GroupViewState extends State<GroupView> {
               ),
             ),
           if (isCreator && !group.canBegin)
-            Neumorphic(
-              padding: EdgeInsets.all(16.0),
-              style: NeumorphicStyle(depth: 2),
+            Padding(
+              padding: EdgeInsets.all(16),
               child: Text('Waiting for players..', style: textTheme.headlineSmall),
             ),
           _created(context, group),
@@ -543,23 +535,23 @@ class _GroupViewState extends State<GroupView> {
               ),
             ),
             Container(height: 32),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: NeumorphicToggle(
-                selectedIndex: _resultsTab,
-                displayForegroundOnlyIfSelected: true,
-                children: [
-                  _toggleElement(context, 'Answers'),
-                  _toggleElement(context, 'Games'),
-                ],
-                thumb: Neumorphic(
-                  style: NeumorphicStyle(
-                    boxShape: NeumorphicBoxShape.roundRect(BorderRadius.all(Radius.circular(12))),
-                  ),
-                ),
-                onChanged: _setResultsTab,
-              ),
-            ),
+            // Padding(
+            //   padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            //   child: NeumorphicToggle(
+            //     selectedIndex: _resultsTab,
+            //     displayForegroundOnlyIfSelected: true,
+            //     children: [
+            //       _toggleElement(context, 'Answers'),
+            //       _toggleElement(context, 'Games'),
+            //     ],
+            //     thumb: Neumorphic(
+            //       style: NeumorphicStyle(
+            //         boxShape: NeumorphicBoxShape.roundRect(BorderRadius.all(Radius.circular(12))),
+            //       ),
+            //     ),
+            //     onChanged: _setResultsTab,
+            //   ),
+            // ),
             Container(height: 16),
             // TODO: make this smoother - a PageView would be ideal but it doesn't work in a Scrollable
             AnimatedSwitcher(
@@ -576,18 +568,6 @@ class _GroupViewState extends State<GroupView> {
           ],
         );
       }),
-    );
-  }
-
-  ToggleElement _toggleElement(BuildContext context, String text) {
-    final _style = Theme.of(context).textTheme.headlineSmall;
-    return ToggleElement(
-      foreground: Center(
-          child: Text(
-        text,
-        style: _style!.copyWith(fontWeight: FontWeight.bold),
-      )),
-      background: Center(child: Text(text, style: _style)),
     );
   }
 

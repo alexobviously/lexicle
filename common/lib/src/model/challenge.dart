@@ -47,7 +47,7 @@ class Challenge implements Entity {
 
   factory Challenge.fromJson(Map<String, dynamic> doc) => Challenge(
         id: parseObjectId(doc[Fields.id])!,
-        timestamp: doc[Fields.timestamp] ?? nowMs(),
+        timestamp: doc[Fields.timestamp]?.toInt() ?? nowMs(),
         fixedTitle: doc[ChallengeFields.title],
         level: doc[ChallengeFields.level],
         sequence: doc[ChallengeFields.sequence],

@@ -83,7 +83,7 @@ class Game implements Entity {
   factory Game.fromJson(Map<String, dynamic> doc) {
     return Game(
       id: parseObjectId(doc[Fields.id]),
-      timestamp: doc[Fields.timestamp] ?? nowMs(),
+      timestamp: doc[Fields.timestamp]?.toInt() ?? nowMs(),
       answer: doc[GameFields.answer],
       player: doc[GameFields.player],
       creator: doc[GameFields.creator],

@@ -1,5 +1,5 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:go_router/go_router.dart';
 import 'package:word_game/app/router.dart';
 import 'package:word_game/cubits/auth_controller.dart';
@@ -53,23 +53,23 @@ class _AuthViewState extends State<AuthView> {
             child: Column(
               children: [
                 Container(height: 8.0),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 32.0),
-                  child: NeumorphicToggle(
-                    selectedIndex: _page,
-                    displayForegroundOnlyIfSelected: true,
-                    children: [
-                      _toggleElement(context, 'Login'),
-                      _toggleElement(context, 'Register'),
-                    ],
-                    thumb: Neumorphic(
-                      style: NeumorphicStyle(
-                        boxShape: NeumorphicBoxShape.roundRect(BorderRadius.all(Radius.circular(12))),
-                      ),
-                    ),
-                    onChanged: _changePage,
-                  ),
-                ),
+                // Padding(
+                //   padding: const EdgeInsets.symmetric(horizontal: 32.0),
+                //   child: NeumorphicToggle(
+                //     selectedIndex: _page,
+                //     displayForegroundOnlyIfSelected: true,
+                //     children: [
+                //       _toggleElement(context, 'Login'),
+                //       _toggleElement(context, 'Register'),
+                //     ],
+                //     thumb: Neumorphic(
+                //       style: NeumorphicStyle(
+                //         boxShape: NeumorphicBoxShape.roundRect(BorderRadius.all(Radius.circular(12))),
+                //       ),
+                //     ),
+                //     onChanged: _changePage,
+                //   ),
+                // ),
                 Expanded(
                   child: Padding(
                     padding: const EdgeInsets.all(32.0),
@@ -87,17 +87,6 @@ class _AuthViewState extends State<AuthView> {
           ),
         ),
       ),
-    );
-  }
-
-  ToggleElement _toggleElement(BuildContext context, String text) {
-    return ToggleElement(
-      foreground: Center(
-          child: Text(
-        text,
-        style: TextStyle(fontWeight: FontWeight.bold),
-      )),
-      background: Center(child: Text(text)),
     );
   }
 }

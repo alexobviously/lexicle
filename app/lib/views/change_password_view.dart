@@ -1,6 +1,6 @@
 import 'package:common/common.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:word_game/services/api_client.dart';
@@ -54,6 +54,7 @@ class _ChangePasswordFormState extends State<ChangePasswordForm> {
     if (_formKey.currentState!.validate()) {
       final result = await ApiClient.changePassword(_oldPassword, _newPassword);
       sound().play(result.ok ? Sound.good : Sound.bad);
+      if (!mounted) return;
       HapticFeedback.mediumImpact();
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -99,11 +100,7 @@ class _ChangePasswordFormState extends State<ChangePasswordForm> {
               ),
             ),
             Container(height: 32),
-            NeumorphicButton(
-              style: NeumorphicStyle(
-                shape: NeumorphicShape.flat,
-                boxShape: NeumorphicBoxShape.roundRect(BorderRadius.circular(16)),
-              ),
+            ElevatedButton(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 32),
                 child: Text('Change Password', style: Theme.of(context).textTheme.titleLarge),

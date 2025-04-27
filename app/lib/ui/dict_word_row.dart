@@ -1,4 +1,4 @@
-import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:flutter/material.dart';
 import 'package:word_game/app/colours.dart';
 
 class DictWordRow extends StatelessWidget {
@@ -30,19 +30,9 @@ class DictWordRow extends StatelessWidget {
       child: SizedBox(
         width: 60,
         height: 80,
-        child: Neumorphic(
+        child: AnimatedContainer(
           duration: const Duration(milliseconds: 1000),
           padding: const EdgeInsets.all(12.0),
-          style: NeumorphicStyle(
-            // color: Colors.grey[300],
-            boxShape: NeumorphicBoxShape.roundRect(BorderRadius.circular(6.0)),
-            depth: 1.0,
-            intensity: 0.6,
-            border: NeumorphicBorder(
-              color: Colours.wrong,
-              width: 2.0,
-            ),
-          ),
           child: Center(
             child: Text(
               letter,
