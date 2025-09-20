@@ -50,51 +50,36 @@ class MyApp extends StatelessWidget {
     final _settingsCubit = SettingsCubit();
     return MultiBlocProvider(
       providers: [
-        BlocProvider<AuthController>(
-          create: (_) => auth(),
-        ),
-        BlocProvider<LocalGameManager>(
-          create: (_) => LocalGameManager(),
-        ),
-        BlocProvider<GameGroupManager>(
-          create: (_) => GameGroupManager(),
-        ),
-        BlocProvider<ServerCubit>(
-          create: (_) => ServerCubit(),
-        ),
-        BlocProvider<SettingsCubit>(
-          create: (_) => _settingsCubit,
-          lazy: false,
-        ),
-        BlocProvider<SchemeCubit>(
-          create: (_) => SchemeCubit(settingsCubit: _settingsCubit),
-          lazy: false,
-        ),
-        BlocProvider<ChallengeManager>(
-          create: (_) => challengeManager(),
-          lazy: true,
-        ),
+        BlocProvider<AuthController>(create: (_) => auth()),
+        BlocProvider<LocalGameManager>(create: (_) => LocalGameManager()),
+        BlocProvider<GameGroupManager>(create: (_) => GameGroupManager()),
+        BlocProvider<ServerCubit>(create: (_) => ServerCubit()),
+        BlocProvider<SettingsCubit>(create: (_) => _settingsCubit, lazy: false),
+        BlocProvider<SchemeCubit>(create: (_) => SchemeCubit(settingsCubit: _settingsCubit), lazy: false),
+        BlocProvider<ChallengeManager>(create: (_) => challengeManager(), lazy: true),
       ],
-      child: BlocBuilder<SettingsCubit, Settings>(builder: (context, settings) {
-        return FlutterWebFrame(
-          builder: (context) {
-            return MaterialApp.router(
-              key: _appKey,
-              title: 'Lexicle',
-              theme: lightTheme,
-              darkTheme: darkTheme,
-              themeMode: settings.themeMode,
-              debugShowCheckedModeBanner: false,
-              routeInformationParser: _router.routeInformationParser,
-              routerDelegate: _router.routerDelegate,
-              routeInformationProvider: _router.routeInformationProvider,
-            );
-          },
-          maximumSize: Size(475.0, 812.0),
-          enabled: kIsWeb,
-          backgroundColor: settings.colourScheme.wrong,
-        );
-      }),
+      child: BlocBuilder<SettingsCubit, Settings>(
+        builder: (context, settings) {
+          return FlutterWebFrame(
+            builder: (context) {
+              return MaterialApp.router(
+                key: _appKey,
+                title: 'Lexicle',
+                theme: lightTheme,
+                darkTheme: darkTheme,
+                themeMode: settings.themeMode,
+                debugShowCheckedModeBanner: false,
+                routeInformationParser: _router.routeInformationParser,
+                routerDelegate: _router.routerDelegate,
+                routeInformationProvider: _router.routeInformationProvider,
+              );
+            },
+            maximumSize: Size(475.0, 812.0),
+            enabled: kIsWeb,
+            backgroundColor: settings.colourScheme.wrong,
+          );
+        },
+      ),
     );
   }
 }

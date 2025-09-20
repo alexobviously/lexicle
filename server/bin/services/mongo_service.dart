@@ -6,8 +6,19 @@ import 'environment.dart';
 class MongoService implements DatabaseService {
   late Db db;
   Future<void> init(Environment env) async {
-    String connStr =
-        'mongodb+srv://${env.mongoUser}:${env.mongoPass}@${env.mongoHost}/${env.mongoDb}?retryWrites=true&w=majority';
+    // URL-encode username and password
+    String user = Uri.encodeComponent(env.mongoUser);
+    String pass = Uri.encodeComponent(env.mongoPass);
+
+    String connStr;
+    if (env.mongoHost.contains('localhost') || env.mongoHost.contains('127.0.0.1')) {
+      // Use local connection string, host may already include port
+      connStr = 'mongodb://$user:$pass@${env.mongoHost}/${env.mongoDb}';
+    } else {
+      // Use Atlas/Cloud connection string
+      connStr = 'mongodb+srv://$user:$pass@${env.mongoHost}/${env.mongoDb}?retryWrites=true&w=majority';
+    }
+
     db = await Db.create(connStr);
     await connected;
   }
