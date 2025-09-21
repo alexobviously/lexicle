@@ -1,6 +1,7 @@
 class Environment {
   String version;
   int port;
+  String? mongoUri;
   String mongoUser;
   String mongoPass;
   String mongoDb;
@@ -13,6 +14,7 @@ class Environment {
   Environment({
     required this.version,
     required this.port,
+    this.mongoUri,
     required this.mongoUser,
     required this.mongoPass,
     required this.mongoDb,

@@ -6,17 +6,23 @@ import 'environment.dart';
 class MongoService implements DatabaseService {
   late Db db;
   Future<void> init(Environment env) async {
-    // URL-encode username and password
-    String user = Uri.encodeComponent(env.mongoUser);
-    String pass = Uri.encodeComponent(env.mongoPass);
-
     String connStr;
-    if (env.mongoHost.contains('localhost') || env.mongoHost.contains('127.0.0.1')) {
-      // Use local connection string, host may already include port
-      connStr = 'mongodb://$user:$pass@${env.mongoHost}/${env.mongoDb}';
+    if (env.mongoUri != null && env.mongoUri!.isNotEmpty) {
+      connStr = env.mongoUri!;
     } else {
-      // Use Atlas/Cloud connection string
-      connStr = 'mongodb+srv://$user:$pass@${env.mongoHost}/${env.mongoDb}?retryWrites=true&w=majority';
+      // URL-encode username and password
+      String user = Uri.encodeComponent(env.mongoUser);
+      String pass = Uri.encodeComponent(env.mongoPass);
+
+      if (env.mongoHost.contains('localhost') ||
+          env.mongoHost.contains('127.0.0.1')) {
+        // Use local connection string, host may already include port
+        connStr = 'mongodb://$user:$pass@${env.mongoHost}/${env.mongoDb}';
+      } else {
+        // Use Atlas/Cloud connection string
+        connStr =
+            'mongodb+srv://$user:$pass@${env.mongoHost}/${env.mongoDb}?retryWrites=true&w=majority';
+      }
     }
 
     db = await Db.create(connStr);
@@ -37,8 +43,10 @@ class MongoService implements DatabaseService {
   Future<Result<T>> get<T extends Entity>(String id) async {
     if (!isMongoId(id)) return Result.error('invalid_id');
     await connected;
+
     final coll = db.collection(Entity.table(T));
     final doc = await coll.findOne(where.id(ObjectId.fromHexString(id)));
+
     if (doc == null) {
       return Result.error(Errors.notFound);
     } else {
@@ -51,39 +59,56 @@ class MongoService implements DatabaseService {
   @override
   Future<List<T>> getAll<T extends Entity>({SelectorBuilder? selector}) async {
     await connected;
+
     final coll = db.collection(Entity.table(T));
     List<Map<String, dynamic>> results = await coll.find(selector).toList();
-    List<T> entities = [];
-    for (Map<String, dynamic> d in results) {
-      ObjectId? objectId = d['_id'];
-      d['id'] = objectId?.id.hexString;
-      entities.add(Entity.build<T>(d));
-    }
+
+    final entities = <T>[
+      for (final d in results)
+        Entity.build<T>({
+          ...d,
+          'id': d['_id']?.id.hexString,
+        }),
+    ];
+
     return entities;
   }
 
   @override
-  Future<Result<T>> getOne<T extends Entity>({SelectorBuilder? selector}) async {
+  Future<Result<T>> getOne<T extends Entity>({
+    SelectorBuilder? selector,
+  }) async {
     await connected;
+
     final coll = db.collection(Entity.table(T));
     Map<String, dynamic>? data = await coll.findOne(selector);
     if (data == null) return Result.error(Errors.notFound);
+
     ObjectId? objectId = data['_id'];
     data['id'] = objectId?.id.hexString;
+
     return Result.ok(Entity.build<T>(data));
   }
 
   @override
-  Future<List<T>> getAllByField<T extends Entity>(String field, dynamic value) async {
+  Future<List<T>> getAllByField<T extends Entity>(
+    String field,
+    dynamic value,
+  ) async {
     SelectorBuilder selector = where.eq(field, value);
     return getAll<T>(selector: selector);
   }
 
   @override
-  Future<Result<T>> getByField<T extends Entity>(String field, dynamic value) async {
+  Future<Result<T>> getByField<T extends Entity>(
+    String field,
+    dynamic value,
+  ) async {
     await connected;
+
     final coll = db.collection(Entity.table(T));
     final doc = await coll.findOne(where.eq(field, value));
+
     if (doc == null) {
       return Result.error(Errors.notFound);
     } else {
@@ -96,16 +121,21 @@ class MongoService implements DatabaseService {
   @override
   Future<Result<T>> write<T extends Entity>(T entity) async {
     if (!isMongoId(entity.id)) return Result.error('invalid_id');
+
     Map<String, dynamic> data = entity.export();
     ObjectId id = ObjectId.fromHexString(data['id']);
-    await connected;
     data.remove('id');
     data['_id'] = id;
+
+    await connected;
+
     final coll = db.collection(Entity.table(T));
-    final _result = await coll.replaceOne(where.id(id), data, upsert: true);
-    if (_result.hasWriteErrors) {
+    final result = await coll.replaceOne(where.id(id), data, upsert: true);
+
+    if (result.hasWriteErrors) {
       return Result.error('write_error');
     }
+
     return Result.ok(entity);
   }
 
@@ -113,8 +143,12 @@ class MongoService implements DatabaseService {
   Future<Result<bool>> delete<T extends Entity>(T entity) async {
     if (!isMongoId(entity.id)) return Result.error('invalid_id');
     await connected;
+
     final coll = db.collection(Entity.table(T));
-    final result = await coll.deleteOne(where.id(ObjectId.fromHexString(entity.id)));
+    final result = await coll.deleteOne(
+      where.id(ObjectId.fromHexString(entity.id)),
+    );
+
     if (result.isSuccess) {
       return Result.ok(true);
     } else {
@@ -123,21 +157,37 @@ class MongoService implements DatabaseService {
   }
 
   @override
-  Future<Result<Challenge>> getCurrentChallenge(int level, [bool returnFinished = false]) async {
-    final selector = where.eq(ChallengeFields.level, level).sortBy(Fields.timestamp, descending: true).limit(1);
+  Future<Result<Challenge>> getCurrentChallenge(
+    int level, [
+    bool returnFinished = false,
+  ]) async {
+    final selector = where
+        .eq(ChallengeFields.level, level)
+        .sortBy(Fields.timestamp, descending: true)
+        .limit(1);
     final r = await getAll<Challenge>(selector: selector);
-    return (r.isNotEmpty && (!r.first.finished || returnFinished)) ? Result.ok(r.first) : Result.error(Errors.notFound);
+
+    return (r.isNotEmpty && (!r.first.finished || returnFinished))
+        ? Result.ok(r.first)
+        : Result.error(Errors.notFound);
   }
 
   @override
   Future<Result<Challenge>> getChallenge(int level, int sequence) async {
-    final selector = where.eq(ChallengeFields.level, level).eq(ChallengeFields.sequence, sequence);
+    final selector = where
+        .eq(ChallengeFields.level, level)
+        .eq(ChallengeFields.sequence, sequence);
     return getOne<Challenge>(selector: selector);
   }
 
   @override
-  Future<Result<Game>> getChallengeAttempt(String player, String challenge) async {
-    final selector = where.eq(GameFields.player, player).eq(GameFields.challenge, challenge);
+  Future<Result<Game>> getChallengeAttempt(
+    String player,
+    String challenge,
+  ) async {
+    final selector = where
+        .eq(GameFields.player, player)
+        .eq(GameFields.challenge, challenge);
     return getOne<Game>(selector: selector);
   }
 }

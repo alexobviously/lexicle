@@ -48,6 +48,7 @@ Environment readEnvironment() {
   return Environment(
     version: version,
     port: int.parse(_getEnv('PORT', '8080')),
+    mongoUri: _getEnv('MONGO_URI').isEmpty ? null : _getEnv('MONGO_URI'),
     mongoUser: _getEnv('MONGO_USER'),
     mongoPass: _getEnv('MONGO_PASS'),
     mongoDb: _getEnv('MONGO_DB'),
