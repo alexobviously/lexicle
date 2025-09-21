@@ -27,8 +27,8 @@ class UsernameLink extends StatelessWidget {
       key: innerKey,
       id: id,
       store: userStore(),
-      loadingWidget: SpinKitCircle(color: Colors.black87, size: 16),
-      errorWidget: (_) => Icon(Icons.error),
+      loadingWidget: const SpinKitCircle(color: Colors.black87, size: 16),
+      errorWidget: (_) => const Icon(Icons.error),
       resultWidget: (u) => InkWell(
         onTap: () => context.push(Routes.user(id)),
         child: content(context, u),

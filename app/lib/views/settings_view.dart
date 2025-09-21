@@ -31,10 +31,10 @@ class _SettingsViewState extends State<SettingsView> {
             final _themeModes = [ThemeMode.light, ThemeMode.dark, ThemeMode.system];
             return Column(
               children: [
-                Spacer(),
+                const Spacer(),
                 ElevatedButton(
                   onPressed: () => context.push(Routes.changePassword),
-                  child: Text('Change Password'),
+                  child: const Text('Change Password'),
                 ),
                 Container(height: 32),
                 Text('Theme Mode', style: textTheme.titleLarge),
@@ -54,7 +54,7 @@ class _SettingsViewState extends State<SettingsView> {
                     );
                   },
                 ),
-                Spacer(),
+                const Spacer(),
                 _version(),
               ],
             );
@@ -137,7 +137,7 @@ class _SettingsViewState extends State<SettingsView> {
             ],
           );
         } else {
-          return Text('Version...');
+          return const Text('Version...');
         }
       },
     );

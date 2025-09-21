@@ -47,7 +47,7 @@ class _LoginFormState extends State<LoginForm> {
             NeumorphicTextField(
               controller: _usernameController,
               hintText: 'Enter a username',
-              label: Text('Username'),
+              label: const Text('Username'),
               maxLength: usernameMaxLength,
             ),
             Container(height: 16),
@@ -58,7 +58,7 @@ class _LoginFormState extends State<LoginForm> {
               maxLength: passwordMaxLength,
               inputDecoration: InputDecoration(
                 hintText: 'Enter a password',
-                label: Text('Password'),
+                label: const Text('Password'),
                 suffixIcon: IconButton(
                   onPressed: _toggleShowPassword,
                   icon: Icon(_showPassword ? MdiIcons.eyeOff : MdiIcons.eye),

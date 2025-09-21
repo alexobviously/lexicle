@@ -74,7 +74,7 @@ class _ChallengeViewState extends State<ChallengeView> {
           child: Center(
             child: Column(
               children: [
-                Icon(Icons.error),
+                const Icon(Icons.error),
                 Text(error ?? 'error'),
               ],
             ),

@@ -73,7 +73,7 @@ class _RushViewState extends State<RushView> {
       _initTimer(game!.state.endTime);
       game!.endTimeStream.listen((t) => _initTimer(t));
       game!.numRowsStream.listen((_) => _scrollDown());
-      WidgetsBinding.instance.addPostFrameCallback((_) => _scrollDown(Duration(milliseconds: 750)));
+      WidgetsBinding.instance.addPostFrameCallback((_) => _scrollDown(const Duration(milliseconds: 750)));
     }
   }
 
@@ -81,7 +81,7 @@ class _RushViewState extends State<RushView> {
     timer?.cancel();
     if (t != null) {
       endTime = t;
-      timer = Timer.periodic(Duration(seconds: 1), (_) => _setTimeLeft());
+      timer = Timer.periodic(const Duration(seconds: 1), (_) => _setTimeLeft());
     }
   }
 
@@ -151,7 +151,7 @@ class _RushViewState extends State<RushView> {
                       OutlinedButton.icon(
                         onPressed: () => context.go(Routes.home),
                         icon: Icon(MdiIcons.home),
-                        label: Text('Go Home'),
+                        label: const Text('Go Home'),
                       ),
                     ],
                   );
@@ -182,7 +182,7 @@ class _RushViewState extends State<RushView> {
                     Row(
                       children: [
                         if (timeLeft != null) GameClock(timeLeft!),
-                        Spacer(),
+                        const Spacer(),
                         Text('${state.completed.length} solved'),
                       ],
                     ),
@@ -213,7 +213,7 @@ class _RushViewState extends State<RushView> {
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: AnimatedCrossFade(
-                          duration: Duration(milliseconds: 1000),
+                          duration: const Duration(milliseconds: 1000),
                           firstChild: FittedBox(
                             child: GameKeyboard(
                               onTap: _addLetter,
@@ -263,15 +263,15 @@ class _RushViewState extends State<RushView> {
                     EntityFutureBuilder<User>(
                       id: game.player,
                       store: userStore(),
-                      loadingWidget: SpinKitCircle(color: Colours.victory, size: 16),
-                      errorWidget: (_) => Icon(Icons.error),
+                      loadingWidget: const SpinKitCircle(color: Colours.victory, size: 16),
+                      errorWidget: (_) => const Icon(Icons.error),
                       resultWidget: (u) => Text('Observing ${u.username}'),
                     ),
                     EntityFutureBuilder<User>(
                       id: game.creator,
                       store: userStore(),
-                      loadingWidget: SpinKitCircle(color: Colours.victory, size: 16),
-                      errorWidget: (_) => Icon(Icons.error),
+                      loadingWidget: const SpinKitCircle(color: Colours.victory, size: 16),
+                      errorWidget: (_) => const Icon(Icons.error),
                       resultWidget: (u) => Text('${u.username}\'s game'),
                     ),
                   ],
@@ -335,7 +335,7 @@ class _RushViewState extends State<RushView> {
               ).then((_) {
                 sound().play(Sound.good);
                 ScaffoldMessenger.of(context)
-                    .showSnackBar(SnackBar(content: Text('Game copied to clipboard'), duration: Duration(seconds: 2)));
+                    .showSnackBar(const SnackBar(content: Text('Game copied to clipboard'), duration: Duration(seconds: 2)));
               });
             }
           : null,

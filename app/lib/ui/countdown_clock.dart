@@ -31,7 +31,7 @@ class _CountdownClockState extends State<CountdownClock> {
   @override
   void initState() {
     _updateTimeLeft(false);
-    timer = Timer.periodic(Duration(seconds: 1), (_) => _updateTimeLeft());
+    timer = Timer.periodic(const Duration(seconds: 1), (_) => _updateTimeLeft());
     super.initState();
   }
 

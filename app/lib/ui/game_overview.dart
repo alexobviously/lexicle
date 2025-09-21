@@ -71,7 +71,7 @@ class _GameOverviewState extends State<GameOverview> {
                         padding: const EdgeInsets.only(left: 7.0),
                         child: widget.header!,
                       ),
-                    Spacer(),
+                    const Spacer(),
                     if (widget.onRemove != null)
                       Padding(
                         padding: const EdgeInsets.only(right: 7.0),
@@ -80,7 +80,7 @@ class _GameOverviewState extends State<GameOverview> {
                           iconSize: 14.0,
                           onPressed: widget.onRemove,
                           padding: EdgeInsets.zero,
-                          constraints: BoxConstraints(),
+                          constraints: const BoxConstraints(),
                         ),
                       ),
                   ],

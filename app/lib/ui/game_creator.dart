@@ -74,10 +74,10 @@ class _GameCreatorState extends State<GameCreator> {
               ),
             if (widget.showTitle)
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16),
+                padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: TextField(
                   controller: _titleController,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     hintText: 'Enter a title',
                   ),
                 ),

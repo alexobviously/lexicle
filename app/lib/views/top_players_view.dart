@@ -52,8 +52,8 @@ class _TopPlayersViewState extends State<TopPlayersView> {
                 Expanded(
                   child: ResultFutureBuilder<List<User>>(
                     future: ApiClient.getTopPlayers(),
-                    loadingWidget: SpinKitCubeGrid(color: Colours.victory, size: 64),
-                    errorWidget: (_) => Icon(Icons.error),
+                    loadingWidget: const SpinKitCubeGrid(color: Colours.victory, size: 64),
+                    errorWidget: (_) => const Icon(Icons.error),
                     resultWidget: (users) {
                       return ListView.builder(
                         itemCount: users.length,
@@ -70,7 +70,7 @@ class _TopPlayersViewState extends State<TopPlayersView> {
                                   children: [
                                     SizedBox(width: 50, child: Text('${i + 1}', style: textTheme.headlineMedium)),
                                     Text(u.username, style: textTheme.headlineMedium),
-                                    Spacer(),
+                                    const Spacer(),
                                     Text(u.rating.rating.toStringAsFixed(0), style: textTheme.headlineMedium),
                                   ],
                                 ),

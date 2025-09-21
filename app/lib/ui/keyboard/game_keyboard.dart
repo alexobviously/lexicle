@@ -123,7 +123,7 @@ class _GameKeyboardState extends State<GameKeyboard> {
             ));
           }
           return Container(
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               border: Border(
                 top: BorderSide(width: 1, color: Colours.wrong),
               ),

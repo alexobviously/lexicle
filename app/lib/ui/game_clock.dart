@@ -26,7 +26,7 @@ class GameClock extends StatelessWidget {
     final duration = Duration(milliseconds: time ?? 0);
 
     final _icon = Padding(
-      padding: clockSide == ClockSide.left ? EdgeInsets.only(right: 4.0) : EdgeInsets.only(left: 4.0),
+      padding: clockSide == ClockSide.left ? const EdgeInsets.only(right: 4.0) : const EdgeInsets.only(left: 4.0),
       child: Icon(
         MdiIcons.clockOutline,
         size: iconSize,

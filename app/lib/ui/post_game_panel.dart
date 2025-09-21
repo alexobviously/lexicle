@@ -18,7 +18,7 @@ class PostGamePanel extends StatelessWidget {
     return AspectRatio(
       aspectRatio: 620 / 261,
       child: Container(
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             border: Border(
               top: BorderSide(width: 1, color: Colours.wrong),
             ),

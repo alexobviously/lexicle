@@ -14,7 +14,7 @@ class ServerCubit extends Cubit<ServerMeta> {
     if (result.ok) {
       emit(result.object!);
     } else {
-      Timer(Duration(seconds: 10), () => getMeta());
+      Timer(const Duration(seconds: 10), () => getMeta());
     }
   }
 }

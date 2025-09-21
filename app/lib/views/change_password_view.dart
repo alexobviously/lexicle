@@ -19,10 +19,10 @@ class ChangePasswordView extends StatefulWidget {
 class _ChangePasswordViewState extends State<ChangePasswordView> {
   @override
   Widget build(BuildContext context) {
-    return StandardScaffold(
+    return const StandardScaffold(
       body: Center(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 32.0),
+          padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 32.0),
           child: ChangePasswordForm(),
         ),
       ),
@@ -78,7 +78,7 @@ class _ChangePasswordFormState extends State<ChangePasswordForm> {
               maxLength: passwordMaxLength,
               inputDecoration: InputDecoration(
                 hintText: 'Enter your current password',
-                label: Text('Current Password'),
+                label: const Text('Current Password'),
                 suffixIcon: IconButton(
                   onPressed: _toggleShowOldPassword,
                   icon: Icon(_showOldPassword ? MdiIcons.eyeOff : MdiIcons.eye),
@@ -92,7 +92,7 @@ class _ChangePasswordFormState extends State<ChangePasswordForm> {
               maxLength: passwordMaxLength,
               inputDecoration: InputDecoration(
                 hintText: 'Enter a new password',
-                label: Text('New Password'),
+                label: const Text('New Password'),
                 suffixIcon: IconButton(
                   onPressed: _toggleShowNewPassword,
                   icon: Icon(_showNewPassword ? MdiIcons.eyeOff : MdiIcons.eye),

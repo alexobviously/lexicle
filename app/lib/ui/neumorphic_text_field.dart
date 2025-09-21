@@ -57,7 +57,7 @@ class NeumorphicTextField extends StatelessWidget {
               suffixIcon: onClear != null
                   ? IconButton(
                       onPressed: onClear,
-                      icon: Icon(Icons.clear),
+                      icon: const Icon(Icons.clear),
                     )
                   : null,
             ),

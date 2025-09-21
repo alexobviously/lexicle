@@ -99,7 +99,7 @@ class _GroupViewState extends State<GroupView> {
         if (_controller.positions.isEmpty) return; // ???
         _controller.animateTo(
           _controller.position.maxScrollExtent,
-          duration: Duration(milliseconds: 100),
+          duration: const Duration(milliseconds: 100),
           curve: Curves.fastOutSlowIn,
         );
       });
@@ -131,7 +131,7 @@ class _GroupViewState extends State<GroupView> {
     timer?.cancel();
     if (controller!.state.group.endTime != null) {
       endTime = controller!.state.group.endTime;
-      timer = Timer.periodic(Duration(seconds: 1), (_) => _setTimeLeft());
+      timer = Timer.periodic(const Duration(seconds: 1), (_) => _setTimeLeft());
     }
   }
 
@@ -271,7 +271,7 @@ class _GroupViewState extends State<GroupView> {
                       OutlinedButton.icon(
                         onPressed: () => context.go(Routes.home),
                         icon: Icon(MdiIcons.home),
-                        label: Text('Go Home'),
+                        label: const Text('Go Home'),
                       ),
                     ],
                   );
@@ -328,11 +328,11 @@ class _GroupViewState extends State<GroupView> {
     bool canSubmit = wordController.text.length == group.config.wordLength && isValid;
     InputBorder? wordFieldBorder = (isValid || wordController.text.isEmpty)
         ? null
-        : UnderlineInputBorder(borderSide: BorderSide(color: Colours.invalid));
+        : const UnderlineInputBorder(borderSide: BorderSide(color: Colours.invalid));
     return SizedBox(
       width: MediaQuery.of(context).size.width * 0.9,
       child: Padding(
-        padding: EdgeInsets.all(8),
+        padding: const EdgeInsets.all(8),
         child: Column(
           children: [
             Text(
@@ -444,7 +444,7 @@ class _GroupViewState extends State<GroupView> {
                                     child: Icon(MdiIcons.close),
                                   ),
                                 )
-                              : SizedBox(width: 32),
+                              : const SizedBox(width: 32),
                         Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -472,7 +472,7 @@ class _GroupViewState extends State<GroupView> {
             ),
           if (isCreator && !group.canBegin)
             Padding(
-              padding: EdgeInsets.all(16),
+              padding: const EdgeInsets.all(16),
               child: Text('Waiting for players..', style: textTheme.headlineSmall),
             ),
           _created(context, group),
@@ -555,7 +555,7 @@ class _GroupViewState extends State<GroupView> {
             Container(height: 16),
             // TODO: make this smoother - a PageView would be ideal but it doesn't work in a Scrollable
             AnimatedSwitcher(
-              duration: Duration(milliseconds: 50),
+              duration: const Duration(milliseconds: 50),
               child: _resultsTab == 0
                   ? SizedBox(
                       width: c.maxWidth,
@@ -604,7 +604,7 @@ class _GroupViewState extends State<GroupView> {
                     ),
                   ),
                   Text(e.word, style: textTheme.titleLarge),
-                  Spacer(),
+                  const Spacer(),
                   Text(e.difficulty.toStringAsFixed(2), style: textTheme.titleLarge),
                 ],
               ),
@@ -619,15 +619,15 @@ class _GroupViewState extends State<GroupView> {
     return GridView.count(
       // controller: _controller,
       shrinkWrap: true,
-      physics: NeverScrollableScrollPhysics(),
+      physics: const NeverScrollableScrollPhysics(),
       children: gcs
           .map(
             (e) => EntityFutureBuilder<User>(
               key: ValueKey('mpgo_${e.state.id}_${e.state.creator}'),
               id: e.state.creator,
               store: userStore(),
-              loadingWidget: SpinKitCubeGrid(size: 128, color: Colours.semiCorrect),
-              errorWidget: (_) => Icon(Icons.error),
+              loadingWidget: const SpinKitCubeGrid(size: 128, color: Colours.semiCorrect),
+              errorWidget: (_) => const Icon(Icons.error),
               resultWidget: (u) => GestureDetector(
                 child: GameOverview(
                   e,
@@ -769,7 +769,7 @@ class _GroupViewState extends State<GroupView> {
       id: id,
       store: teamStore(),
       loadingWidget: Container(),
-      errorWidget: (_) => Icon(Icons.error),
+      errorWidget: (_) => const Icon(Icons.error),
       resultWidget: (team) => Text(
         team.name,
         style: Theme.of(context).textTheme.bodyMedium!.copyWith(fontStyle: FontStyle.italic),

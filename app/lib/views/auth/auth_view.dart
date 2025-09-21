@@ -21,14 +21,17 @@ class _AuthViewState extends State<AuthView> {
 
   @override
   void initState() {
-    if (mounted) _controller.addListener(() => setState(() => _page = _controller.page?.round() ?? 0));
+    if (mounted)
+      _controller.addListener(
+        () => setState(() => _page = _controller.page?.round() ?? 0),
+      );
     super.initState();
   }
 
   void _changePage(int p) {
     _controller.animateToPage(
       p,
-      duration: Duration(milliseconds: 250),
+      duration: const Duration(milliseconds: 250),
       curve: Curves.easeInCubic,
     );
   }

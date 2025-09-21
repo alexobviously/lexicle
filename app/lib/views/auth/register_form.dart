@@ -47,7 +47,7 @@ class _RegisterFormState extends State<RegisterForm> {
               maxLength: usernameMaxLength,
               controller: _usernameController,
               hintText: 'Enter a username',
-              label: Text('Username'),
+              label: const Text('Username'),
               validator: (val) {
                 if (val == null) return '';
                 if (val.length > usernameMaxLength || val.length < usernameMinLength) {
@@ -65,7 +65,7 @@ class _RegisterFormState extends State<RegisterForm> {
               maxLength: passwordMaxLength,
               inputDecoration: InputDecoration(
                 hintText: 'Enter a password',
-                label: Text('Password'),
+                label: const Text('Password'),
                 suffixIcon: IconButton(
                   onPressed: _toggleShowPassword,
                   icon: Icon(_showPassword ? MdiIcons.eyeOff : MdiIcons.eye),
@@ -87,7 +87,7 @@ class _RegisterFormState extends State<RegisterForm> {
               maxLength: passwordMaxLength,
               inputDecoration: InputDecoration(
                 hintText: 'Enter the password again',
-                label: Text('Confirm Password'),
+                label: const Text('Confirm Password'),
                 suffixIcon: IconButton(
                   onPressed: _toggleShowPassword,
                   icon: Icon(_showPassword ? MdiIcons.eyeOff : MdiIcons.eye),

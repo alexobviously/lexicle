@@ -83,7 +83,7 @@ class ChallengeManagerState {
     this.challenges = const {},
     this.games = const {},
   });
-  factory ChallengeManagerState.initial() => ChallengeManagerState();
+  factory ChallengeManagerState.initial() => const ChallengeManagerState();
 
   ChallengeManagerState copyWith({
     bool? loading,

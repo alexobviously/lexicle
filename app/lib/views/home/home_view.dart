@@ -67,8 +67,8 @@ class _HomeViewState extends State<HomeView> {
                 child: SafeArea(
                   child: Column(
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      const Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 16.0),
                         child: AnimatedLogo(),
                       ),
                       Row(
@@ -91,7 +91,7 @@ class _HomeViewState extends State<HomeView> {
                                     user: state.user!,
                                     stats: state.stats ?? UserStats(id: state.userId!),
                                   )
-                                : LoginBox(),
+                                : const LoginBox(),
                             Container(height: 16),
                             _activeGames(context),
                             _challengeList(scheme),
@@ -163,7 +163,7 @@ class _HomeViewState extends State<HomeView> {
               Routes.rush,
               extra: RushRouteData(
                 game: RushController(
-                  Rush.initial('alex', GameConfig(wordLength: 5, timeLimit: 300000)),
+                  Rush.initial('alex', const GameConfig(wordLength: 5, timeLimit: 300000)),
                   RushMediator(getWord: () => dictionary().randomWord(5)),
                 ),
               ),
@@ -175,7 +175,7 @@ class _HomeViewState extends State<HomeView> {
     );
   }
 
-  Widget _matchmakingView() => Text('Matchmaking\n\nComing soon!');
+  Widget _matchmakingView() => const Text('Matchmaking\n\nComing soon!');
 
   Future<void> _onCreate() async {
     final cfg = await showCreatorDialog(context);
@@ -200,7 +200,7 @@ class _HomeViewState extends State<HomeView> {
                   padding: const EdgeInsets.all(8.0),
                   child: ElevatedButton(
                     onPressed: _onCreate,
-                    child: Text('Create Game'),
+                    child: const Text('Create Game'),
                   ),
                 ),
                 Padding(
@@ -208,7 +208,7 @@ class _HomeViewState extends State<HomeView> {
                   child: ElevatedButton(
                     onPressed: () => state.working ? null : cubit.refresh(),
                     child:
-                        state.working ? SpinKitFadingCircle(size: 24, color: Colors.black87) : Icon(MdiIcons.refresh),
+                        state.working ? const SpinKitFadingCircle(size: 24, color: Colors.black87) : Icon(MdiIcons.refresh),
                   ),
                 ),
               ],
@@ -291,14 +291,14 @@ class _HomeViewState extends State<HomeView> {
                           Text(
                             group.title,
                             overflow: TextOverflow.ellipsis,
-                            style: TextStyle(fontWeight: FontWeight.bold),
+                            style: const TextStyle(fontWeight: FontWeight.bold),
                           ),
                           if (showCreator)
                             EntityFutureBuilder<User>(
                               id: group.creator,
                               store: userStore(),
-                              loadingWidget: Text('...'),
-                              errorWidget: (_) => Icon(Icons.error),
+                              loadingWidget: const Text('...'),
+                              errorWidget: (_) => const Icon(Icons.error),
                               resultWidget: (user) => Text(user.username),
                             ),
                           if (showState) Text(group.stateString(auth().userId)),
@@ -351,7 +351,7 @@ class _HomeViewState extends State<HomeView> {
         builder: (context, state) {
           if (state.challenges.isEmpty) {
             if (!state.loading) return Container();
-            return SpinKitFadingCircle(color: Colours.victory, size: 32);
+            return const SpinKitFadingCircle(color: Colours.victory, size: 32);
           }
           return Column(
             children: state.challenges.values.map(
@@ -424,7 +424,7 @@ class _HomeViewState extends State<HomeView> {
                         padding: const EdgeInsets.all(8.0),
                         child: Text(updateNeeded ? 'Update required' : 'Update available'),
                       ),
-                    Spacer(),
+                    const Spacer(),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Text('Version $localVersion'),
@@ -435,7 +435,7 @@ class _HomeViewState extends State<HomeView> {
             },
           );
         } else {
-          return Text('Version...');
+          return const Text('Version...');
         }
       },
     );

@@ -75,8 +75,8 @@ class _TeamViewState extends State<TeamView> {
           return EntityFutureBuilder<Team>(
             key: UniqueKey(),
             future: future,
-            loadingWidget: Center(child: SpinKitCubeGrid(color: Colours.victory, size: 64)),
-            errorWidget: (_) => Icon(Icons.error),
+            loadingWidget: const Center(child: SpinKitCubeGrid(color: Colours.victory, size: 64)),
+            errorWidget: (_) => const Icon(Icons.error),
             resultWidget: (team) {
               members = team.members.length; // kinda messy but whatever
               return Column(
@@ -129,8 +129,8 @@ class _TeamViewState extends State<TeamView> {
                         return EntityFutureBuilder<User>(
                           id: team.members[i],
                           store: userStore(),
-                          loadingWidget: SpinKitCircle(size: 16, color: Colours.victory),
-                          errorWidget: (_) => Icon(Icons.error),
+                          loadingWidget: const SpinKitCircle(size: 16, color: Colours.victory),
+                          errorWidget: (_) => const Icon(Icons.error),
                           resultWidget: (user) => InkWell(
                             onTap: () => context.push(Routes.user(user.id)),
                             child: Container(
@@ -140,7 +140,7 @@ class _TeamViewState extends State<TeamView> {
                                 child: Row(
                                   children: [
                                     Text(user.username, style: textTheme.headlineSmall),
-                                    Spacer(),
+                                    const Spacer(),
                                     Text(user.rating.rating.toStringAsFixed(0), style: textTheme.headlineSmall),
                                   ],
                                 ),

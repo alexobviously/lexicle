@@ -13,7 +13,7 @@ class ServerMeta {
     required this.serverName,
   });
 
-  factory ServerMeta.initial() => ServerMeta(
+  factory ServerMeta.initial() => const ServerMeta(
         loaded: false,
         serverVersion: '0.0.0',
         appCurrentVersion: '0.0.0',

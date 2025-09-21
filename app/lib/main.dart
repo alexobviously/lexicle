@@ -74,7 +74,7 @@ class MyApp extends StatelessWidget {
                 routeInformationProvider: _router.routeInformationProvider,
               );
             },
-            maximumSize: Size(475.0, 812.0),
+            maximumSize: const Size(475.0, 812.0),
             enabled: kIsWeb,
             backgroundColor: settings.colourScheme.wrong,
           );

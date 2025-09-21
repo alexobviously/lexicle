@@ -31,7 +31,7 @@ class GameGroupManager extends Cubit<GroupManagerState> {
 
   void init() {
     auth().stream.listen(_handleAuthState);
-    timer = Timer.periodic(Duration(milliseconds: 5000), _onTimerEvent);
+    timer = Timer.periodic(const Duration(milliseconds: 5000), _onTimerEvent);
   }
 
   void _onTimerEvent(Timer t) {

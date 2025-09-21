@@ -18,7 +18,7 @@ class _AnimatedLogoState extends State<AnimatedLogo> {
 
   @override
   void initState() {
-    Timer.periodic(Duration(milliseconds: 500), (_) => _updateColours());
+    Timer.periodic(const Duration(milliseconds: 500), (_) => _updateColours());
     super.initState();
   }
 

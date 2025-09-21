@@ -55,24 +55,24 @@ class AboutView extends StatelessWidget {
                       Column(
                         children: [
                           Text('Code etc', style: textTheme.titleLarge),
-                          Text('Alex Baker'),
-                          Text('Steve Beville'),
+                          const Text('Alex Baker'),
+                          const Text('Steve Beville'),
                         ],
                       ),
                       Column(
                         children: [
                           Text('Good Pals', style: textTheme.titleLarge),
-                          Text('Gary & Gril'),
-                          Text('Franc'),
-                          Text('Evan'),
-                          Text('Bryce'),
-                          Text('Cal'),
-                          Text('Blaž'),
+                          const Text('Gary & Gril'),
+                          const Text('Franc'),
+                          const Text('Evan'),
+                          const Text('Bryce'),
+                          const Text('Cal'),
+                          const Text('Blaž'),
                         ],
                       ),
                     ],
                   ),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   ConstrainedBox(
                     constraints: BoxConstraints(
                       maxWidth: MediaQuery.of(context).size.width * 0.7,
@@ -95,10 +95,10 @@ class AboutView extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(left),
-            SizedBox(width: 32),
+            const SizedBox(width: 32),
             Text(
               right,
-              style: TextStyle(fontWeight: FontWeight.bold),
+              style: const TextStyle(fontWeight: FontWeight.bold),
             ),
           ],
         );

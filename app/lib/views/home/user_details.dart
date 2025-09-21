@@ -40,7 +40,7 @@ class UserDetails extends StatelessWidget {
                     child: Column(
                       children: [
                         ElevatedButton(
-                          child: Text('Log Out'),
+                          child: const Text('Log Out'),
                           onPressed: () {
                             auth().logout();
                             sound().play(Sound.clickDown);

@@ -7,7 +7,7 @@ Future<GameCreationData?> showCreatorDialog(BuildContext context) async {
     context: context,
     builder: (context) {
       return Dialog(
-        shape: RoundedRectangleBorder(side: BorderSide(), borderRadius: BorderRadius.circular(20.0)),
+        shape: RoundedRectangleBorder(side: const BorderSide(), borderRadius: BorderRadius.circular(20.0)),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [

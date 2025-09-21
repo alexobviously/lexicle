@@ -18,7 +18,7 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     bool canGoBack = Navigator.of(context).canPop(); //Navigator.of(context).canPop();
     return Container(
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         border: Border(bottom: BorderSide(color: Colors.black12)),
       ),
       child: SafeArea(
@@ -36,7 +36,7 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
                     size: 30,
                   ),
                 ),
-              Spacer(),
+              const Spacer(),
               if (title != null)
                 Text(
                   title!,
@@ -51,5 +51,5 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
   }
 
   @override
-  Size get preferredSize => Size.fromHeight(kToolbarHeight);
+  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 }

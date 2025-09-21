@@ -21,8 +21,8 @@ class _WordRowButtonState extends State<WordRowButton> with SingleTickerProvider
   void initState() {
     ac = AnimationController(
       vsync: this,
-      duration: Duration(milliseconds: 1000),
-      reverseDuration: Duration(milliseconds: 1000),
+      duration: const Duration(milliseconds: 1000),
+      reverseDuration: const Duration(milliseconds: 1000),
     )..addListener(_animateLetters);
     super.initState();
   }
@@ -58,7 +58,7 @@ class _WordRowButtonState extends State<WordRowButton> with SingleTickerProvider
           correct: correct,
           finalised: true,
           correctOnTop: true,
-          animationDuration: Duration(milliseconds: 500),
+          animationDuration: const Duration(milliseconds: 500),
         ),
       ),
     );

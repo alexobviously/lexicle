@@ -38,11 +38,11 @@ class _ProfileViewState extends State<ProfileView> {
               EntityFutureBuilder<User>(
                 id: widget.id,
                 store: userStore(),
-                loadingWidget: SpinKitCircle(
+                loadingWidget: const SpinKitCircle(
                   color: Colours.victory,
                   size: 64,
                 ),
-                errorWidget: (_) => Icon(Icons.error),
+                errorWidget: (_) => const Icon(Icons.error),
                 resultWidget: (u) => Column(
                   children: [
                     Text(u.username, style: textTheme.headlineMedium),
@@ -55,13 +55,13 @@ class _ProfileViewState extends State<ProfileView> {
               EntityFutureBuilder<UserStats>(
                 id: widget.id,
                 store: ustatsStore(),
-                loadingWidget: SpinKitCircle(
+                loadingWidget: const SpinKitCircle(
                   color: Colours.victory,
                   size: 64,
                 ),
-                errorWidget: (_) => Icon(Icons.error),
+                errorWidget: (_) => const Icon(Icons.error),
                 resultWidget: (u) {
-                  if (u.gamesTotal == 0) return Text('No games played yet!');
+                  if (u.gamesTotal == 0) return const Text('No games played yet!');
                   // organise the counts for tab order, since they might not be in order
                   Map<int, Map<int, int>> guessCounts = u.guessCounts.sorted((a, b) => a.key.compareTo(b.key));
                   // always start on the length 5 tab if it exists
@@ -151,7 +151,7 @@ class _ProfileViewState extends State<ProfileView> {
               ],
             ));
 
-    final noShowTitles = AxisTitles(
+    const noShowTitles = AxisTitles(
       sideTitles: SideTitles(showTitles: false),
     );
 
@@ -161,7 +161,7 @@ class _ProfileViewState extends State<ProfileView> {
       child: BarChart(
         BarChartData(
           borderData: FlBorderData(show: false),
-          gridData: FlGridData(show: false),
+          gridData: const FlGridData(show: false),
           titlesData: FlTitlesData(
             bottomTitles: AxisTitles(
               sideTitles: SideTitles(
@@ -232,7 +232,7 @@ class _ProfileViewState extends State<ProfileView> {
       id: id,
       store: teamStore(),
       loadingWidget: Container(),
-      errorWidget: (_) => Icon(Icons.error),
+      errorWidget: (_) => const Icon(Icons.error),
       resultWidget: (team) => InkWell(
         child: Text(
           team.name,
