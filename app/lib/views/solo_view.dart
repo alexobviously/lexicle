@@ -58,6 +58,10 @@ class _SoloViewState extends State<SoloView> {
                       child: GridView.count(
                         controller: _controller,
                         shrinkWrap: true,
+                        crossAxisCount: 2,
+                        crossAxisSpacing: 16,
+                        mainAxisSpacing: 16,
+                        childAspectRatio: 3 / 4,
                         children: state.games.reversed
                             .map((e) => GestureDetector(
                                   child: GameOverview(
@@ -78,10 +82,6 @@ class _SoloViewState extends State<SoloView> {
                                   ),
                                 ))
                             .toList(),
-                        crossAxisCount: 2,
-                        crossAxisSpacing: 16,
-                        mainAxisSpacing: 16,
-                        childAspectRatio: 3 / 4,
                       ),
                     ),
                   ),

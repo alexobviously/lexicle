@@ -118,8 +118,8 @@ class _GameKeyboardState extends State<GameKeyboard> {
               _widgets = [_enterKey(context, scheme), ..._widgets, _backspaceKey(context, scheme)];
             }
             _rows.add(Row(
-              children: _widgets,
               crossAxisAlignment: CrossAxisAlignment.center,
+              children: _widgets,
             ));
           }
           return Container(
@@ -142,11 +142,11 @@ class _GameKeyboardState extends State<GameKeyboard> {
     bool dark = Theme.of(context).brightness == Brightness.dark;
     if (dark) textStyle = textStyle.copyWith(color: Colors.white);
     return KeyButton(
-      child: Text(letter, style: textStyle),
       colour: colour,
       onTap: widget.wordReady ? null : () => _onTap(letter),
       blurRadius: dark ? 2 : 10,
       depth: dark ? 1 : 2,
+      child: Text(letter, style: textStyle),
     );
   }
 
@@ -154,15 +154,15 @@ class _GameKeyboardState extends State<GameKeyboard> {
     bool dark = Theme.of(context).brightness == Brightness.dark;
     return KeyButton(
       width: 75,
+      onTap: widget.wordReady ? () => _onEnter() : null,
+      colour: scheme.blank,
+      blurRadius: dark ? 2 : 10,
+      depth: dark ? 1 : 2,
       child: Icon(
         MdiIcons.keyboardReturn,
         size: 36,
         color: widget.wordReady ? null : scheme.wrong,
       ),
-      onTap: widget.wordReady ? () => _onEnter() : null,
-      colour: scheme.blank,
-      blurRadius: dark ? 2 : 10,
-      depth: dark ? 1 : 2,
     );
   }
 
@@ -170,16 +170,16 @@ class _GameKeyboardState extends State<GameKeyboard> {
     bool dark = Theme.of(context).brightness == Brightness.dark;
     return KeyButton(
       width: 75,
-      child: Icon(
-        MdiIcons.backspaceOutline,
-        size: 36,
-        color: !widget.wordEmpty ? null : scheme.wrong,
-      ),
       onTap: !widget.wordEmpty ? () => _onBackspace() : null,
       onLongPress: widget.onClear,
       colour: scheme.blank,
       blurRadius: dark ? 2 : 10,
       depth: dark ? 1 : 2,
+      child: Icon(
+        MdiIcons.backspaceOutline,
+        size: 36,
+        color: !widget.wordEmpty ? null : scheme.wrong,
+      ),
     );
   }
 }

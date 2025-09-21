@@ -101,11 +101,11 @@ class _RegisterFormState extends State<RegisterForm> {
             ),
             Container(height: 32),
             ElevatedButton(
+              onPressed: _register,
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 32),
                 child: Text('Register', style: Theme.of(context).textTheme.titleLarge),
               ),
-              onPressed: _register,
             ),
           ],
         ));

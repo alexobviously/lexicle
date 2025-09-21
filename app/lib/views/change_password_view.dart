@@ -101,11 +101,11 @@ class _ChangePasswordFormState extends State<ChangePasswordForm> {
             ),
             Container(height: 32),
             ElevatedButton(
+              onPressed: _submit,
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 32),
                 child: Text('Change Password', style: Theme.of(context).textTheme.titleLarge),
               ),
-              onPressed: _submit,
             ),
           ],
         ));

@@ -39,18 +39,18 @@ class _SettingsViewState extends State<SettingsView> {
                 Container(height: 32),
                 Text('Theme Mode', style: textTheme.titleLarge),
                 ToggleButtons(
-                  children: _themeModes.map((e) => _themeModeBox(context, e)).toList(),
                   isSelected: _themeModes.map((e) => e == settings.themeMode).toList(),
                   onPressed: (i) => cubit.setThemeMode(_themeModes[i]),
+                  children: _themeModes.map((e) => _themeModeBox(context, e)).toList(),
                 ),
                 Container(height: 16),
                 Text('Colour Scheme', style: textTheme.titleLarge),
                 BlocBuilder<SchemeCubit, ColourScheme>(
                   builder: (context, scheme) {
                     return ToggleButtons(
-                      children: ColourSchemePair.all.map((e) => _schemeBox(context, e)).toList(),
                       isSelected: ColourSchemePair.all.map<bool>((e) => [e.light, e.dark].contains(scheme)).toList(),
                       onPressed: (i) => cubit.setScheme(ColourSchemePair.all[i]),
+                      children: ColourSchemePair.all.map((e) => _schemeBox(context, e)).toList(),
                     );
                   },
                 ),

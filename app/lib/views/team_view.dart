@@ -100,8 +100,8 @@ class _TeamViewState extends State<TeamView> {
                           child: Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 2.0),
                             child: ElevatedButton(
-                              child: Text(joined ? 'Leave' : 'Join'),
                               onPressed: joined ? _leave : _join,
+                              child: Text(joined ? 'Leave' : 'Join'),
                             ),
                           ),
                         );

@@ -67,11 +67,11 @@ class _LoginFormState extends State<LoginForm> {
             ),
             Container(height: 32),
             ElevatedButton(
+              onPressed: _login,
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 32),
                 child: Text('Login', style: Theme.of(context).textTheme.titleLarge),
               ),
-              onPressed: _login,
             ),
           ],
         ));
