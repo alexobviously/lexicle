@@ -9,11 +9,16 @@ class ChallengeStore extends EntityStore<Challenge> {
     DatabaseService db, {
     this.dictionary,
     this.key,
-  })  : assert(key == null || dictionary != null, 'Dictionary must be provided if key is provided'),
-        super(db);
+  }) : assert(
+         key == null || dictionary != null,
+         'Dictionary must be provided if key is provided',
+       ),
+       super(db);
 
   Future<Result<Challenge>> getBySequence(int level, int sequence) async {
-    List<Challenge> matches = items.values.where((e) => e.level == level && e.sequence == sequence).toList();
+    List<Challenge> matches = items.values
+        .where((e) => e.level == level && e.sequence == sequence)
+        .toList();
     if (matches.isNotEmpty) return Result.ok(matches.first);
     final c = await db.getChallenge(level, sequence);
     if (c.ok) {
@@ -24,7 +29,9 @@ class ChallengeStore extends EntityStore<Challenge> {
   }
 
   Future<Result<Challenge>> getCurrent(int level) async {
-    List<Challenge> matches = items.values.where((e) => e.level == level).toList();
+    List<Challenge> matches = items.values
+        .where((e) => e.level == level)
+        .toList();
     matches.sort((a, b) => a.timestamp.compareTo(b.timestamp));
     int sequence = 0;
     if (matches.isNotEmpty) {
@@ -42,14 +49,17 @@ class ChallengeStore extends EntityStore<Challenge> {
   }
 
   Challenge create(int level, int? sequence) {
-    int _today = today().millisecondsSinceEpoch;
+    int todayMs = today().millisecondsSinceEpoch;
     final config = Challenges.config(level);
-    String word = dictionary!.randomWord(config.wordLength, seed: _today % (key ?? defaultChallengeKey));
+    String word = dictionary!.randomWord(
+      config.wordLength,
+      seed: todayMs % (key ?? defaultChallengeKey),
+    );
     Challenge c = Challenge(
       level: level,
       sequence: sequence,
-      timestamp: _today,
-      endTime: _today + Challenges.duration(level),
+      timestamp: todayMs,
+      endTime: todayMs + Challenges.duration(level),
       answer: word,
     );
     write(c);

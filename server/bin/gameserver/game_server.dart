@@ -48,11 +48,20 @@ class GameServer with ReadyManager {
     }
   }
 
-  GameController _registerGame(Game game, {Mediator? mediator, BehaviorSubject<int>? highestGuessStream}) {
-    GameController gc = GameController(game, mediator ?? ServerMediator(answer: game.answer));
+  GameController _registerGame(
+    Game game, {
+    Mediator? mediator,
+    BehaviorSubject<int>? highestGuessStream,
+  }) {
+    GameController gc = GameController(
+      game,
+      mediator ?? ServerMediator(answer: game.answer),
+    );
     String id = gc.id;
     games[id] = gc;
-    if (highestGuessStream != null) gc.registerHighestGuessStream(highestGuessStream);
+    if (highestGuessStream != null) {
+      gc.registerHighestGuessStream(highestGuessStream);
+    }
     if (!game.gameFinished) {
       final sub = gc.stream.listen(_handleGameUpdate);
       gameSubs[id] = sub;
@@ -67,7 +76,13 @@ class GameServer with ReadyManager {
     bool private = false,
   }) {
     String id = newId();
-    GameGroup gg = GameGroup(id: id, title: title, config: config, creator: creator, players: [creator]);
+    GameGroup gg = GameGroup(
+      id: id,
+      title: title,
+      config: config,
+      creator: creator,
+      players: [creator],
+    );
     GameGroupController ggc = GameGroupController(gg);
     gameGroups[id] = ggc;
     final sub = ggc.stream.listen(_handleGroupUpdate);
@@ -80,7 +95,10 @@ class GameServer with ReadyManager {
     return Result.ok(gameGroups[id]!);
   }
 
-  Future<Result<GameController>> getGameController(String id, {bool checkStore = true}) async {
+  Future<Result<GameController>> getGameController(
+    String id, {
+    bool checkStore = true,
+  }) async {
     if (!games.containsKey(id)) {
       if (checkStore) {
         final result = await gameStore().get(id);
@@ -104,20 +122,24 @@ class GameServer with ReadyManager {
   Result<GameGroupController> joinGroup(String id, String player) {
     if (!gameGroups.containsKey(id)) return Result.error(Errors.notFound);
     GameGroupController ggc = gameGroups[id]!;
-    final _res = ggc.addPlayer(player);
-    if (!_res.ok) {
-      return Result.error(_res.error!);
+    final result = ggc.addPlayer(player);
+    if (!result.ok) {
+      return Result.error(result.error!);
     }
     return Result.ok(ggc);
   }
 
   Result<GameGroupController> leaveGroup(String id, String player) {
     if (!gameGroups.containsKey(id)) return Result.error(Errors.notFound);
+
     GameGroupController ggc = gameGroups[id]!;
-    if (ggc.state.creator == player) return Result.error('own_group', ['must_delete']);
-    Result _result = ggc.removePlayer(player);
-    if (!_result.ok) {
-      return Result.error(_result.error!);
+    if (ggc.state.creator == player) {
+      return Result.error('own_group', ['must_delete']);
+    }
+
+    Result result = ggc.removePlayer(player);
+    if (!result.ok) {
+      return Result.error(result.error!);
     }
     return Result.ok(ggc);
   }
@@ -127,7 +149,9 @@ class GameServer with ReadyManager {
     // todo: dispose?
     GameGroupController ggc = gameGroups[id]!;
     if (ggc.state.creator != player) return Result.error(Errors.unauthorised);
-    if (ggc.state.state > GroupState.lobby) return Result.error(Errors.groupStarted);
+    if (ggc.state.state > GroupState.lobby) {
+      return Result.error(Errors.groupStarted);
+    }
     if (ggc.state.code != null) {
       privateGroups.remove(ggc.state.code);
     }
@@ -138,10 +162,12 @@ class GameServer with ReadyManager {
   Result<GameGroupController> setWord(String id, String player, String word) {
     if (!gameGroups.containsKey(id)) return Result.error(Errors.notFound);
     GameGroupController ggc = gameGroups[id]!;
-    final _result = ggc.setWord(player, word);
-    if (!_result.ok) {
-      return Result.error(_result.error!);
+
+    final result = ggc.setWord(player, word);
+    if (!result.ok) {
+      return Result.error(result.error!);
     }
+
     return Result.ok(ggc);
   }
 
@@ -159,17 +185,23 @@ class GameServer with ReadyManager {
     // TODO: deprecate using player here and just authenticate in handler
     if (!gameGroups.containsKey(id)) return Result.error(Errors.notFound);
     GameGroupController ggc = gameGroups[id]!;
-    final _result = ggc.canStart;
-    if (!_result.ok) {
-      return Result.error(_result.error!, _result.warnings);
+
+    final result = ggc.canStart;
+    if (!result.ok) {
+      return Result.error(result.error!, result.warnings);
     }
+
     if (ggc.state.creator != player) return Result.error(Errors.unauthorised);
     int? endTime = ggc.getEndTime();
     ggc.start(createGamesForGroup(ggc, endTime), endTime);
+
     return Result.ok(ggc);
   }
 
-  Map<String, List<GameStub>> createGamesForGroup(GameGroupController controller, [int? endTime]) {
+  Map<String, List<GameStub>> createGamesForGroup(
+    GameGroupController controller, [
+    int? endTime,
+  ]) {
     GameGroup _group = controller.state;
     Map<String, List<GameStub>> _games = {};
     for (String p in _group.players) {
@@ -195,10 +227,14 @@ class GameServer with ReadyManager {
     return _games;
   }
 
-  List<String> getAllGroupIds() => gameGroups.entries.map((e) => e.value.id).toList();
-  List<String> getAllGameIds() => games.entries.map((e) => e.value.state.id).toList();
-  List<String> getAllActiveGameIds() =>
-      games.entries.where((e) => !e.value.state.gameFinished).map((e) => e.value.state.id).toList();
+  List<String> getAllGroupIds() =>
+      gameGroups.entries.map((e) => e.value.id).toList();
+  List<String> getAllGameIds() =>
+      games.entries.map((e) => e.value.state.id).toList();
+  List<String> getAllActiveGameIds() => games.entries
+      .where((e) => !e.value.state.gameFinished)
+      .map((e) => e.value.state.id)
+      .toList();
 
   void updateGroupStatus(String id) async {
     if (!gameGroups.containsKey(id)) return;
@@ -228,11 +264,13 @@ class GameServer with ReadyManager {
     ggc.setState(GroupState.finished);
     List<PlayerResult> pr = await Future.wait(
       ggc.state.standings
-          .map((e) async => PlayerResult(
-                id: e.player,
-                rating: (await userStore().get(e.player)).object!.rating,
-                score: e.guesses,
-              ))
+          .map(
+            (e) async => PlayerResult(
+              id: e.player,
+              rating: (await userStore().get(e.player)).object!.rating,
+              score: e.guesses,
+            ),
+          )
           .toList(),
     );
     final ratings = adjustRatings(pr);
@@ -245,12 +283,17 @@ class GameServer with ReadyManager {
       final sResult = await ustatsStore().get(player);
       UserStats stats = sResult.ok ? sResult.object! : UserStats(id: player);
       List<WordDifficulty> _words = List.from(stats.words);
-      _words.add(WordDifficulty(group.words[player]!, group.wordDifficulty(player)));
+      _words.add(
+        WordDifficulty(group.words[player]!, group.wordDifficulty(player)),
+      );
       Map<int, int> _numGroups = Map.from(stats.numGroups);
       _numGroups[wordLength] = (_numGroups[wordLength] ?? 0) + 1;
       Map<int, int> _numGames = Map.from(stats.numGames);
-      _numGames[wordLength] = (_numGames[wordLength] ?? 0) + group.players.length - 1;
-      Map<int, int> _guessCounts = Map.from(stats.guessCounts[wordLength] ?? {});
+      _numGames[wordLength] =
+          (_numGames[wordLength] ?? 0) + group.players.length - 1;
+      Map<int, int> _guessCounts = Map.from(
+        stats.guessCounts[wordLength] ?? {},
+      );
       Map<int, int> _timeouts = Map.from(stats.timeouts);
       for (GameStub g in group.games[player]!) {
         if (g.endReason == EndReasons.solved) {
@@ -263,7 +306,8 @@ class GameServer with ReadyManager {
       _gcAll[group.config.wordLength] = _guessCounts;
       Map<int, int>? _wins;
       // it counts as a win for all players tied for first
-      if (group.standings.first.player == player || group.standings.first.guesses == group.playerGuesses(player)) {
+      if (group.standings.first.player == player ||
+          group.standings.first.guesses == group.playerGuesses(player)) {
         _wins = Map.from(stats.wins);
         _wins[wordLength] = (_wins[wordLength] ?? 0) + 1;
       }
@@ -285,17 +329,24 @@ class GameServer with ReadyManager {
     final cResult = await challengeStore().get(g.challenge!);
     if (!cResult.ok) return;
     Challenge challenge = cResult.object!;
-    if (challenge.level == null || challenge.sequence == null) return; // maybe we want to handle this in future?
+    if (challenge.level == null || challenge.sequence == null) {
+      return; // maybe we want to handle this in future?
+    }
 
     final uResult = await ustatsStore().get(g.player);
     if (!uResult.ok) return;
     UserStats stats = uResult.object!;
 
     // don't need to update if the last completed was this one
-    if ((stats.challengeStats[challenge.level!]?.lastCompleted ?? -1) <= (challenge.sequence ?? 0)) return;
+    if ((stats.challengeStats[challenge.level!]?.lastCompleted ?? -1) <=
+        (challenge.sequence ?? 0)) {
+      return;
+    }
 
     Map<int, ChallengeStats> cStatsMap = Map.from(stats.challengeStats);
-    ChallengeStats cStats = stats.challengeStats[challenge.level] ?? ChallengeStats(level: challenge.level!);
+    ChallengeStats cStats =
+        stats.challengeStats[challenge.level] ??
+        ChallengeStats(level: challenge.level!);
     int streak = cStats.currentStreak + 1;
     int bestStreak = max(cStats.bestStreak, streak);
     int lastCompleted = challenge.sequence!;
@@ -322,7 +373,11 @@ class GameServer with ReadyManager {
     }
   }
 
-  Future<Result<WordValidationResult>> makeGuess(String gameId, String player, String word) async {
+  Future<Result<WordValidationResult>> makeGuess(
+    String gameId,
+    String player,
+    String word,
+  ) async {
     final result = await getGameController(gameId);
     if (!result.ok) return Result.error(result.error!);
     GameController gc = games[gameId]!;
@@ -353,7 +408,10 @@ class GameServer with ReadyManager {
 
     for (Game g in _games) {
       games[g.id] = GameController(g, ServerMediator(answer: g.answer));
-      games[g.id]!.registerHighestGuessStream(ggc.highestGuessStream, initial: highestGuess);
+      games[g.id]!.registerHighestGuessStream(
+        ggc.highestGuessStream,
+        initial: highestGuess,
+      );
       final sub = games[g.id]!.stream.listen(_handleGameUpdate);
       gameSubs[g.id] = sub;
     }

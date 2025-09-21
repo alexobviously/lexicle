@@ -15,9 +15,9 @@ class ServerDictionary extends Dictionary {
 
   Future<void> loadDictionary(String path, DictionaryType dict) async {
     // print('%% [${elapsed}ms] loading dictionary ${dict.name}');
-    String _folder = Directory.current.path;
-    final _file = File('$_folder/$path');
-    String data = await _file.readAsString();
+    String folder = Directory.current.path;
+    final file = File('$folder/$path');
+    String data = await file.readAsString();
     parseDictionary(data, dict);
   }
 }

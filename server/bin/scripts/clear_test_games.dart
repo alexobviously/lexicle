@@ -9,23 +9,26 @@ void main(List<String> args) async {
   print('Reading .env...');
   final env = readEnvironment();
   print('Connecting to MongoDB...');
-  final _db = MongoService();
-  await _db.init(env);
+  final db = MongoService();
+  await db.init(env);
   print('MongoDB ready!');
-  await setUpServiceLocator(environment: env, db: _db);
+  await setUpServiceLocator(environment: env, db: db);
 
   final bob = (await userStore().getByUsername('bob')).object!;
   final tester = (await userStore().getByUsername('tester')).object!;
   final bakr = (await userStore().getByUsername('bakr')).object!;
 
-  final groups =
-      await _db.getAll<GameGroup>(selector: where.oneFrom(GroupFields.players, [bob.id, tester.id, bakr.id]));
+  final groups = await db.getAll<GameGroup>(
+    selector: where.oneFrom(GroupFields.players, [bob.id, tester.id, bakr.id]),
+  );
   print('Groups found: ${groups.length}');
 
   for (GameGroup g in groups) {
-    final games = await _db.getAll<Game>(selector: where.eq(GameFields.group, g.id));
+    final games = await db.getAll<Game>(
+      selector: where.eq(GameFields.group, g.id),
+    );
     print('Group ${g.title} has ${games.length} games');
-    _db.db.collection('games').deleteMany(where.eq(GameFields.group, g.id));
-    _db.delete<GameGroup>(g);
+    db.db.collection('games').deleteMany(where.eq(GameFields.group, g.id));
+    db.delete<GameGroup>(g);
   }
 }

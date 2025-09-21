@@ -9,10 +9,15 @@ class UserStore extends EntityStore<User> {
     return getByField(UserFields.username, username);
   }
 
-  Future<Result<User>> updateRating(String id, Rating rating, [bool forceWrite = true]) async {
-    final _result = await get(id);
-    if (!_result.ok) return _result;
-    User u = _result.object!;
+  Future<Result<User>> updateRating(
+    String id,
+    Rating rating, [
+    bool forceWrite = true,
+  ]) async {
+    final result = await get(id);
+    if (!result.ok) return result;
+
+    User u = result.object!;
     u = u.copyWith(rating: rating);
     return set(u, forceWrite);
   }

@@ -43,20 +43,21 @@ Environment readEnvironment() {
   }
   dotEnv.getDotEnv();
 
-  String _getEnv(String key, [String def = '']) => Platform.environment[key] ?? dotEnv.get(key) ?? def;
+  String getEnv(String key, [String def = '']) =>
+      Platform.environment[key] ?? dotEnv.get(key) ?? def;
 
   return Environment(
     version: version,
-    port: int.parse(_getEnv('PORT', '8080')),
-    mongoUri: _getEnv('MONGO_URI').isEmpty ? null : _getEnv('MONGO_URI'),
-    mongoUser: _getEnv('MONGO_USER'),
-    mongoPass: _getEnv('MONGO_PASS'),
-    mongoDb: _getEnv('MONGO_DB'),
-    mongoHost: _getEnv('MONGO_HOST'),
-    jwtSecret: _getEnv('JWT_SECRET'),
-    serverName: _getEnv('SERVER_NAME', 'Lexicle'),
-    challengeKey: int.parse(_getEnv('CHALLENGE_KEY', '$defaultChallengeKey')),
-    cacheInterval: int.parse(_getEnv('CACHE_INTERVAL', '60000')),
+    port: int.parse(getEnv('PORT', '8080')),
+    mongoUri: getEnv('MONGO_URI').isEmpty ? null : getEnv('MONGO_URI'),
+    mongoUser: getEnv('MONGO_USER'),
+    mongoPass: getEnv('MONGO_PASS'),
+    mongoDb: getEnv('MONGO_DB'),
+    mongoHost: getEnv('MONGO_HOST'),
+    jwtSecret: getEnv('JWT_SECRET'),
+    serverName: getEnv('SERVER_NAME', 'Lexicle'),
+    challengeKey: int.parse(getEnv('CHALLENGE_KEY', '$defaultChallengeKey')),
+    cacheInterval: int.parse(getEnv('CACHE_INTERVAL', '60000')),
   );
 }
 
@@ -64,16 +65,16 @@ Future main() async {
   print('Reading .env...');
   final env = readEnvironment();
   print('Connecting to MongoDB...');
-  final _db = MongoService();
-  await _db.init(env);
+  final db = MongoService();
+  await db.init(env);
   print('MongoDB ready!');
-  await setUpServiceLocator(environment: env, db: _db);
+  await setUpServiceLocator(environment: env, db: db);
 
   final t = today();
   print(t);
   print(t.millisecondsSinceEpoch);
 
-  final _router = shelf_router.Router()
+  final router = shelf_router.Router()
     ..get('/hello', _echoRequest)
     ..get('/', StatusHandler.serverStatus)
     ..get('/status', StatusHandler.serverStatus)
@@ -115,9 +116,12 @@ Future main() async {
     ..post('/admin/change_pw', AdminHandler.changePassword)
     ..post('/admin/restore_group', AdminHandler.restoreGroup);
 
-  final cascade = Cascade().add(_router);
+  final cascade = Cascade().add(router);
 
-  final pipeline = Pipeline().addMiddleware(logRequests()).addMiddleware(corsHeaders()).addHandler(cascade.handler);
+  final pipeline = Pipeline()
+      .addMiddleware(logRequests())
+      .addMiddleware(corsHeaders())
+      .addHandler(cascade.handler);
 
   final server = await shelf_io.serve(
     pipeline,
@@ -129,4 +133,5 @@ Future main() async {
   print('Serving at http://${server.address.host}:${server.port}');
 }
 
-Response _echoRequest(Request request) => Response.ok('Request for "${request.url}"');
+Response _echoRequest(Request request) =>
+    Response.ok('Request for "${request.url}"');
