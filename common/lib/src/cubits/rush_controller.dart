@@ -17,7 +17,10 @@ class RushController extends Cubit<Rush> {
   void _resetTimer(int? endTime) {
     endTimer?.cancel();
     if (endTime == null) return;
-    endTimer = Timer(DateTime.fromMillisecondsSinceEpoch(endTime).difference(DateTime.now()), _timeout);
+    endTimer = Timer(
+      DateTime.fromMillisecondsSinceEpoch(endTime).difference(DateTime.now()),
+      _timeout,
+    );
   }
 
   void start() {
@@ -35,54 +38,78 @@ class RushController extends Cubit<Rush> {
   void _timeout() async {
     if (state.finished) return;
     String answer = await mediator.getAnswer() ?? '*' * state.config.wordLength;
-    emit(state.copyWith(endReason: EndReasons.timeout, current: state.current.copyWith(answer: answer)));
+    emit(
+      state.copyWith(
+        endReason: EndReasons.timeout,
+        current: state.current.copyWith(answer: answer),
+      ),
+    );
     end(EndReasons.timeout);
   }
 
   void addLetter(String l) {
     if (state.currentWord.length >= state.length || state.finished) return;
-    emit(state.withCurrent(state.current.copyWith(current: WordData.current('${state.currentWord}$l'))));
+    emit(
+      state.withCurrent(
+        state.current.copyWith(
+          current: WordData.current('${state.currentWord}$l'),
+        ),
+      ),
+    );
   }
 
   void backspace() {
     if (state.currentWord.isEmpty || state.finished) return;
-    emit(state.withCurrent(state.current.copyWith(
-      current: WordData.current(
-        state.currentWord.substring(0, state.currentWord.length - 1),
+    emit(
+      state.withCurrent(
+        state.current.copyWith(
+          current: WordData.current(
+            state.currentWord.substring(0, state.currentWord.length - 1),
+          ),
+        ),
       ),
-    )));
+    );
   }
 
   Future<bool> enter() async {
     if (state.finished) return false;
-    final _result = await mediator.validateWord(state.currentWord);
-    if (!_result.valid) {
+    final result = await mediator.validateWord(state.currentWord);
+    if (!result.valid) {
       emit(state.withCurrent(state.current.copyWithInvalid()));
     } else {
-      bool solved = _result.word!.solved;
+      bool solved = result.word!.solved;
       int? endReason = solved ? EndReasons.solved : null;
-      final _current = state.current.copyWith(
+      final current = state.current.copyWith(
         current: WordData.blank(),
-        guesses: List.from(state.current.guesses)..add(_result.word!),
+        guesses: List.from(state.current.guesses)..add(result.word!),
         endReason: endReason,
-        answer: solved ? _result.word!.content : state.current.answer,
+        answer: solved ? result.word!.content : state.current.answer,
       );
       if (solved) {
-        emit(state
-            .withCurrent(_current)
-            .withNewWord(Game.initial(_current.player, state.config.wordLength))
-            .timeAdjusted(solvedBonus));
+        emit(
+          state
+              .withCurrent(current)
+              .withNewWord(
+                Game.initial(current.player, state.config.wordLength),
+              )
+              .timeAdjusted(solvedBonus),
+        );
       } else {
-        emit(state.withCurrent(_current).timeAdjusted(guessPenalty));
+        emit(state.withCurrent(current).timeAdjusted(guessPenalty));
       }
       _resetTimer(state.endTime);
     }
+
     return true;
   }
 
   void clearInput() {
     if (state.currentWord.isNotEmpty) {
-      emit(state.withCurrent(state.current.copyWith(current: WordData.current(''))));
+      emit(
+        state.withCurrent(
+          state.current.copyWith(current: WordData.current('')),
+        ),
+      );
     }
   }
 
@@ -93,6 +120,7 @@ class RushController extends Cubit<Rush> {
   }
 
   Stream<int> get numRowsStream => stream.map((e) => e.numRows).distinct();
-  Stream<bool> get gameFinishedStream => stream.map((e) => e.finished).distinct();
+  Stream<bool> get gameFinishedStream =>
+      stream.map((e) => e.finished).distinct();
   Stream<int?> get endTimeStream => stream.map((e) => e.endTime).distinct();
 }

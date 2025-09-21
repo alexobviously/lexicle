@@ -26,13 +26,17 @@ class _LoginFormState extends State<LoginForm> {
 
   void _login() async {
     if (_formKey.currentState!.validate()) {
-      final _result = await auth().login(_username, _password);
-      sound().play(_result.ok ? Sound.clickUp : Sound.bad);
+      final result = await auth().login(_username, _password);
+      sound().play(result.ok ? Sound.clickUp : Sound.bad);
       HapticFeedback.mediumImpact();
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(_result.ok ? 'Logged in as ${_result.object!.username}!' : 'Login failed: ${_result.error}'),
+          content: Text(
+            result.ok
+                ? 'Logged in as ${result.object!.username}!'
+                : 'Login failed: ${result.error}',
+          ),
         ),
       );
     }
@@ -41,39 +45,43 @@ class _LoginFormState extends State<LoginForm> {
   @override
   Widget build(BuildContext context) {
     return Form(
-        key: _formKey,
-        child: Column(
-          children: [
-            NeumorphicTextField(
-              controller: _usernameController,
-              hintText: 'Enter a username',
-              label: const Text('Username'),
-              maxLength: usernameMaxLength,
-            ),
-            Container(height: 16),
-            NeumorphicTextField(
-              controller: _passwordController,
-              enableSuggestions: false,
-              obscureText: !_showPassword,
-              maxLength: passwordMaxLength,
-              inputDecoration: InputDecoration(
-                hintText: 'Enter a password',
-                label: const Text('Password'),
-                suffixIcon: IconButton(
-                  onPressed: _toggleShowPassword,
-                  icon: Icon(_showPassword ? MdiIcons.eyeOff : MdiIcons.eye),
-                ),
+      key: _formKey,
+      child: Column(
+        children: [
+          NeumorphicTextField(
+            controller: _usernameController,
+            hintText: 'Enter a username',
+            label: const Text('Username'),
+            maxLength: usernameMaxLength,
+          ),
+          Container(height: 16),
+          NeumorphicTextField(
+            controller: _passwordController,
+            enableSuggestions: false,
+            obscureText: !_showPassword,
+            maxLength: passwordMaxLength,
+            inputDecoration: InputDecoration(
+              hintText: 'Enter a password',
+              label: const Text('Password'),
+              suffixIcon: IconButton(
+                onPressed: _toggleShowPassword,
+                icon: Icon(_showPassword ? MdiIcons.eyeOff : MdiIcons.eye),
               ),
             ),
-            Container(height: 32),
-            ElevatedButton(
-              onPressed: _login,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 32),
-                child: Text('Login', style: Theme.of(context).textTheme.titleLarge),
+          ),
+          Container(height: 32),
+          ElevatedButton(
+            onPressed: _login,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 32),
+              child: Text(
+                'Login',
+                style: Theme.of(context).textTheme.titleLarge,
               ),
             ),
-          ],
-        ));
+          ),
+        ],
+      ),
+    );
   }
 }

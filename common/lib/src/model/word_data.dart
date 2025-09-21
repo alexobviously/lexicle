@@ -11,9 +11,12 @@ class WordData {
   final bool finalised;
 
   List<String> get correctLetters => correct.map((e) => content[e]).toList();
-  List<String> get semiCorrectLetters => semiCorrect.map((e) => content[e]).toList();
-  List<String> get wrongLetters =>
-      content.split('')..removeWhere((e) => correctLetters.contains(e) || semiCorrectLetters.contains(e));
+  List<String> get semiCorrectLetters =>
+      semiCorrect.map((e) => content[e]).toList();
+  List<String> get wrongLetters => content.split('')
+    ..removeWhere(
+      (e) => correctLetters.contains(e) || semiCorrectLetters.contains(e),
+    );
   bool get solved => content.length == correct.length;
 
   const WordData({
@@ -26,13 +29,16 @@ class WordData {
   factory WordData.blank() => const WordData();
 
   factory WordData.fromJson(Map<String, dynamic> doc) => WordData(
-        content: doc[WordFields.content],
-        correct: coerceList<int>(doc[WordFields.correct] ?? []),
-        semiCorrect: coerceList<int>(doc[WordFields.semiCorrect] ?? []),
-        finalised: doc[WordFields.finalised] as bool? ?? true,
-      );
+    content: doc[WordFields.content],
+    correct: coerceList<int>(doc[WordFields.correct] ?? []),
+    semiCorrect: coerceList<int>(doc[WordFields.semiCorrect] ?? []),
+    finalised: doc[WordFields.finalised] as bool? ?? true,
+  );
 
-  Map<String, dynamic> toMap({bool showFinalised = false, bool hideContent = false}) {
+  Map<String, dynamic> toMap({
+    bool showFinalised = false,
+    bool hideContent = false,
+  }) {
     return {
       WordFields.content: hideContent ? ' ' * content.length : content,
       WordFields.correct: correct,
@@ -42,16 +48,17 @@ class WordData {
   }
 
   @override
-  String toString() => 'WordData($content, correct: $correct, semiCorrect: $semiCorrect, finalised: $finalised)';
+  String toString() =>
+      'WordData($content, correct: $correct, semiCorrect: $semiCorrect, finalised: $finalised)';
 
   String toEmojis() {
-    String _emojiAt(int index) {
+    String emojiAt(int index) {
       if (correct.contains(index)) return '🟩';
       if (semiCorrect.contains(index)) return '🟨';
       return '⬛';
     }
 
     final range = List.generate(content.length, (i) => i);
-    return range.map((i) => _emojiAt(i)).join('');
+    return range.map((i) => emojiAt(i)).join('');
   }
 }

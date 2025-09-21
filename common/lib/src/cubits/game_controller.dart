@@ -18,14 +18,17 @@ class GameController extends Cubit<Game> implements BaseGameController {
   }) =>
       GameController(Game.initial(player, length, endTime: endTime), mediator);
 
-  Map<String, dynamic> toMap({bool hideAnswer = false, bool hideGuesses = false}) =>
-      state.toMap(hideAnswer: hideAnswer, hideGuesses: hideGuesses);
+  Map<String, dynamic> toMap({
+    bool hideAnswer = false,
+    bool hideGuesses = false,
+  }) => state.toMap(hideAnswer: hideAnswer, hideGuesses: hideGuesses);
 
   GameStub get stub => state.stub;
 
   Timer? endTimer;
 
-  StreamSubscription<int>? highestGuessStream; // listen to highest guess count in the group, for penalty
+  StreamSubscription<int>?
+  highestGuessStream; // listen to highest guess count in the group, for penalty
   int highestGuess = 0;
   void registerHighestGuessStream(Stream<int> stream, {int? initial}) {
     if (initial != null) highestGuess = initial;
@@ -36,7 +39,12 @@ class GameController extends Cubit<Game> implements BaseGameController {
 
   void start() {
     if (state.endTime != null) {
-      endTimer = Timer(DateTime.fromMillisecondsSinceEpoch(state.endTime!).difference(DateTime.now()), _timeout);
+      endTimer = Timer(
+        DateTime.fromMillisecondsSinceEpoch(
+          state.endTime!,
+        ).difference(DateTime.now()),
+        _timeout,
+      );
     }
   }
 
@@ -65,23 +73,33 @@ class GameController extends Cubit<Game> implements BaseGameController {
   @override
   void backspace() {
     if (state.word.isEmpty || state.gameFinished) return;
-    emit(state.copyWith(current: WordData.current(state.word.substring(0, state.word.length - 1))));
+    emit(
+      state.copyWith(
+        current: WordData.current(
+          state.word.substring(0, state.word.length - 1),
+        ),
+      ),
+    );
   }
 
   @override
   Future<bool> enter() async {
     if (state.gameFinished) return false;
-    final _result = await mediator.validateWord(state.word);
-    if (!_result.valid) {
+
+    final result = await mediator.validateWord(state.word);
+    if (!result.valid) {
       emit(state.copyWithInvalid());
     } else {
-      int? endReason = _result.word!.solved ? EndReasons.solved : null;
-      emit(state.copyWith(
-        current: WordData.blank(),
-        guesses: List.from(state.guesses)..add(_result.word!),
-        endReason: endReason,
-      ));
+      int? endReason = result.word!.solved ? EndReasons.solved : null;
+      emit(
+        state.copyWith(
+          current: WordData.blank(),
+          guesses: List.from(state.guesses)..add(result.word!),
+          endReason: endReason,
+        ),
+      );
     }
+
     return true;
   }
 
@@ -94,23 +112,32 @@ class GameController extends Cubit<Game> implements BaseGameController {
 
   Future<Result<WordValidationResult>> makeGuess(String word) async {
     if (state.gameFinished) return Result.error('game_finished');
-    if (state.guesses.isNotEmpty && state.guesses.first.finalised && state.guesses.first.content == word) {
+
+    if (state.guesses.isNotEmpty &&
+        state.guesses.first.finalised &&
+        state.guesses.first.content == word) {
       return Result.error('duplicate_guess');
     }
-    final _result = await mediator.validateWord(word);
-    if (state.gameFinished) return Result.error('game_finished'); // no race conditions thx
-    if (!_result.valid) {
+
+    final result = await mediator.validateWord(word);
+    if (state.gameFinished) {
+      return Result.error('game_finished'); // no race conditions thx
+    }
+    if (!result.valid) {
       emit(state.copyWith(current: WordData.current(word)).copyWithInvalid());
     } else {
-      int? endReason = _result.word!.solved ? EndReasons.solved : null;
-      emit(state.copyWith(
-        current: WordData.blank(),
-        guesses: List.from(state.guesses)..add(_result.word!),
-        endReason: endReason,
-      ));
+      int? endReason = result.word!.solved ? EndReasons.solved : null;
+      emit(
+        state.copyWith(
+          current: WordData.blank(),
+          guesses: List.from(state.guesses)..add(result.word!),
+          endReason: endReason,
+        ),
+      );
     }
     if (state.solved) end(EndReasons.solved);
-    return Result.ok(_result);
+
+    return Result.ok(result);
   }
 
   @override
@@ -123,7 +150,8 @@ class GameController extends Cubit<Game> implements BaseGameController {
   @override
   Stream<int> get numRowsStream => stream.map((e) => e.numRows).distinct();
   @override
-  Stream<bool> get gameFinishedStream => stream.map((e) => e.gameFinished).distinct();
+  Stream<bool> get gameFinishedStream =>
+      stream.map((e) => e.gameFinished).distinct();
 
   @override
   bool get canAct => true;

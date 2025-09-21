@@ -5,8 +5,8 @@ class AppUserStore extends UserStore {
   AppUserStore(DatabaseService db) : super(db);
 
   Future<Result<User>> getMe() async {
-    final _result = await ApiClient.getMe();
-    if (_result.ok) onGet(_result.object!);
-    return _result;
+    final result = await ApiClient.getMe();
+    if (result.ok) onGet(result.object!);
+    return result;
   }
 }

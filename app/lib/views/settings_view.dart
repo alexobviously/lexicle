@@ -27,49 +27,61 @@ class _SettingsViewState extends State<SettingsView> {
       title: 'Settings',
       body: Center(
         child: SafeArea(
-          child: BlocBuilder<SettingsCubit, Settings>(builder: (context, settings) {
-            final _themeModes = [ThemeMode.light, ThemeMode.dark, ThemeMode.system];
-            return Column(
-              children: [
-                const Spacer(),
-                ElevatedButton(
-                  onPressed: () => context.push(Routes.changePassword),
-                  child: const Text('Change Password'),
-                ),
-                Container(height: 32),
-                Text('Theme Mode', style: textTheme.titleLarge),
-                ToggleButtons(
-                  isSelected: _themeModes.map((e) => e == settings.themeMode).toList(),
-                  onPressed: (i) => cubit.setThemeMode(_themeModes[i]),
-                  children: _themeModes.map((e) => _themeModeBox(context, e)).toList(),
-                ),
-                Container(height: 16),
-                Text('Colour Scheme', style: textTheme.titleLarge),
-                BlocBuilder<SchemeCubit, ColourScheme>(
-                  builder: (context, scheme) {
-                    return ToggleButtons(
-                      isSelected: ColourSchemePair.all.map<bool>((e) => [e.light, e.dark].contains(scheme)).toList(),
-                      onPressed: (i) => cubit.setScheme(ColourSchemePair.all[i]),
-                      children: ColourSchemePair.all.map((e) => _schemeBox(context, e)).toList(),
-                    );
-                  },
-                ),
-                const Spacer(),
-                _version(),
-              ],
-            );
-          }),
+          child: BlocBuilder<SettingsCubit, Settings>(
+            builder: (context, settings) {
+              final themeModes = [
+                ThemeMode.light,
+                ThemeMode.dark,
+                ThemeMode.system,
+              ];
+              return Column(
+                children: [
+                  const Spacer(),
+                  ElevatedButton(
+                    onPressed: () => context.push(Routes.changePassword),
+                    child: const Text('Change Password'),
+                  ),
+                  Container(height: 32),
+                  Text('Theme Mode', style: textTheme.titleLarge),
+                  ToggleButtons(
+                    isSelected: themeModes
+                        .map((e) => e == settings.themeMode)
+                        .toList(),
+                    onPressed: (i) => cubit.setThemeMode(themeModes[i]),
+                    children: themeModes
+                        .map((e) => _themeModeBox(context, e))
+                        .toList(),
+                  ),
+                  Container(height: 16),
+                  Text('Colour Scheme', style: textTheme.titleLarge),
+                  BlocBuilder<SchemeCubit, ColourScheme>(
+                    builder: (context, scheme) {
+                      return ToggleButtons(
+                        isSelected: ColourSchemePair.all
+                            .map<bool>(
+                              (e) => [e.light, e.dark].contains(scheme),
+                            )
+                            .toList(),
+                        onPressed: (i) =>
+                            cubit.setScheme(ColourSchemePair.all[i]),
+                        children: ColourSchemePair.all
+                            .map((e) => _schemeBox(context, e))
+                            .toList(),
+                      );
+                    },
+                  ),
+                  const Spacer(),
+                  _version(),
+                ],
+              );
+            },
+          ),
         ),
       ),
     );
   }
 
   Widget _themeModeBox(BuildContext context, ThemeMode mode) {
-    final _icons = {
-      ThemeMode.light: Icons.light_mode,
-      ThemeMode.dark: Icons.dark_mode,
-      ThemeMode.system: MdiIcons.tuneVertical
-    };
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: SizedBox(
@@ -79,7 +91,11 @@ class _SettingsViewState extends State<SettingsView> {
         width: 66,
         child: Column(
           children: [
-            Icon(_icons[mode]!),
+            Icon(switch (mode) {
+              ThemeMode.light => Icons.light_mode,
+              ThemeMode.dark => Icons.dark_mode,
+              ThemeMode.system => MdiIcons.tuneVertical,
+            }),
             Text(mode.name),
           ],
         ),
@@ -88,11 +104,11 @@ class _SettingsViewState extends State<SettingsView> {
   }
 
   Widget _schemeBox(BuildContext context, ColourSchemePair scheme) {
-    Widget _box(Color c) => Container(
-          width: 32,
-          height: 32,
-          color: c,
-        );
+    Widget box(Color c) => Container(
+      width: 32,
+      height: 32,
+      color: c,
+    );
 
     return Padding(
       padding: const EdgeInsets.all(8.0),
@@ -106,14 +122,14 @@ class _SettingsViewState extends State<SettingsView> {
           children: [
             Row(
               children: [
-                _box(scheme.light.correct),
-                _box(scheme.light.semiCorrect),
+                box(scheme.light.correct),
+                box(scheme.light.semiCorrect),
               ],
             ),
             Row(
               children: [
-                _box(scheme.dark.correct),
-                _box(scheme.dark.semiCorrect),
+                box(scheme.dark.correct),
+                box(scheme.dark.semiCorrect),
               ],
             ),
           ],

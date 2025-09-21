@@ -26,12 +26,15 @@ class _RegisterFormState extends State<RegisterForm> {
 
   void _register() async {
     if (_formKey.currentState!.validate()) {
-      final _result = await auth().register(_username, _password);
+      final result = await auth().register(_username, _password);
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content:
-              Text(_result.ok ? 'Registered as ${_result.object!.username}!' : 'Registration failed: ${_result.error}'),
+          content: Text(
+            result.ok
+                ? 'Registered as ${result.object!.username}!'
+                : 'Registration failed: ${result.error}',
+          ),
         ),
       );
     }
@@ -40,74 +43,81 @@ class _RegisterFormState extends State<RegisterForm> {
   @override
   Widget build(BuildContext context) {
     return Form(
-        key: _formKey,
-        child: Column(
-          children: [
-            NeumorphicTextField(
-              maxLength: usernameMaxLength,
-              controller: _usernameController,
-              hintText: 'Enter a username',
-              label: const Text('Username'),
-              validator: (val) {
-                if (val == null) return '';
-                if (val.length > usernameMaxLength || val.length < usernameMinLength) {
-                  return 'Must be between $usernameMinLength and $usernameMaxLength characters';
-                }
-                if (!isValidUsername(val)) return 'Can only use a-z, 0-9, - and _';
-                return null;
-              },
-            ),
-            Container(height: 16),
-            NeumorphicTextField(
-              controller: _passwordController,
-              enableSuggestions: false,
-              obscureText: !_showPassword,
-              maxLength: passwordMaxLength,
-              inputDecoration: InputDecoration(
-                hintText: 'Enter a password',
-                label: const Text('Password'),
-                suffixIcon: IconButton(
-                  onPressed: _toggleShowPassword,
-                  icon: Icon(_showPassword ? MdiIcons.eyeOff : MdiIcons.eye),
-                ),
-              ),
-              validator: (val) {
-                if (val == null) return '';
-                if (val.length < passwordMinLength || val.length > passwordMaxLength) {
-                  return 'Must be between $passwordMinLength and $passwordMaxLength characters';
-                }
-                return null;
-              },
-            ),
-            Container(height: 16),
-            NeumorphicTextField(
-              controller: _password2Controller,
-              enableSuggestions: false,
-              obscureText: !_showPassword,
-              maxLength: passwordMaxLength,
-              inputDecoration: InputDecoration(
-                hintText: 'Enter the password again',
-                label: const Text('Confirm Password'),
-                suffixIcon: IconButton(
-                  onPressed: _toggleShowPassword,
-                  icon: Icon(_showPassword ? MdiIcons.eyeOff : MdiIcons.eye),
-                ),
-              ),
-              validator: (val) {
-                if (val == null) return '';
-                if (val != _password) return 'Passwords must match';
-                return null;
-              },
-            ),
-            Container(height: 32),
-            ElevatedButton(
-              onPressed: _register,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 32),
-                child: Text('Register', style: Theme.of(context).textTheme.titleLarge),
+      key: _formKey,
+      child: Column(
+        children: [
+          NeumorphicTextField(
+            maxLength: usernameMaxLength,
+            controller: _usernameController,
+            hintText: 'Enter a username',
+            label: const Text('Username'),
+            validator: (val) {
+              if (val == null) return '';
+              if (val.length > usernameMaxLength ||
+                  val.length < usernameMinLength) {
+                return 'Must be between $usernameMinLength and $usernameMaxLength characters';
+              }
+              if (!isValidUsername(val))
+                return 'Can only use a-z, 0-9, - and _';
+              return null;
+            },
+          ),
+          Container(height: 16),
+          NeumorphicTextField(
+            controller: _passwordController,
+            enableSuggestions: false,
+            obscureText: !_showPassword,
+            maxLength: passwordMaxLength,
+            inputDecoration: InputDecoration(
+              hintText: 'Enter a password',
+              label: const Text('Password'),
+              suffixIcon: IconButton(
+                onPressed: _toggleShowPassword,
+                icon: Icon(_showPassword ? MdiIcons.eyeOff : MdiIcons.eye),
               ),
             ),
-          ],
-        ));
+            validator: (val) {
+              if (val == null) return '';
+              if (val.length < passwordMinLength ||
+                  val.length > passwordMaxLength) {
+                return 'Must be between $passwordMinLength and $passwordMaxLength characters';
+              }
+              return null;
+            },
+          ),
+          Container(height: 16),
+          NeumorphicTextField(
+            controller: _password2Controller,
+            enableSuggestions: false,
+            obscureText: !_showPassword,
+            maxLength: passwordMaxLength,
+            inputDecoration: InputDecoration(
+              hintText: 'Enter the password again',
+              label: const Text('Confirm Password'),
+              suffixIcon: IconButton(
+                onPressed: _toggleShowPassword,
+                icon: Icon(_showPassword ? MdiIcons.eyeOff : MdiIcons.eye),
+              ),
+            ),
+            validator: (val) {
+              if (val == null) return '';
+              if (val != _password) return 'Passwords must match';
+              return null;
+            },
+          ),
+          Container(height: 32),
+          ElevatedButton(
+            onPressed: _register,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 32),
+              child: Text(
+                'Register',
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }

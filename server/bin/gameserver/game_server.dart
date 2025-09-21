@@ -121,11 +121,13 @@ class GameServer with ReadyManager {
 
   Result<GameGroupController> joinGroup(String id, String player) {
     if (!gameGroups.containsKey(id)) return Result.error(Errors.notFound);
+
     GameGroupController ggc = gameGroups[id]!;
     final result = ggc.addPlayer(player);
     if (!result.ok) {
       return Result.error(result.error!);
     }
+
     return Result.ok(ggc);
   }
 
@@ -244,9 +246,9 @@ class GameServer with ReadyManager {
       for (final playerGames in ggc.state.gameIds.entries) {
         if (!finished) break;
         for (String g in playerGames.value) {
-          final _result = await getGameController(g);
-          if (_result.ok) {
-            if (!_result.object!.state.gameFinished) {
+          final result = await getGameController(g);
+          if (result.ok) {
+            if (!result.object!.state.gameFinished) {
               finished = false;
               break;
             }
@@ -286,39 +288,42 @@ class GameServer with ReadyManager {
       _words.add(
         WordDifficulty(group.words[player]!, group.wordDifficulty(player)),
       );
-      Map<int, int> _numGroups = Map.from(stats.numGroups);
-      _numGroups[wordLength] = (_numGroups[wordLength] ?? 0) + 1;
-      Map<int, int> _numGames = Map.from(stats.numGames);
-      _numGames[wordLength] =
-          (_numGames[wordLength] ?? 0) + group.players.length - 1;
-      Map<int, int> _guessCounts = Map.from(
-        stats.guessCounts[wordLength] ?? {},
-      );
-      Map<int, int> _timeouts = Map.from(stats.timeouts);
+      final numGroups = {...stats.numGroups};
+      numGroups[wordLength] = (numGroups[wordLength] ?? 0) + 1;
+      final numGames = {...stats.numGames};
+      numGames[wordLength] =
+          (numGames[wordLength] ?? 0) + group.players.length - 1;
+      final guessCounts = {...?stats.guessCounts[wordLength]};
+      final timeouts = {...stats.timeouts};
       for (GameStub g in group.games[player]!) {
         if (g.endReason == EndReasons.solved) {
-          _guessCounts[g.guesses] = (_guessCounts[g.guesses] ?? 0) + 1;
+          guessCounts[g.guesses] = (guessCounts[g.guesses] ?? 0) + 1;
         } else if (g.endReason == EndReasons.timeout) {
-          _timeouts[wordLength] = (_timeouts[wordLength] ?? 0) + 1;
+          timeouts[wordLength] = (timeouts[wordLength] ?? 0) + 1;
         }
       }
-      Map<int, Map<int, int>> _gcAll = Map.from(stats.guessCounts);
-      _gcAll[group.config.wordLength] = _guessCounts;
-      Map<int, int>? _wins;
+      final gcAll = {...stats.guessCounts};
+      gcAll[group.config.wordLength] = guessCounts;
+
+      Map<int, int>? wins;
       // it counts as a win for all players tied for first
       if (group.standings.first.player == player ||
           group.standings.first.guesses == group.playerGuesses(player)) {
-        _wins = Map.from(stats.wins);
-        _wins[wordLength] = (_wins[wordLength] ?? 0) + 1;
+        wins = {
+          ...stats.wins,
+          wordLength: (stats.wins[wordLength] ?? 0) + 1,
+        };
       }
+
       stats = stats.copyWith(
         words: _words,
-        numGroups: _numGroups,
-        numGames: _numGames,
-        guessCounts: _gcAll,
-        wins: _wins,
-        timeouts: _timeouts,
+        numGroups: numGroups,
+        numGames: numGames,
+        guessCounts: gcAll,
+        wins: wins,
+        timeouts: timeouts,
       );
+
       ustatsStore().write(stats);
     }
   }
@@ -367,9 +372,9 @@ class GameServer with ReadyManager {
 
   void updateStub(String player, GameStub stub) async {
     String id = stub.id;
-    final _result = await getGroupForGameId(id);
-    if (_result.ok) {
-      _result.object!.updateStub(player, stub);
+    final result = await getGroupForGameId(id);
+    if (result.ok) {
+      result.object!.updateStub(player, stub);
     }
   }
 
@@ -380,8 +385,10 @@ class GameServer with ReadyManager {
   ) async {
     final result = await getGameController(gameId);
     if (!result.ok) return Result.error(result.error!);
+
     GameController gc = games[gameId]!;
     if (gc.state.player != player) return Result.error(Errors.unauthorised);
+
     final _result = await gc.makeGuess(word);
     // note: invalid words count as ok
     if (!_result.ok) {

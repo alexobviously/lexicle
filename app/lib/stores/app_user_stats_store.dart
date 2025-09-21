@@ -5,8 +5,8 @@ class AppUserStatsStore extends UserStatsStore {
   AppUserStatsStore(DatabaseService db) : super(db);
 
   Future<Result<UserStats>> getMe() async {
-    final _result = await ApiClient.getMyStats();
-    if (_result.ok) onGet(_result.object!);
-    return _result;
+    final result = await ApiClient.getMyStats();
+    if (result.ok) onGet(result.object!);
+    return result;
   }
 }

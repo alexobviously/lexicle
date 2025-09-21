@@ -14,7 +14,8 @@ class Game implements Entity {
   final List<String> flags;
   final String? group;
   final String? challenge;
-  final int? endTime; // determined in advance by timelimited games, always set on finish
+  final int?
+  endTime; // determined in advance by timelimited games, always set on finish
   final int? endReason;
   final int penalty;
 
@@ -22,24 +23,30 @@ class Game implements Entity {
   String get word => current.content;
   bool get wordReady => word.length == length;
   bool get wordEmpty => word.isEmpty;
-  Set<String> get correctLetters => Set<String>.from(guesses.expand((e) => e.correctLetters));
+  Set<String> get correctLetters =>
+      Set<String>.from(guesses.expand((e) => e.correctLetters));
   Set<String> get semiCorrectLetters =>
-      Set<String>.from(guesses.expand((e) => e.semiCorrectLetters))..removeWhere((e) => correctLetters.contains(e));
-  Set<String> get wrongLetters => Set<String>.from(guesses.expand((e) => e.wrongLetters));
+      Set<String>.from(guesses.expand((e) => e.semiCorrectLetters))
+        ..removeWhere((e) => correctLetters.contains(e));
+  Set<String> get wrongLetters =>
+      Set<String>.from(guesses.expand((e) => e.wrongLetters));
   bool get solved => guesses.isNotEmpty && guesses.last.solved;
   bool get gameFinished => endReason != null;
   int get numRows => guesses.length + (gameFinished ? 0 : 1);
   bool get invalid => flags.contains(flagInvalid);
-  double get progress => gameFinished ? 1.0 : (correctLetters.length * 2 + semiCorrectLetters.length) / (length * 2);
+  double get progress => gameFinished
+      ? 1.0
+      : (correctLetters.length * 2 + semiCorrectLetters.length) / (length * 2);
   int get score => guesses.length + penalty;
   GameStub get stub => GameStub(
-        id: id,
-        creator: creator,
-        progress: progress,
-        guesses: score,
-        endReason: endReason,
-      );
-  WordData? get lastGuess => guesses.reversed.firstWhereOrNull((e) => e.finalised);
+    id: id,
+    creator: creator,
+    progress: progress,
+    guesses: score,
+    endReason: endReason,
+  );
+  WordData? get lastGuess =>
+      guesses.reversed.firstWhereOrNull((e) => e.finalised);
 
   Game({
     String? id,
@@ -55,28 +62,37 @@ class Game implements Entity {
     this.endTime,
     this.endReason,
     this.penalty = 0,
-  })  : id = id ?? ObjectId().id.hexString,
-        timestamp = timestamp ?? nowMs(),
-        creator = creator ?? player;
+  }) : id = id ?? ObjectId().id.hexString,
+       timestamp = timestamp ?? nowMs(),
+       creator = creator ?? player;
 
-  factory Game.initial(String player, int length, {String? creator, String? id, int? endTime}) => Game(
-        answer: '*' * length,
-        guesses: [],
-        current: WordData.blank(),
-        player: player,
-        creator: creator,
-        id: id,
-        endTime: endTime,
-      );
+  factory Game.initial(
+    String player,
+    int length, {
+    String? creator,
+    String? id,
+    int? endTime,
+  }) => Game(
+    answer: '*' * length,
+    guesses: [],
+    current: WordData.blank(),
+    player: player,
+    creator: creator,
+    id: id,
+    endTime: endTime,
+  );
 
-  factory Game.fromChallenge({required Challenge challenge, required String player}) => Game(
-        challenge: challenge.id,
-        answer: challenge.answer,
-        endTime: challenge.endTime,
-        player: player,
-        guesses: [],
-        current: WordData.blank(),
-      );
+  factory Game.fromChallenge({
+    required Challenge challenge,
+    required String player,
+  }) => Game(
+    challenge: challenge.id,
+    answer: challenge.answer,
+    endTime: challenge.endTime,
+    player: player,
+    guesses: [],
+    current: WordData.blank(),
+  );
 
   static const flagInvalid = 'i';
 
@@ -87,9 +103,12 @@ class Game implements Entity {
       answer: doc[GameFields.answer],
       player: doc[GameFields.player],
       creator: doc[GameFields.creator],
-      guesses:
-          (doc[GameFields.guesses] as List).map<WordData>((e) => WordData.fromJson(e as Map<String, dynamic>)).toList(),
-      current: WordData.fromJson(doc[GameFields.current] as Map<String, dynamic>),
+      guesses: (doc[GameFields.guesses] as List)
+          .map<WordData>((e) => WordData.fromJson(e as Map<String, dynamic>))
+          .toList(),
+      current: WordData.fromJson(
+        doc[GameFields.current] as Map<String, dynamic>,
+      ),
       flags: coerceList(doc[GameFields.flags] ?? []),
       group: doc[GameFields.group],
       challenge: doc[GameFields.challenge],
@@ -98,14 +117,19 @@ class Game implements Entity {
     );
   }
 
-  Map<String, dynamic> toMap({bool hideAnswer = false, bool hideGuesses = false}) {
+  Map<String, dynamic> toMap({
+    bool hideAnswer = false,
+    bool hideGuesses = false,
+  }) {
     return {
       Fields.id: parseObjectId(id),
       Fields.timestamp: timestamp,
       GameFields.answer: hideAnswer ? ('*' * answer.length) : answer,
       GameFields.player: player,
       GameFields.creator: creator,
-      GameFields.guesses: guesses.map((e) => e.toMap(hideContent: hideGuesses)).toList(),
+      GameFields.guesses: guesses
+          .map((e) => e.toMap(hideContent: hideGuesses))
+          .toList(),
       GameFields.current: current.toMap(hideContent: hideAnswer),
       GameFields.flags: flags,
       if (group != null) GameFields.group: group,
@@ -116,11 +140,10 @@ class Game implements Entity {
   }
 
   @override
-  Map<String, dynamic> export() {
-    Map<String, dynamic> _map = toMap();
-    _map[GameFields.finished] = gameFinished; // for queries
-    return _map;
-  }
+  Map<String, dynamic> export() => {
+    ...toMap(),
+    GameFields.finished: gameFinished, // for queries
+  };
 
   Game copyWith({
     String? id,
@@ -156,7 +179,8 @@ class Game implements Entity {
   Game copyWithInvalid() => copyWith(flags: [flagInvalid]);
 
   @override
-  String toString() => 'Game($id, player; $player, creator: $creator, answer: $answer, guesses: ${guesses.length})';
+  String toString() =>
+      'Game($id, player; $player, creator: $creator, answer: $answer, guesses: ${guesses.length})';
 
   String toEmojis() {
     if (guesses.isEmpty) return '';

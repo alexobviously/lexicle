@@ -10,12 +10,16 @@ class OnlineMediator implements Mediator {
 
   @override
   Future<WordValidationResult> validateWord(String word) async {
-    if (word.length != wordLength || !isAlpha(word)) return WordValidationResult.invalid();
-    final _result = await ApiClient.makeGuess(gameId, word);
-    if (!_result.ok) {
+    if (word.length != wordLength || !isAlpha(word)) {
       return WordValidationResult.invalid();
     }
-    return _result.object!;
+
+    final result = await ApiClient.makeGuess(gameId, word);
+    if (!result.ok) {
+      return WordValidationResult.invalid();
+    }
+
+    return result.object!;
   }
 
   @override

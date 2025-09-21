@@ -21,7 +21,10 @@ import 'package:word_game/services/service_locator.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
   await loadEnv();
   usePathUrlStrategy();
   await setUpServiceLocator(db: ApiService());
@@ -33,7 +36,8 @@ void main() async {
 Future<void> loadEnv() async {
   try {
     await dotenv.load(fileName: '.env');
-    if (dotenv.env['SERVER_HOST'] != null) ApiClient.host = dotenv.env['SERVER_HOST']!;
+    if (dotenv.env['SERVER_HOST'] != null)
+      ApiClient.host = dotenv.env['SERVER_HOST']!;
   } catch (_) {
     print('.env not loaded, no problem tho');
   }
@@ -47,16 +51,22 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final _settingsCubit = SettingsCubit();
+    final settingsCubit = SettingsCubit();
     return MultiBlocProvider(
       providers: [
         BlocProvider<AuthController>(create: (_) => auth()),
         BlocProvider<LocalGameManager>(create: (_) => LocalGameManager()),
         BlocProvider<GameGroupManager>(create: (_) => GameGroupManager()),
         BlocProvider<ServerCubit>(create: (_) => ServerCubit()),
-        BlocProvider<SettingsCubit>(create: (_) => _settingsCubit, lazy: false),
-        BlocProvider<SchemeCubit>(create: (_) => SchemeCubit(settingsCubit: _settingsCubit), lazy: false),
-        BlocProvider<ChallengeManager>(create: (_) => challengeManager(), lazy: true),
+        BlocProvider<SettingsCubit>(create: (_) => settingsCubit, lazy: false),
+        BlocProvider<SchemeCubit>(
+          create: (_) => SchemeCubit(settingsCubit: settingsCubit),
+          lazy: false,
+        ),
+        BlocProvider<ChallengeManager>(
+          create: (_) => challengeManager(),
+          lazy: true,
+        ),
       ],
       child: BlocBuilder<SettingsCubit, Settings>(
         builder: (context, settings) {
@@ -74,7 +84,7 @@ class MyApp extends StatelessWidget {
                 routeInformationProvider: _router.routeInformationProvider,
               );
             },
-            maximumSize: const Size(475.0, 812.0),
+            maximumSize: const Size(475, 812),
             enabled: kIsWeb,
             backgroundColor: settings.colourScheme.wrong,
           );

@@ -9,11 +9,12 @@ import '../utils/http_utils.dart';
 
 class GameHandler {
   static Future<Response> validateWord(Request request, String word) async {
-    bool _valid = dictionary().isValidWord(word);
+    bool valid = dictionary().isValidWord(word);
+
     return HttpUtils.buildResponse(
       data: {
         'word': word,
-        'valid': _valid,
+        'valid': valid,
       },
     );
   }
@@ -34,13 +35,19 @@ class GameHandler {
       String? title = data['title'];
       if (title == null || title.isEmpty) title = '${user.username}\'s game';
       print('got create request from creator [${user.username}] title $title');
-      final _result = gameServer().createGameGroup(creator: creator, title: title, config: config);
-      if (!_result.ok) {
-        return HttpUtils.buildErrorResponse(_result.error!);
+      final result = gameServer().createGameGroup(
+        creator: creator,
+        title: title,
+        config: config,
+      );
+      if (!result.ok) {
+        return HttpUtils.buildErrorResponse(result.error!);
       } else {
-        return HttpUtils.buildResponse(data: {
-          'group': _result.object!.toMap(),
-        });
+        return HttpUtils.buildResponse(
+          data: {
+            'group': result.object!.toMap(),
+          },
+        );
       }
     } catch (e, s) {
       print('exception in createGameGroup: $e\n$s');
@@ -50,13 +57,17 @@ class GameHandler {
 
   static Future<Response> getGameGroup(Request request, String id) async {
     try {
-      final _result = gameServer().getGroupController(id);
-      if (!_result.ok) {
-        return HttpUtils.buildErrorResponse(_result.error!);
+      final result = gameServer().getGroupController(id);
+      if (!result.ok) {
+        return HttpUtils.buildErrorResponse(result.error!);
       } else {
-        return HttpUtils.buildResponse(data: {
-          'group': _result.object!.toMap(hideAnswers: !_result.object!.state.finished),
-        });
+        return HttpUtils.buildResponse(
+          data: {
+            'group': result.object!.toMap(
+              hideAnswers: !result.object!.state.finished,
+            ),
+          },
+        );
       }
     } catch (e, s) {
       print('exception in getGameGroup: $e\n$s');
@@ -68,13 +79,15 @@ class GameHandler {
     try {
       final authResult = await authenticateRequest(request);
       if (!authResult.ok) return authResult.errorResponse;
-      final _result = gameServer().joinGroup(id, authResult.user!.id);
-      if (!_result.ok) {
-        return HttpUtils.buildErrorResponse(_result.error!);
+      final result = gameServer().joinGroup(id, authResult.user!.id);
+      if (!result.ok) {
+        return HttpUtils.buildErrorResponse(result.error!);
       } else {
-        return HttpUtils.buildResponse(data: {
-          'group': _result.object!.toMap(),
-        });
+        return HttpUtils.buildResponse(
+          data: {
+            'group': result.object!.toMap(),
+          },
+        );
       }
     } catch (e, s) {
       print('exception in joinGameGroup: $e\n$s');
@@ -86,13 +99,15 @@ class GameHandler {
     try {
       final authResult = await authenticateRequest(request);
       if (!authResult.ok) return authResult.errorResponse;
-      final _result = gameServer().leaveGroup(id, authResult.user!.id);
-      if (!_result.ok) {
-        return HttpUtils.buildErrorResponse(_result.error!);
+      final result = gameServer().leaveGroup(id, authResult.user!.id);
+      if (!result.ok) {
+        return HttpUtils.buildErrorResponse(result.error!);
       } else {
-        return HttpUtils.buildResponse(data: {
-          'group': _result.object!.toMap(),
-        });
+        return HttpUtils.buildResponse(
+          data: {
+            'group': result.object!.toMap(),
+          },
+        );
       }
     } catch (e, s) {
       print('exception in leaveGameGroup: $e\n$s');
@@ -104,9 +119,9 @@ class GameHandler {
     try {
       final authResult = await authenticateRequest(request);
       if (!authResult.ok) return authResult.errorResponse;
-      final _result = gameServer().deleteGroup(id, authResult.user!.id);
-      if (!_result.ok) {
-        return HttpUtils.buildErrorResponse(_result.error!);
+      final result = gameServer().deleteGroup(id, authResult.user!.id);
+      if (!result.ok) {
+        return HttpUtils.buildErrorResponse(result.error!);
       } else {
         return HttpUtils.buildResponse();
       }
@@ -122,13 +137,19 @@ class GameHandler {
       if (!authResult.ok) return authResult.errorResponse;
       final String payload = await request.readAsString();
       Map<String, dynamic> data = json.decode(payload);
-      final _result = gameServer().setWord(id, authResult.user!.id, data['word']);
-      if (!_result.ok) {
-        return HttpUtils.buildErrorResponse(_result.error!);
+      final result = gameServer().setWord(
+        id,
+        authResult.user!.id,
+        data['word'],
+      );
+      if (!result.ok) {
+        return HttpUtils.buildErrorResponse(result.error!);
       } else {
-        return HttpUtils.buildResponse(data: {
-          'group': _result.object!.toMap(),
-        });
+        return HttpUtils.buildResponse(
+          data: {
+            'group': result.object!.toMap(),
+          },
+        );
       }
     } catch (e, s) {
       print('exception in setWord: $e\n$s');
@@ -140,13 +161,18 @@ class GameHandler {
     try {
       final authResult = await authenticateRequest(request);
       if (!authResult.ok) return authResult.errorResponse;
-      final _result = gameServer().startGroup(id, authResult.user!.id);
-      if (!_result.ok) {
-        return HttpUtils.buildErrorResponse(_result.error!, warnings: _result.warnings);
+      final result = gameServer().startGroup(id, authResult.user!.id);
+      if (!result.ok) {
+        return HttpUtils.buildErrorResponse(
+          result.error!,
+          warnings: result.warnings,
+        );
       } else {
-        return HttpUtils.buildResponse(data: {
-          'group': _result.object!.toMap(),
-        });
+        return HttpUtils.buildResponse(
+          data: {
+            'group': result.object!.toMap(),
+          },
+        );
       }
     } catch (e, s) {
       print('exception in startGroup: $e\n$s');
@@ -158,18 +184,26 @@ class GameHandler {
     try {
       final gResult = await groupStore().get(id);
       if (!gResult.ok) return HttpUtils.buildErrorResponse(gResult.error!);
-      final authResult = await authenticateRequest(request, predicate: matchOneUser(gResult.object!.creator));
+      final authResult = await authenticateRequest(
+        request,
+        predicate: matchOneUser(gResult.object!.creator),
+      );
       if (!authResult.ok) return authResult.errorResponse;
       final String payload = await request.readAsString();
       Map<String, dynamic> data = json.decode(payload);
       String player = data[GameFields.player];
-      final _result = gameServer().leaveGroup(id, player);
-      if (!_result.ok) {
-        return HttpUtils.buildErrorResponse(_result.error!, warnings: _result.warnings);
+      final result = gameServer().leaveGroup(id, player);
+      if (!result.ok) {
+        return HttpUtils.buildErrorResponse(
+          result.error!,
+          warnings: result.warnings,
+        );
       } else {
-        return HttpUtils.buildResponse(data: {
-          'group': _result.object!.toMap(),
-        });
+        return HttpUtils.buildResponse(
+          data: {
+            'group': result.object!.toMap(),
+          },
+        );
       }
     } catch (e, s) {
       print('exception in startGroup: $e\n$s');
@@ -179,26 +213,32 @@ class GameHandler {
 
   static Future<Response> allGroupIds(Request request) async {
     List<String> allIds = gameServer().getAllGroupIds();
-    return HttpUtils.buildResponse(data: {
-      'count': allIds.length,
-      'groups': allIds,
-    });
+    return HttpUtils.buildResponse(
+      data: {
+        'count': allIds.length,
+        'groups': allIds,
+      },
+    );
   }
 
   static Future<Response> allGameIds(Request request) async {
     List<String> allIds = gameServer().getAllGameIds();
-    return HttpUtils.buildResponse(data: {
-      'count': allIds.length,
-      'games': allIds,
-    });
+    return HttpUtils.buildResponse(
+      data: {
+        'count': allIds.length,
+        'games': allIds,
+      },
+    );
   }
 
   static Future<Response> allActiveGameIds(Request request) async {
     List<String> allIds = gameServer().getAllActiveGameIds();
-    return HttpUtils.buildResponse(data: {
-      'count': allIds.length,
-      'games': allIds,
-    });
+    return HttpUtils.buildResponse(
+      data: {
+        'count': allIds.length,
+        'games': allIds,
+      },
+    );
   }
 
   static Future<Response> getGame(Request request, String id) async {
@@ -214,11 +254,18 @@ class GameHandler {
         return HttpUtils.buildErrorResponse(result.error!);
       }
       final authResult = await authenticateRequest(request);
-      bool hideGuesses = !authResult.hasUser ||
-          (authResult.user!.id != result.object!.state.player && authResult.user!.id != result.object!.state.creator);
-      return HttpUtils.buildResponse(data: {
-        'game': result.object!.toMap(hideAnswer: true, hideGuesses: hideGuesses),
-      });
+      bool hideGuesses =
+          !authResult.hasUser ||
+          (authResult.user!.id != result.object!.state.player &&
+              authResult.user!.id != result.object!.state.creator);
+      return HttpUtils.buildResponse(
+        data: {
+          'game': result.object!.toMap(
+            hideAnswer: true,
+            hideGuesses: hideGuesses,
+          ),
+        },
+      );
     } catch (e, s) {
       print('exception in getGame: $e\n$s');
       return HttpUtils.invalidRequestResponse();
@@ -231,13 +278,19 @@ class GameHandler {
       if (!authResult.ok) return authResult.errorResponse;
       final String payload = await request.readAsString();
       Map<String, dynamic> data = json.decode(payload);
-      final _result = await gameServer().makeGuess(id, authResult.user!.id, data['guess']);
-      if (!_result.ok) {
-        return HttpUtils.buildErrorResponse(_result.error!);
+      final result = await gameServer().makeGuess(
+        id,
+        authResult.user!.id,
+        data['guess'],
+      );
+      if (!result.ok) {
+        return HttpUtils.buildErrorResponse(result.error!);
       } else {
-        return HttpUtils.buildResponse(data: {
-          'result': _result.object!.toMap(),
-        });
+        return HttpUtils.buildResponse(
+          data: {
+            'result': result.object!.toMap(),
+          },
+        );
       }
     } catch (e, s) {
       print('exception in makeGuess: $e\n$s');

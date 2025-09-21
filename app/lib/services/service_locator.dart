@@ -23,9 +23,7 @@ GameGroupStore groupStore() => getIt.get<GameGroupStore>();
 ChallengeManager challengeManager() => getIt.get<ChallengeManager>();
 
 Future<void> setUpServiceLocator({required DatabaseService db}) async {
-  getIt.registerSingleton<FlutterSecureStorage>(const FlutterSecureStorage(
-    aOptions: AndroidOptions(encryptedSharedPreferences: true),
-  ));
+  getIt.registerSingleton<FlutterSecureStorage>(const FlutterSecureStorage());
   getIt.registerSingleton<DatabaseService>(db);
   getIt.registerSingleton<AppDictionary>(AppDictionary());
   getIt.registerSingleton<SoundService>(SoundService());

@@ -13,17 +13,19 @@ class DictWordRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<String> _letters = content.split('')..addAll(List.filled(length - content.length, ''));
+    List<String> letters = content.split('')
+      ..addAll(List.filled(length - content.length, ''));
     return InkWell(
       onTap: onTap,
       highlightColor: Colours.semiCorrect,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: _letters.map((e) => _letter(context, e)).toList(),
+        children: letters.map((e) => _letter(context, e)).toList(),
       ),
     );
   }
 
+  // TODO: break out
   Widget _letter(BuildContext context, String letter) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
