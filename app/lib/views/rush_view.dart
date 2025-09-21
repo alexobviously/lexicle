@@ -73,7 +73,9 @@ class _RushViewState extends State<RushView> {
       _initTimer(game!.state.endTime);
       game!.endTimeStream.listen((t) => _initTimer(t));
       game!.numRowsStream.listen((_) => _scrollDown());
-      WidgetsBinding.instance.addPostFrameCallback((_) => _scrollDown(const Duration(milliseconds: 750)));
+      WidgetsBinding.instance.addPostFrameCallback(
+        (_) => _scrollDown(const Duration(milliseconds: 750)),
+      );
     }
   }
 
@@ -87,7 +89,12 @@ class _RushViewState extends State<RushView> {
 
   void _setTimeLeft() {
     if (endTime == null) return;
-    if (mounted) setState(() => timeLeft = max(endTime! - DateTime.now().millisecondsSinceEpoch, 0));
+    if (mounted) {
+      setState(
+        () =>
+            timeLeft = max(endTime! - DateTime.now().millisecondsSinceEpoch, 0),
+      );
+    }
   }
 
   final ScrollController _controller = ScrollController();
@@ -114,7 +121,9 @@ class _RushViewState extends State<RushView> {
 
   void _onBackspace() {
     _scrollDown();
-    if (game!.state.currentWord.isEmpty && mounted) setState(() {}); // hack for scroll
+    if (game!.state.currentWord.isEmpty && mounted) {
+      setState(() {}); // hack for scroll
+    }
     game!.backspace();
   }
 
@@ -169,120 +178,137 @@ class _RushViewState extends State<RushView> {
       );
     }
     return BlocBuilder<RushController, Rush>(
-        bloc: game!,
-        builder: (context, state) {
-          return StandardScaffold(
-            title: widget.data.title,
-            appBarActions: [_copyButton(context)],
-            body: Center(
-              child: SafeArea(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Row(
-                      children: [
-                        if (timeLeft != null) GameClock(timeLeft!),
-                        const Spacer(),
-                        Text('${state.completed.length} solved'),
-                      ],
-                    ),
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.all(4.0),
-                        child: AnimatedContainer(
-                          padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                          duration: const Duration(milliseconds: 2000),
-                          color: state.finished ? Colours.correct.withAlpha(100) : null,
-                          child: SingleChildScrollView(
-                            controller: _controller,
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Container(height: 16),
-                                for (Game g in state.completed) ..._gameBlock(context, g),
-                                ..._gameBlock(context, state.current),
-                                Container(height: 16),
-                              ],
-                            ),
+      bloc: game!,
+      builder: (context, state) {
+        return StandardScaffold(
+          title: widget.data.title,
+          appBarActions: [_copyButton(context)],
+          body: Center(
+            child: SafeArea(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Row(
+                    children: [
+                      if (timeLeft != null) GameClock(timeLeft!),
+                      const Spacer(),
+                      Text('${state.completed.length} solved'),
+                    ],
+                  ),
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.all(4.0),
+                      child: AnimatedContainer(
+                        padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                        duration: const Duration(milliseconds: 2000),
+                        color: state.finished
+                            ? Colours.correct.withAlpha(100)
+                            : null,
+                        child: SingleChildScrollView(
+                          controller: _controller,
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Container(height: 16),
+                              for (Game g in state.completed)
+                                ..._gameBlock(context, g),
+                              ..._gameBlock(context, state.current),
+                              Container(height: 16),
+                            ],
                           ),
                         ),
                       ),
                     ),
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width,
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: AnimatedCrossFade(
-                          duration: const Duration(milliseconds: 1000),
-                          firstChild: FittedBox(
-                            child: GameKeyboard(
-                              onTap: _addLetter,
-                              onBackspace: _onBackspace,
-                              onEnter: _onEnter,
-                              onClear: _clearInput,
-                              correct: state.current.correctLetters,
-                              semiCorrect: state.current.semiCorrectLetters,
-                              wrong: state.current.wrongLetters,
-                              wordReady: state.current.wordReady,
-                              wordEmpty: state.current.wordEmpty,
-                            ),
+                  ),
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: AnimatedCrossFade(
+                        duration: const Duration(milliseconds: 1000),
+                        firstChild: FittedBox(
+                          child: GameKeyboard(
+                            onTap: _addLetter,
+                            onBackspace: _onBackspace,
+                            onEnter: _onEnter,
+                            onClear: _clearInput,
+                            correct: state.current.correctLetters,
+                            semiCorrect: state.current.semiCorrectLetters,
+                            wrong: state.current.wrongLetters,
+                            wordReady: state.current.wordReady,
+                            wordEmpty: state.current.wordEmpty,
                           ),
-                          secondChild: SizedBox(
-                            width: MediaQuery.of(context).size.width - 16.0,
-                            child: PostGamePanel(
-                              guesses: state.completed.length,
-                              reason: state.endReason,
-                            ),
-                          ),
-                          crossFadeState: !state.finished ? CrossFadeState.showFirst : CrossFadeState.showSecond,
                         ),
+                        secondChild: SizedBox(
+                          width: MediaQuery.of(context).size.width - 16.0,
+                          child: PostGamePanel(
+                            guesses: state.completed.length,
+                            reason: state.endReason,
+                          ),
+                        ),
+                        crossFadeState: !state.finished
+                            ? CrossFadeState.showFirst
+                            : CrossFadeState.showSecond,
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
-          );
-        });
+          ),
+        );
+      },
+    );
   }
 
   Widget _observerBox(BuildContext context, Game game) {
-    return LayoutBuilder(builder: (context, constraints) {
-      return Padding(
-        padding: const EdgeInsets.symmetric(vertical: 4.0),
-        child: SizedBox(
-          width: constraints.maxWidth * 0.95,
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    EntityFutureBuilder<User>(
-                      id: game.player,
-                      store: userStore(),
-                      loadingWidget: const SpinKitCircle(color: Colours.victory, size: 16),
-                      errorWidget: (_) => const Icon(Icons.error),
-                      resultWidget: (u) => Text('Observing ${u.username}'),
-                    ),
-                    EntityFutureBuilder<User>(
-                      id: game.creator,
-                      store: userStore(),
-                      loadingWidget: const SpinKitCircle(color: Colours.victory, size: 16),
-                      errorWidget: (_) => const Icon(Icons.error),
-                      resultWidget: (u) => Text('${u.username}\'s game'),
-                    ),
-                  ],
-                ),
-                Text('${game.guesses.length}', style: Theme.of(context).textTheme.headlineSmall),
-              ],
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return Padding(
+          padding: const EdgeInsets.symmetric(vertical: 4.0),
+          child: SizedBox(
+            width: constraints.maxWidth * 0.95,
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      EntityFutureBuilder<User>(
+                        id: game.player,
+                        store: userStore(),
+                        loadingWidget: const SpinKitCircle(
+                          color: Colours.victory,
+                          size: 16,
+                        ),
+                        errorWidget: (_) => const Icon(Icons.error),
+                        resultWidget: (u) => Text('Observing ${u.username}'),
+                      ),
+                      EntityFutureBuilder<User>(
+                        id: game.creator,
+                        store: userStore(),
+                        loadingWidget: const SpinKitCircle(
+                          color: Colours.victory,
+                          size: 16,
+                        ),
+                        errorWidget: (_) => const Icon(Icons.error),
+                        resultWidget: (u) => Text('${u.username}\'s game'),
+                      ),
+                    ],
+                  ),
+                  Text(
+                    '${game.guesses.length}',
+                    style: Theme.of(context).textTheme.headlineSmall,
+                  ),
+                ],
+              ),
             ),
           ),
-        ),
-      );
-    });
+        );
+      },
+    );
   }
 
   List<Widget> _gameBlock(BuildContext context, Game g) {
@@ -317,7 +343,11 @@ class _RushViewState extends State<RushView> {
 
   String _timeString(int d) {
     if (d == 0) return '∞';
-    return prettyDuration(Duration(milliseconds: d), abbreviated: true, tersity: DurationTersity.minute);
+    return prettyDuration(
+      Duration(milliseconds: d),
+      abbreviated: true,
+      tersity: DurationTersity.minute,
+    );
   }
 
   Widget _copyButton(BuildContext context) {
@@ -325,7 +355,10 @@ class _RushViewState extends State<RushView> {
     String d = _timeString(game!.state.config.timeLimit ?? 0);
     String title = '${game!.state.completed.length} words / $d';
     String emojis = game!.state.toEmojis();
-    String words = game!.state.completed.map((e) => '✅ ${e.answer}').toList().join('\n');
+    String words = game!.state.completed
+        .map((e) => '✅ ${e.answer}')
+        .toList()
+        .join('\n');
     words = '$words\n❌ ${game!.state.current.answer}';
     return IconButton(
       onPressed: enabled
@@ -334,8 +367,14 @@ class _RushViewState extends State<RushView> {
                 ClipboardData(text: '$title\n$emojis\n$words'),
               ).then((_) {
                 sound().play(Sound.good);
-                ScaffoldMessenger.of(context)
-                    .showSnackBar(const SnackBar(content: Text('Game copied to clipboard'), duration: Duration(seconds: 2)));
+                if (!context.mounted) return;
+
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Game copied to clipboard'),
+                    duration: Duration(seconds: 2),
+                  ),
+                );
               });
             }
           : null,

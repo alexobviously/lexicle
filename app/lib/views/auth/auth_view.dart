@@ -21,10 +21,11 @@ class _AuthViewState extends State<AuthView> {
 
   @override
   void initState() {
-    if (mounted)
+    if (mounted) {
       _controller.addListener(
         () => setState(() => _page = _controller.page?.round() ?? 0),
       );
+    }
     super.initState();
   }
 

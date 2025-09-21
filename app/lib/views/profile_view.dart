@@ -46,7 +46,9 @@ class _ProfileViewState extends State<ProfileView> {
                 resultWidget: (u) => Column(
                   children: [
                     Text(u.username, style: textTheme.headlineMedium),
-                    Text('Rating: ${u.rating.rating.toStringAsFixed(1)} ± ${u.rating.deviation.toStringAsFixed(0)}'),
+                    Text(
+                      'Rating: ${u.rating.rating.toStringAsFixed(1)} ± ${u.rating.deviation.toStringAsFixed(0)}',
+                    ),
                     if (u.team != null) _team(context, u.team!),
                   ],
                 ),
@@ -61,11 +63,18 @@ class _ProfileViewState extends State<ProfileView> {
                 ),
                 errorWidget: (_) => const Icon(Icons.error),
                 resultWidget: (u) {
-                  if (u.gamesTotal == 0) return const Text('No games played yet!');
+                  if (u.gamesTotal == 0)
+                    return const Text('No games played yet!');
                   // organise the counts for tab order, since they might not be in order
-                  Map<int, Map<int, int>> guessCounts = u.guessCounts.sorted((a, b) => a.key.compareTo(b.key));
+                  Map<int, Map<int, int>> guessCounts = u.guessCounts.sorted(
+                    (a, b) => a.key.compareTo(b.key),
+                  );
                   // always start on the length 5 tab if it exists
-                  lengthIndex ??= guessCounts.entries.toList().indexWhereOrNull((e) => e.key == 5) ?? 0;
+                  lengthIndex ??=
+                      guessCounts.entries.toList().indexWhereOrNull(
+                        (e) => e.key == 5,
+                      ) ??
+                      0;
                   int _length(int index) => guessCounts.keys.toList()[index];
 
                   return Column(
@@ -97,21 +106,34 @@ class _ProfileViewState extends State<ProfileView> {
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
                                 Text(
-                                    'Matches Won: ${(u.wins[_length(lengthIndex!)] ?? 0)} / ${(u.numGroups[_length(lengthIndex!)] ?? 0)}'),
-                                Text('Games Played: ${(u.numGames[_length(lengthIndex!)] ?? 0)}'),
+                                  'Matches Won: ${(u.wins[_length(lengthIndex!)] ?? 0)} / ${(u.numGroups[_length(lengthIndex!)] ?? 0)}',
+                                ),
+                                Text(
+                                  'Games Played: ${(u.numGames[_length(lengthIndex!)] ?? 0)}',
+                                ),
                               ],
                             ),
-                            Text('Timeouts: ${u.timeouts[_length(lengthIndex!)] ?? 0} '),
+                            Text(
+                              'Timeouts: ${u.timeouts[_length(lengthIndex!)] ?? 0} ',
+                            ),
                             Container(height: 24),
                             SizedBox(
                               width: MediaQuery.of(context).size.width * 0.85,
-                              child: FittedBox(child: _guessChart(guessCounts[_length(lengthIndex!)] ?? {})),
+                              child: FittedBox(
+                                child: _guessChart(
+                                  guessCounts[_length(lengthIndex!)] ?? {},
+                                ),
+                              ),
                             ),
                           ],
                         ),
                       ),
                       Container(height: 32),
-                      _words(context, u.words, scheme: ColourScheme.base(context)),
+                      _words(
+                        context,
+                        u.words,
+                        scheme: ColourScheme.base(context),
+                      ),
                     ],
                   );
                 },
@@ -134,22 +156,29 @@ class _ProfileViewState extends State<ProfileView> {
     }
     int maxCount = max(1, _counts.entries.fold(0, (a, b) => max(a, b.value)));
 
-    Color borderColour = Theme.of(context).textTheme.bodyLarge?.color ?? Colors.black87;
+    Color borderColour =
+        Theme.of(context).textTheme.bodyLarge?.color ?? Colors.black87;
 
     List<BarChartGroupData> _groups = List.generate(
-        8,
-        (i) => BarChartGroupData(
-              x: i,
-              barRods: [
-                BarChartRodData(
-                  toY: ((_counts[i + 1] ?? 0) / maxCount) * maxCount,
-                  width: 41,
-                  color: _difficultyColour(i + 1, scheme: ColourScheme.base(context)),
-                  borderRadius: const BorderRadius.vertical(top: Radius.circular(2.0)),
-                  borderSide: BorderSide(width: 0.3, color: borderColour.withOpacity(0.5)),
-                ),
-              ],
-            ));
+      8,
+      (i) => BarChartGroupData(
+        x: i,
+        barRods: [
+          BarChartRodData(
+            toY: ((_counts[i + 1] ?? 0) / maxCount) * maxCount,
+            width: 41,
+            color: _difficultyColour(i + 1, scheme: ColourScheme.base(context)),
+            borderRadius: const BorderRadius.vertical(
+              top: Radius.circular(2.0),
+            ),
+            borderSide: BorderSide(
+              width: 0.3,
+              color: borderColour.withOpacity(0.5),
+            ),
+          ),
+        ],
+      ),
+    );
 
     const noShowTitles = AxisTitles(
       sideTitles: SideTitles(showTitles: false),
@@ -186,7 +215,10 @@ class _ProfileViewState extends State<ProfileView> {
             touchTooltipData: BarTouchTooltipData(
               // tooltipBgColor: Colors.white, // TODO: what is this now?
               fitInsideVertically: true,
-              getTooltipItem: (_, __, c, ___) => BarTooltipItem(c.fromY.toStringAsFixed(0), textTheme.bodyMedium!),
+              getTooltipItem: (_, __, c, ___) => BarTooltipItem(
+                c.fromY.toStringAsFixed(0),
+                textTheme.bodyMedium!,
+              ),
             ),
           ),
           barGroups: _groups,
@@ -195,15 +227,30 @@ class _ProfileViewState extends State<ProfileView> {
     );
   }
 
-  Color _difficultyColour(double difficulty, {ColourScheme scheme = ColourScheme.light}) {
+  Color _difficultyColour(
+    double difficulty, {
+    ColourScheme scheme = ColourScheme.light,
+  }) {
     if (difficulty < 5.5) {
-      return Color.lerp(scheme.correct, scheme.semiCorrect, (difficulty - 2.0) / 3.5)!;
+      return Color.lerp(
+        scheme.correct,
+        scheme.semiCorrect,
+        (difficulty - 2.0) / 3.5,
+      )!;
     } else {
-      return Color.lerp(scheme.semiCorrect, scheme.invalid.lighten(0.2), (difficulty - 5.5) / 3.5)!;
+      return Color.lerp(
+        scheme.semiCorrect,
+        scheme.invalid.lighten(0.2),
+        (difficulty - 5.5) / 3.5,
+      )!;
     }
   }
 
-  Widget _words(BuildContext context, List<WordDifficulty> words, {ColourScheme scheme = ColourScheme.light}) {
+  Widget _words(
+    BuildContext context,
+    List<WordDifficulty> words, {
+    ColourScheme scheme = ColourScheme.light,
+  }) {
     final textTheme = Theme.of(context).textTheme;
 
     List<WordDifficulty> _words = [...words];
@@ -212,19 +259,22 @@ class _ProfileViewState extends State<ProfileView> {
     TextStyle textStyle = textTheme.titleLarge!.copyWith(color: Colors.black87);
 
     return Column(
-        children: _words
-            .map((e) => Container(
-                  padding: const EdgeInsets.all(8.0),
-                  color: _difficultyColour(e.difficulty, scheme: scheme),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(e.word, style: textStyle),
-                      Text(e.difficulty.toStringAsFixed(2), style: textStyle),
-                    ],
-                  ),
-                ))
-            .toList());
+      children: _words
+          .map(
+            (e) => Container(
+              padding: const EdgeInsets.all(8.0),
+              color: _difficultyColour(e.difficulty, scheme: scheme),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(e.word, style: textStyle),
+                  Text(e.difficulty.toStringAsFixed(2), style: textStyle),
+                ],
+              ),
+            ),
+          )
+          .toList(),
+    );
   }
 
   Widget _team(BuildContext context, String id) {
@@ -236,7 +286,9 @@ class _ProfileViewState extends State<ProfileView> {
       resultWidget: (team) => InkWell(
         child: Text(
           team.name,
-          style: Theme.of(context).textTheme.titleLarge!.copyWith(color: Colours.correct.darken(0.4)),
+          style: Theme.of(
+            context,
+          ).textTheme.titleLarge!.copyWith(color: Colours.correct.darken(0.4)),
         ),
         onTap: () => context.push(Routes.team(id)),
       ),

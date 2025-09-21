@@ -12,11 +12,13 @@ class AuthController extends Cubit<AuthState> with ReadyManager {
   void initialise() async {
     final token = await storage().read(key: 'token');
     final expiry = int.parse(await storage().read(key: 'expiry') ?? '0');
+
     if (token != null && expiry > nowMs()) {
       emit(state.copyWith(token: token, expiry: expiry, working: true));
-      final _result = await ApiClient.getMe();
-      if (_result.ok) {
-        emit(state.copyWith(user: _result.object!, working: false));
+      final result = await ApiClient.getMe();
+
+      if (result.ok) {
+        emit(state.copyWith(user: result.object!, working: false));
         refreshUserStats();
       } else {
         emit(AuthState.initial());
@@ -29,34 +31,38 @@ class AuthController extends Cubit<AuthState> with ReadyManager {
 
   Future<Result<User>> login(String username, String password) async {
     emit(state.copyWith(working: true));
-    final _result = await ApiClient.login(username, password);
-    if (_result.ok) {
-      onLogin(_result.object!, _result.token!, _result.expiry!);
-      return Result.ok(_result.object!);
+    final result = await ApiClient.login(username, password);
+
+    if (result.ok) {
+      onLogin(result.object!, result.token!, result.expiry!);
+      return Result.ok(result.object!);
     } else {
-      return Result.error(_result.error!);
+      return Result.error(result.error!);
     }
   }
 
   Future<Result<User>> register(String username, String password) async {
     emit(state.copyWith(working: true));
-    final _result = await ApiClient.register(username, password);
-    if (_result.ok) {
-      onLogin(_result.object!, _result.token!, _result.expiry!);
-      return Result.ok(_result.object!);
+    final result = await ApiClient.register(username, password);
+
+    if (result.ok) {
+      onLogin(result.object!, result.token!, result.expiry!);
+      return Result.ok(result.object!);
     } else {
-      return Result.error(_result.error!);
+      return Result.error(result.error!);
     }
   }
 
   void onLogin(User user, String token, int expiry) {
     userStore().set(user);
-    emit(state.copyWith(
-      user: user,
-      token: token,
-      expiry: expiry,
-      working: false,
-    ));
+    emit(
+      state.copyWith(
+        user: user,
+        token: token,
+        expiry: expiry,
+        working: false,
+      ),
+    );
     refreshUserStats();
     challengeManager().refresh(clear: true);
   }
@@ -153,12 +159,11 @@ class AuthState {
     UserStats? stats,
     String? token,
     int? expiry,
-  }) =>
-      AuthState(
-        working: working ?? this.working,
-        user: user ?? this.user,
-        stats: stats ?? this.stats,
-        token: token ?? this.token,
-        expiry: expiry ?? this.expiry,
-      );
+  }) => AuthState(
+    working: working ?? this.working,
+    user: user ?? this.user,
+    stats: stats ?? this.stats,
+    token: token ?? this.token,
+    expiry: expiry ?? this.expiry,
+  );
 }

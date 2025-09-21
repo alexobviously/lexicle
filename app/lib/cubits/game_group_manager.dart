@@ -104,45 +104,58 @@ class GameGroupManager extends Cubit<GroupManagerState> {
   }
 
   Future<Result<GameGroup>> getGroup(String id) async {
-    final _result = await ApiClient.getGroup(id);
-    if (!_result.ok) return Result.error(_result.error!);
-    GameGroup g = _result.object!;
+    final result = await ApiClient.getGroup(id);
+    if (!result.ok) return Result.error(result.error!);
+
+    GameGroup g = result.object!;
     _updateGroup(g);
     return Result.ok(g);
   }
 
   Future<GameGroupController?> joinGroup(String id) async {
     if (player == null) return null;
-    final _result = await ApiClient.joinGroup(id, player!);
-    if (!_result.ok) return null;
-    GameGroup g = _result.object!;
+
+    final result = await ApiClient.joinGroup(id, player!);
+    if (!result.ok) return null;
+
+    GameGroup g = result.object!;
     _updateGroup(g);
     return getControllerForGroup(g);
   }
 
   Future<GameGroup?> leaveGroup(String id) async {
     if (player == null) return null;
-    final _result = await ApiClient.leaveGroup(id, player!);
-    if (!_result.ok) return null;
-    GameGroup g = _result.object!;
+
+    final result = await ApiClient.leaveGroup(id, player!);
+    if (!result.ok) return null;
+
+    GameGroup g = result.object!;
     _updateGroup(g);
     return g;
   }
 
   Future<bool> deleteGroup(String id) async {
     if (player == null) return false;
-    final _result = await ApiClient.deleteGroup(id, player!);
-    if (!_result.ok) return false;
+
+    final result = await ApiClient.deleteGroup(id, player!);
+    if (!result.ok) return false;
+
     _removeController(id);
-    emit(state.copyWith(joined: List.from(state.joined)..removeWhere((e) => e.id == id)));
+    emit(
+      state.copyWith(
+        joined: List.from(state.joined)..removeWhere((e) => e.id == id),
+      ),
+    );
     return true;
   }
 
   Future<bool> createGroup(String title, GameConfig config) async {
     if (player == null) return false;
-    final _result = await ApiClient.createGroup(player!, title, config);
-    if (!_result.ok) return false;
-    _updateGroup(_result.object!);
+
+    final result = await ApiClient.createGroup(player!, title, config);
+    if (!result.ok) return false;
+
+    _updateGroup(result.object!);
     return true;
   }
 }
@@ -152,7 +165,8 @@ class GroupManagerState {
   final List<GameGroup> joined;
   final bool working;
 
-  bool availableContains(String id) => available.where((e) => e.id == id).isNotEmpty;
+  bool availableContains(String id) =>
+      available.where((e) => e.id == id).isNotEmpty;
   bool joinedContains(String id) => joined.where((e) => e.id == id).isNotEmpty;
 
   GroupManagerState({
@@ -166,10 +180,9 @@ class GroupManagerState {
     List<GameGroup>? available,
     List<GameGroup>? joined,
     bool? working,
-  }) =>
-      GroupManagerState(
-        available: available ?? this.available,
-        joined: joined ?? this.joined,
-        working: working ?? this.working,
-      );
+  }) => GroupManagerState(
+    available: available ?? this.available,
+    joined: joined ?? this.joined,
+    working: working ?? this.working,
+  );
 }

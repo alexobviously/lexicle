@@ -29,16 +29,24 @@ class Dictionary with ReadyManager {
     }
   }
 
-  Future<void> parseDictionary(String data, DictionaryType dict, [bool debug = false]) async {
+  Future<void> parseDictionary(
+    String data,
+    DictionaryType dict, [
+    bool debug = false,
+  ]) async {
     List<String> allWords = data.split('\n');
     if (debug) print('%% [${elapsed}ms] words split: ${allWords.length}');
     final _words = getDict(dict);
     for (String w in allWords) {
-      if (w.length < minimumLength || w.length > maximumLength || !isAlpha(w)) continue;
+      if (w.length < minimumLength || w.length > maximumLength || !isAlpha(w)) {
+        continue;
+      }
       w = w.toLowerCase();
       _words[w.length]!.add(w);
       if (dict == DictionaryType.common) {
-        if (!expanded[w.length]!.contains(w)) print('!!!!! word $w in common dict not found in expanded');
+        if (!expanded[w.length]!.contains(w)) {
+          print('!!!!! word $w in common dict not found in expanded');
+        }
       }
     }
     if (debug) print('%% [${elapsed}ms] words sorted by length');
@@ -47,12 +55,21 @@ class Dictionary with ReadyManager {
     }
   }
 
-  bool isValidWord(String word, [DictionaryType dict = DictionaryType.expanded]) {
-    if (word.length < minimumLength || word.length > maximumLength) return false;
+  bool isValidWord(
+    String word, [
+    DictionaryType dict = DictionaryType.expanded,
+  ]) {
+    if (word.length < minimumLength || word.length > maximumLength) {
+      return false;
+    }
     return getDict(dict)[word.length]!.contains(word);
   }
 
-  String randomWord(int length, {DictionaryType dict = DictionaryType.common, int? seed}) {
+  String randomWord(
+    int length, {
+    DictionaryType dict = DictionaryType.common,
+    int? seed,
+  }) {
     int i = Random(seed).nextInt(getDict(dict)[length]!.length);
     return getDict(dict)[length]![i];
   }
@@ -63,21 +80,19 @@ class Dictionary with ReadyManager {
     int limit = 30,
     DictionaryType dict = DictionaryType.expanded,
   }) {
-    assert(length >= minimumLength && length <= maximumLength, 'Invalid length');
-    final _all = getDict(dict)[length]!;
-    return _all.where((e) => e.startsWith(start)).take(limit);
+    assert(
+      length >= minimumLength && length <= maximumLength,
+      'Invalid length',
+    );
+
+    final all = getDict(dict)[length]!;
+    return all.where((e) => e.startsWith(start)).take(limit);
   }
 
-  Map<int, List<String>> getDict(DictionaryType dict) {
-    switch (dict) {
-      case DictionaryType.common:
-        return common;
-      case DictionaryType.expanded:
-        return expanded;
-      default:
-        throw ('Invalid dictionary type $dict');
-    }
-  }
+  Map<int, List<String>> getDict(DictionaryType type) => switch (type) {
+    DictionaryType.common => common,
+    DictionaryType.expanded => expanded,
+  };
 
   List<String> search({
     DictionaryType dict = DictionaryType.expanded,
@@ -112,5 +127,6 @@ enum DictionaryType {
 class LetterPosition {
   final String letter;
   final int position;
-  const LetterPosition(this.letter, this.position) : assert(letter.length == 1, 'Must be a single letter');
+  const LetterPosition(this.letter, this.position)
+    : assert(letter.length == 1, 'Must be a single letter');
 }
