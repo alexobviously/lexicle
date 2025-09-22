@@ -133,8 +133,8 @@ class TokenData {
     expiry: expiry,
     subject: subject,
   );
-  factory TokenData.expired() => TokenData(status: TokenStatus.expired);
-  factory TokenData.invalid() => TokenData(status: TokenStatus.invalid);
+  factory TokenData.expired() => const TokenData(status: TokenStatus.expired);
+  factory TokenData.invalid() => const TokenData(status: TokenStatus.invalid);
 
   Map<String, dynamic> toMap([bool onlyToken = true]) => {
     if (!onlyToken) 'status': status.name,

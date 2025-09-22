@@ -29,25 +29,27 @@ class GameStub {
     required this.creator,
     this.endReason,
   });
-  factory GameStub.initial(String id, String creator) => GameStub(id: id, creator: creator);
-  factory GameStub.blank() => GameStub(id: '', creator: '');
+  factory GameStub.initial(String id, String creator) =>
+      GameStub(id: id, creator: creator);
+  factory GameStub.blank() => const GameStub(id: '', creator: '');
 
   factory GameStub.fromJson(Map<String, dynamic> doc) => GameStub(
-        id: doc[Fields.id],
-        progress: doc[StubFields.progress],
-        guesses: doc[StubFields.guesses],
-        creator: doc[StubFields.creator],
-        endReason: doc[StubFields.endReason],
-      );
+    id: doc[Fields.id],
+    progress: doc[StubFields.progress],
+    guesses: doc[StubFields.guesses],
+    creator: doc[StubFields.creator],
+    endReason: doc[StubFields.endReason],
+  );
 
   Map<String, dynamic> toMap() => {
-        Fields.id: id,
-        StubFields.progress: progress,
-        StubFields.guesses: guesses,
-        StubFields.creator: creator,
-        if (endReason != null) StubFields.endReason: endReason,
-      };
+    Fields.id: id,
+    StubFields.progress: progress,
+    StubFields.guesses: guesses,
+    StubFields.creator: creator,
+    if (endReason != null) StubFields.endReason: endReason,
+  };
 
   @override
-  String toString() => 'GameStub($id, progress: $progress, guesses: $guesses, creator: $creator)';
+  String toString() =>
+      'GameStub($id, progress: $progress, guesses: $guesses, creator: $creator)';
 }

@@ -118,7 +118,7 @@ Future main() async {
 
   final cascade = Cascade().add(router);
 
-  final pipeline = Pipeline()
+  final pipeline = const Pipeline()
       .addMiddleware(logRequests())
       .addMiddleware(corsHeaders())
       .addHandler(cascade.handler);

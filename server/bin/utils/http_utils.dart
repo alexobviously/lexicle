@@ -12,7 +12,9 @@ class HttpUtils {
     TokenData? tokenData,
   }) {
     data ??= {};
-    warnings = List.from(warnings); // because the default const value isn't growable
+    warnings = List.from(
+      warnings,
+    ); // because the default const value isn't growable
     String status = 'ok';
 
     // handle token data
@@ -46,7 +48,7 @@ class HttpUtils {
     }
 
     data = {'status': status}..addAll(data);
-    String body = JsonEncoder.withIndent(' ', toEncodable).convert(data);
+    final body = const JsonEncoder.withIndent(' ', toEncodable).convert(data);
     return Response.ok(
       body,
       headers: {
@@ -55,10 +57,14 @@ class HttpUtils {
     );
   }
 
-  static Response buildErrorResponse(String error, {List<String> warnings = const [], TokenData? tokenData}) =>
-      buildResponse(error: error, warnings: warnings, tokenData: tokenData);
+  static Response buildErrorResponse(
+    String error, {
+    List<String> warnings = const [],
+    TokenData? tokenData,
+  }) => buildResponse(error: error, warnings: warnings, tokenData: tokenData);
 
-  static Response invalidRequestResponse() => buildResponse(error: Errors.invalidRequest);
+  static Response invalidRequestResponse() =>
+      buildResponse(error: Errors.invalidRequest);
 
   static Object? toEncodable(dynamic object) {
     if (object is Map) {

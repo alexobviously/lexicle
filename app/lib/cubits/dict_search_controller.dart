@@ -47,8 +47,10 @@ class DictSearchController extends Cubit<DictSearchState> {
   void incLength() => setLength(state.length + 1);
   void decLength() => setLength(state.length - 1);
   void setLength(int length) {
-    if (length < Dictionary.minimumLength || length > Dictionary.maximumLength)
+    if (length < Dictionary.minimumLength ||
+        length > Dictionary.maximumLength) {
       return;
+    }
     emit(
       state.copyWith(
         length: length,

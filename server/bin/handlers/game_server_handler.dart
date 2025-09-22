@@ -7,5 +7,5 @@ Handler gameServerHandler() {
     socket.stream.listen((message) async {
       socket.sink.add("echo $message");
     });
-  }, pingInterval: Duration(seconds: 10));
+  }, pingInterval: const Duration(seconds: 10));
 }

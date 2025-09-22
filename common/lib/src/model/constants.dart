@@ -123,7 +123,8 @@ class Challenges {
     bronze: GameConfig(wordLength: 6),
     silver: GameConfig(wordLength: 7),
   };
-  static GameConfig config(int? level) => configs[level] ?? GameConfig.initial();
+  static GameConfig config(int? level) =>
+      configs[level] ?? const GameConfig.initial();
 }
 
 const int minTimeLimit = 60000;
