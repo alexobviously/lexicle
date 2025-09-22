@@ -13,17 +13,28 @@ class EntityStore<T extends Entity> {
   Future<Result<T>> get(String id, [bool forceUpdate = false]) async {
     if (!forceUpdate && items.containsKey(id)) return Result.ok(items[id]!);
 
-    Result<T> result = await db.get<T>(id);
+    final result = await db.get<T>(id);
     if (result.ok) onGet(result.object!);
     return result;
   }
 
-  Result<T> getLocal(String id) => items.containsKey(id) ? Result.ok(items[id]!) : Result.error(Errors.notFound);
+  Result<T> getLocal(String id) => items.containsKey(id)
+      ? Result.ok(items[id]!)
+      : Result.error(Errors.notFound);
   Future<Result<T>> getRemote(String id) => get(id, true);
 
-  Future<List<T>> getMultiple(List<String> ids, [bool forceUpdate = false]) async {
-    List<Result<T>> results = await Future.wait(ids.map((e) => get(e, forceUpdate)));
-    return results.map((e) => e.object).where((e) => e != null).map((e) => e!).toList();
+  Future<List<T>> getMultiple(
+    List<String> ids, [
+    bool forceUpdate = false,
+  ]) async {
+    final results = await Future.wait(
+      ids.map((e) => get(e, forceUpdate)),
+    );
+    return results
+        .map((e) => e.object)
+        .where((e) => e != null)
+        .map((e) => e!)
+        .toList();
   }
 
   /// Use with caution.
@@ -40,7 +51,7 @@ class EntityStore<T extends Entity> {
   }
 
   Future<Result<T>> getByField(String field, dynamic value) async {
-    Result<T> result = await db.getByField<T>(field, value);
+    final result = await db.getByField<T>(field, value);
     if (result.ok) onGet(result.object!);
     return result;
   }
@@ -59,7 +70,7 @@ class EntityStore<T extends Entity> {
   }
 
   Future<Result<T>> write(T entity) async {
-    Result<T> result = await db.write<T>(entity);
+    final result = await db.write<T>(entity);
     if (result.ok) {
       onGet(entity);
       cache.remove(entity.id);
@@ -81,9 +92,9 @@ class EntityStore<T extends Entity> {
   }
 
   Future<Result<Iterable<String>>> pushCache() async {
-    Set<String> updated = {};
-    List<Future> futures = [];
-    for (String id in cache) {
+    final updated = <String>{};
+    final futures = <Future>[];
+    for (final id in cache) {
       final res = getLocal(id);
       if (res.ok) {
         futures.add(

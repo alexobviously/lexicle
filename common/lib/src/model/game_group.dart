@@ -29,26 +29,39 @@ class GameGroup extends Equatable implements Entity {
 
   bool get started => state > GroupState.lobby;
   bool get finished => state >= GroupState.finished;
-  bool get canBegin => state == GroupState.lobby && words.length == players.length && players.length > 1;
-  Map<String, String> get hiddenWords => words.map((k, v) => MapEntry(k, '*' * v.length));
+  bool get canBegin =>
+      state == GroupState.lobby &&
+      words.length == players.length &&
+      players.length > 1;
+  Map<String, String> get hiddenWords =>
+      words.map((k, v) => MapEntry(k, '*' * v.length));
   bool playerReady(String id) => words.containsKey(id);
-  Map<String, List<String>> get gameIds => games.map((k, v) => MapEntry(k, v.map((e) => e.id).toList()));
+  Map<String, List<String>> get gameIds =>
+      games.map((k, v) => MapEntry(k, v.map((e) => e.id).toList()));
 
   bool hasPlayer(String player) => players.contains(player);
   double playerProgress(String player) =>
-      games[player]?.fold<double>(0.0, (a, b) => a + (b.progress / games[player]!.length)) ?? 0.0;
-  int playerGuesses(String player) => games[player]?.fold<int>(0, (a, b) => a + b.guesses) ?? 0;
-  Map<String, int> get scores => games.map((k, v) => MapEntry(k, playerGuesses(k)));
+      games[player]?.fold<double>(
+        0.0,
+        (a, b) => a + (b.progress / games[player]!.length),
+      ) ??
+      0.0;
+  int playerGuesses(String player) =>
+      games[player]?.fold<int>(0, (a, b) => a + b.guesses) ?? 0;
+  Map<String, int> get scores =>
+      games.map((k, v) => MapEntry(k, playerGuesses(k)));
 
   List<Standing>? _standings;
   List<Standing> get standings {
     if (_standings != null) return _standings!;
     _standings = players
-        .map((e) => Standing(
-              player: e,
-              guesses: playerGuesses(e),
-              progress: playerProgress(e),
-            ))
+        .map(
+          (e) => Standing(
+            player: e,
+            guesses: playerGuesses(e),
+            progress: playerProgress(e),
+          ),
+        )
         .toList();
     _standings!.sort((a, b) => a.orderWeight.compareTo(b.orderWeight));
     return _standings!;
@@ -58,14 +71,16 @@ class GameGroup extends Equatable implements Entity {
   /// Includes a blank GameStub at the position of the player.
   List<GameStub> playerGamesSorted(String player) {
     if (!games.containsKey(player)) return [];
-    List<GameStub> _games = games[player]!;
-    List<GameStub> _sorted = [];
-    for (Standing s in standings) {
-      String p = s.player;
+    final _games = games[player]!;
+    final _sorted = <GameStub>[];
+    for (final s in standings) {
+      final p = s.player;
       if (p == player) {
         _sorted.add(GameStub.blank());
       } else {
-        _sorted.add(_games.firstWhereOrNull((e) => e.creator == p) ?? GameStub.blank());
+        _sorted.add(
+          _games.firstWhereOrNull((e) => e.creator == p) ?? GameStub.blank(),
+        );
       }
     }
     return _sorted;
@@ -75,7 +90,7 @@ class GameGroup extends Equatable implements Entity {
     int total = 0;
     for (MapEntry<String, List<GameStub>> gl in games.entries) {
       if (gl.key == player) continue;
-      GameStub? g = gl.value.firstWhereOrNull((e) => e.creator == player);
+      final g = gl.value.firstWhereOrNull((e) => e.creator == player);
       if (g != null) total += g.guesses;
     }
     return total / (players.length - 1);
@@ -93,8 +108,8 @@ class GameGroup extends Equatable implements Entity {
     this.words = const {},
     this.games = const {},
     this.endTime,
-  })  : assert(players.contains(creator)),
-        timestamp = timestamp ?? nowMs();
+  }) : assert(players.contains(creator)),
+       timestamp = timestamp ?? nowMs();
 
   factory GameGroup.fromJson(Map<String, dynamic> doc) {
     return GameGroup(
@@ -106,10 +121,15 @@ class GameGroup extends Equatable implements Entity {
       code: doc[GroupFields.code],
       state: doc[GroupFields.state],
       players: coerceList<String>(doc[GroupFields.players] ?? []),
-      words: (doc[GroupFields.words] ?? {}).map<String, String>((k, v) => MapEntry(k.toString(), v.toString())),
+      words: (doc[GroupFields.words] ?? {}).map<String, String>(
+        (k, v) => MapEntry(k.toString(), v.toString()),
+      ),
       games: {
         for (MapEntry entry in (doc[GroupFields.games] ?? {}).entries)
-          entry.key: mapList<GameStub>(entry.value, (e) => GameStub.fromJson(e)),
+          entry.key: mapList<GameStub>(
+            entry.value,
+            (e) => GameStub.fromJson(e),
+          ),
       },
       endTime: doc[GroupFields.endTime],
     );
@@ -128,7 +148,10 @@ class GameGroup extends Equatable implements Entity {
       GroupFields.words: hideAnswers ? hiddenWords : words,
       GroupFields.games: {
         for (MapEntry<String, List<GameStub>> entry in games.entries)
-          entry.key: mapList<Map<String, dynamic>>(entry.value, (e) => e.toMap()),
+          entry.key: mapList<Map<String, dynamic>>(
+            entry.value,
+            (e) => e.toMap(),
+          ),
       },
       if (endTime != null) GroupFields.endTime: endTime,
     };
@@ -147,7 +170,8 @@ class GameGroup extends Equatable implements Entity {
 
   String stateString(String? player) {
     if (state == GroupState.loading) return 'Loading';
-    if (state == GroupState.lobby) return 'Lobby - waiting for ${canBegin ? 'host' : 'players'}';
+    if (state == GroupState.lobby)
+      return 'Lobby - waiting for ${canBegin ? 'host' : 'players'}';
     if (state == GroupState.playing) {
       if (!players.contains(player)) return 'Playing';
       return 'Playing - ${(playerProgress(player!) * 100).toStringAsFixed(0)}%';

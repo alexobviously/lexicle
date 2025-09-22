@@ -7,7 +7,7 @@ void main() {
   group('Game.fromJson', () {
     for (final t in gameTests) {
       test('Game.fromJson: ${t.json}', () {
-        Game g = Game.fromJson(jsonDecode(t.json));
+        final g = Game.fromJson(jsonDecode(t.json));
         expect(g.gameFinished, t.gameFinished);
         if (t.numGuesses != null) {
           expect(g.guesses.length, t.numGuesses);
@@ -32,13 +32,13 @@ void main() {
   group('GameGroup.fromJson', () {
     for (final t in groupTests) {
       test('GameGroup.fromJson: ${t.json}', () {
-        GameGroup g = GameGroup.fromJson(jsonDecode(t.json));
+        final g = GameGroup.fromJson(jsonDecode(t.json));
         expect(g.canBegin, t.canBegin);
         if (t.numPlayers != null) {
           expect(g.players.length, t.numPlayers);
         }
         if (g.state > GroupState.lobby && t.numPlayers != null) {
-          int nGames = g.games[g.players.first]!.length;
+          final nGames = g.games[g.players.first]!.length;
           if (nGames != t.numPlayers! - 1) {
             fail('Player ${g.players.first} has wrong number of games');
           }
@@ -80,7 +80,8 @@ List<GameSerialisationTest> gameTests = [
 
 List<GroupSerialisationTest> groupTests = [
   GroupSerialisationTest(
-    json: '{"id":"61ee485d4ea6bbe821865954","t":"testgroup","c":{"l":5},"x":"alex","s":0,"p":["alex"],"w":{},"g":{}}',
+    json:
+        '{"id":"61ee485d4ea6bbe821865954","t":"testgroup","c":{"l":5},"x":"alex","s":0,"p":["alex"],"w":{},"g":{}}',
     numPlayers: 1,
   ),
   GroupSerialisationTest(
@@ -129,5 +130,9 @@ class GroupSerialisationTest {
   final bool canBegin;
   final int? numPlayers;
 
-  GroupSerialisationTest({required this.json, this.canBegin = false, this.numPlayers});
+  GroupSerialisationTest({
+    required this.json,
+    this.canBegin = false,
+    this.numPlayers,
+  });
 }

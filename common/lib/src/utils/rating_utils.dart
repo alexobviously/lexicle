@@ -8,7 +8,7 @@ const double dRate = 10;
 const double minD = 50;
 
 double expectedScore(double a, double b) {
-  double ratio = (b - a) / dFactor;
+  final ratio = (b - a) / dFactor;
   return 1 / (1 + pow(10, ratio));
 }
 
@@ -20,14 +20,19 @@ double realScore(num a, num b) {
 double degradeDeviation(double rd) => max(rd - (dFactor / dRate), minD);
 
 Map<String, Rating> adjustRatings(List<PlayerResult> results) {
-  Map<String, Rating> newRatings = {};
-  List<double> ratings = results.map((e) => e.rating.rating).toList();
-  List<double> k = results.map((e) => kFactor * (e.rating.deviation / dFactor)).toList();
+  final newRatings = <String, Rating>{};
+  final ratings = results.map((e) => e.rating.rating).toList();
+  final k = results
+      .map((e) => kFactor * (e.rating.deviation / dFactor))
+      .toList();
   for (int i = 0; i < results.length; i++) {
     for (int j = i + 1; j < results.length; j++) {
       if (i == j) continue;
-      double e = expectedScore(results[i].rating.rating, results[j].rating.rating);
-      double s = realScore(results[i].score, results[j].score);
+      final e = expectedScore(
+        results[i].rating.rating,
+        results[j].rating.rating,
+      );
+      final s = realScore(results[i].score, results[j].score);
       ratings[i] = ratings[i] + k[i] * (s - e);
       ratings[j] = ratings[j] + k[j] * -(s - e);
     }
@@ -47,7 +52,11 @@ class PlayerResult {
   PlayerResult({required this.id, required this.rating, required this.score});
 
   PlayerResult copyWith({String? id, Rating? rating, num? score}) =>
-      PlayerResult(id: id ?? this.id, rating: rating ?? this.rating, score: score ?? this.score);
+      PlayerResult(
+        id: id ?? this.id,
+        rating: rating ?? this.rating,
+        score: score ?? this.score,
+      );
 
   @override
   String toString() => 'PlayerResult($id, $rating, $score)';

@@ -173,7 +173,7 @@ class _ProfileViewState extends State<ProfileView> {
             ),
             borderSide: BorderSide(
               width: 0.3,
-              color: borderColour.withOpacity(0.5),
+              color: borderColour.withValues(alpha: 0.5),
             ),
           ),
         ],

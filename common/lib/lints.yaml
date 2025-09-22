@@ -1,0 +1,19 @@
+include: package:lints/recommended.yaml
+
+linter:
+  rules:
+    always_declare_return_types: true
+    cancel_subscriptions: true
+    noop_primitive_operations: true
+    prefer_const_constructors: true
+    prefer_final_fields: true
+    prefer_final_locals: true
+    prefer_single_quotes: true
+    require_trailing_commas: true
+    use_null_aware_elements: true
+
+formatter:
+  trailing_commas: preserve
+
+exclude:
+  - "**/*.g.dart"

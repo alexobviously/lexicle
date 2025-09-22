@@ -60,88 +60,99 @@ class _HomeViewState extends State<HomeView> {
       child: StandardScaffold(
         showAppBar: false,
         showBackButton: false,
-        body: BlocBuilder<SchemeCubit, ColourScheme>(builder: (context, scheme) {
-          return BlocBuilder<AuthController, AuthState>(
-            builder: (context, state) {
-              return Center(
-                child: SafeArea(
-                  child: Column(
-                    children: [
-                      const Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 16.0),
-                        child: AnimatedLogo(),
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          IconButton(
-                            onPressed: () => context.push(Routes.topPlayers),
-                            icon: Icon(MdiIcons.trophyAward),
-                          ),
-                          IconButton(onPressed: () => context.push(Routes.settings), icon: Icon(MdiIcons.cog)),
-                          IconButton(onPressed: () {}, icon: Icon(MdiIcons.bell)),
-                        ],
-                      ),
-                      Expanded(
-                        child: ListView(
-                          shrinkWrap: true,
+        body: BlocBuilder<SchemeCubit, ColourScheme>(
+          builder: (context, scheme) {
+            return BlocBuilder<AuthController, AuthState>(
+              builder: (context, state) {
+                return Center(
+                  child: SafeArea(
+                    child: Column(
+                      children: [
+                        const Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 16.0),
+                          child: AnimatedLogo(),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
                           children: [
-                            state.loggedIn
-                                ? UserDetails(
-                                    user: state.user!,
-                                    stats: state.stats ?? UserStats(id: state.userId!),
-                                  )
-                                : const LoginBox(),
-                            Container(height: 16),
-                            _activeGames(context),
-                            _challengeList(scheme),
-                            Container(height: 16),
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Column(
-                                children: [
-                                  // NeumorphicToggle(
-                                  //   selectedIndex: _tab,
-                                  //   children: ['Practice', 'Matchmaking', 'Custom Games']
-                                  //       .map((e) => _toggleElement(context, e))
-                                  //       .toList(),
-                                  //   thumb: Neumorphic(
-                                  //     style: NeumorphicStyle(
-                                  //       boxShape: NeumorphicBoxShape.roundRect(BorderRadius.all(Radius.circular(12))),
-                                  //     ),
-                                  //   ),
-                                  //   onChanged: _setTab,
-                                  // ),
-                                  if (_tab == _practice) _practiceView(),
-                                  if (_tab == _matchmaking) _matchmakingView(),
-                                  if (_tab == _custom) _customView(context),
-                                ],
-                              ),
+                            IconButton(
+                              onPressed: () => context.push(Routes.topPlayers),
+                              icon: Icon(MdiIcons.trophyAward),
+                            ),
+                            IconButton(
+                              onPressed: () => context.push(Routes.settings),
+                              icon: Icon(MdiIcons.cog),
+                            ),
+                            IconButton(
+                              onPressed: () {},
+                              icon: Icon(MdiIcons.bell),
                             ),
                           ],
                         ),
-                      ),
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: Padding(
-                          padding: const EdgeInsets.only(right: 16.0),
-                          child: SizedBox(
-                            width: 64,
-                            child: GestureDetector(
-                              onTap: () => context.push(Routes.about),
-                              child: Image.asset('assets/images/logo.png'),
+                        Expanded(
+                          child: ListView(
+                            shrinkWrap: true,
+                            children: [
+                              state.loggedIn
+                                  ? UserDetails(
+                                      user: state.user!,
+                                      stats:
+                                          state.stats ??
+                                          UserStats(id: state.userId!),
+                                    )
+                                  : const LoginBox(),
+                              Container(height: 16),
+                              _activeGames(context),
+                              _challengeList(scheme),
+                              Container(height: 16),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Column(
+                                  children: [
+                                    // NeumorphicToggle(
+                                    //   selectedIndex: _tab,
+                                    //   children: ['Practice', 'Matchmaking', 'Custom Games']
+                                    //       .map((e) => _toggleElement(context, e))
+                                    //       .toList(),
+                                    //   thumb: Neumorphic(
+                                    //     style: NeumorphicStyle(
+                                    //       boxShape: NeumorphicBoxShape.roundRect(BorderRadius.all(Radius.circular(12))),
+                                    //     ),
+                                    //   ),
+                                    //   onChanged: _setTab,
+                                    // ),
+                                    if (_tab == _practice) _practiceView(),
+                                    if (_tab == _matchmaking)
+                                      _matchmakingView(),
+                                    if (_tab == _custom) _customView(context),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: Padding(
+                            padding: const EdgeInsets.only(right: 16.0),
+                            child: SizedBox(
+                              width: 64,
+                              child: GestureDetector(
+                                onTap: () => context.push(Routes.about),
+                                child: Image.asset('assets/images/logo.png'),
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                      _version(),
-                    ],
+                        _version(),
+                      ],
+                    ),
                   ),
-                ),
-              );
-            },
-          );
-        }),
+                );
+              },
+            );
+          },
+        ),
       ),
     );
   }
@@ -163,7 +174,10 @@ class _HomeViewState extends State<HomeView> {
               Routes.rush,
               extra: RushRouteData(
                 game: RushController(
-                  Rush.initial('alex', const GameConfig(wordLength: 5, timeLimit: 300000)),
+                  Rush.initial(
+                    'alex',
+                    const GameConfig(wordLength: 5, timeLimit: 300000),
+                  ),
                   RushMediator(getWord: () => dictionary().randomWord(5)),
                 ),
               ),
@@ -181,7 +195,9 @@ class _HomeViewState extends State<HomeView> {
     final cfg = await showCreatorDialog(context);
     if (!mounted) return;
     if (cfg != null) {
-      BlocProvider.of<GameGroupManager>(context).createGroup(cfg.title, cfg.config).then((ok) {
+      BlocProvider.of<GameGroupManager>(
+        context,
+      ).createGroup(cfg.title, cfg.config).then((ok) {
         if (ok) sound().play(Sound.clickUp);
       });
     }
@@ -207,8 +223,12 @@ class _HomeViewState extends State<HomeView> {
                   padding: const EdgeInsets.all(8.0),
                   child: ElevatedButton(
                     onPressed: () => state.working ? null : cubit.refresh(),
-                    child:
-                        state.working ? const SpinKitFadingCircle(size: 24, color: Colors.black87) : Icon(MdiIcons.refresh),
+                    child: state.working
+                        ? const SpinKitFadingCircle(
+                            size: 24,
+                            color: Colors.black87,
+                          )
+                        : Icon(MdiIcons.refresh),
                   ),
                 ),
               ],
@@ -244,7 +264,10 @@ class _HomeViewState extends State<HomeView> {
     List<GameGroup> groups, {
     bool showCreator = false,
     bool showState = false,
-    EdgeInsetsGeometry padding = const EdgeInsets.symmetric(horizontal: 8.0, vertical: 2.0),
+    EdgeInsetsGeometry padding = const EdgeInsets.symmetric(
+      horizontal: 8.0,
+      vertical: 2.0,
+    ),
   }) {
     final theme = Theme.of(context);
     final textTheme = theme.textTheme;
@@ -342,8 +365,8 @@ class _HomeViewState extends State<HomeView> {
 
   Widget _challengeList(ColourScheme scheme) {
     Map<int, Color> colours = {
-      Challenges.bronze: scheme.bronze.withOpacity(0.5),
-      Challenges.silver: scheme.silver.withOpacity(0.5),
+      Challenges.bronze: scheme.bronze.withValues(alpha: 0.5),
+      Challenges.silver: scheme.silver.withValues(alpha: 0.5),
     };
     return Padding(
       padding: const EdgeInsets.only(top: 8, left: 8, right: 8),
@@ -364,11 +387,19 @@ class _HomeViewState extends State<HomeView> {
                     bloc: gc,
                     builder: (context, game) {
                       emojis = game.lastGuess?.toEmojis();
-                      return _challengeRow(challenge, colours[challenge.level], emojis: emojis);
+                      return _challengeRow(
+                        challenge,
+                        colours[challenge.level],
+                        emojis: emojis,
+                      );
                     },
                   );
                 }
-                return _challengeRow(challenge, colours[challenge.level], emojis: emojis);
+                return _challengeRow(
+                  challenge,
+                  colours[challenge.level],
+                  emojis: emojis,
+                );
               },
             ).toList(),
           );
@@ -377,9 +408,18 @@ class _HomeViewState extends State<HomeView> {
     );
   }
 
-  Widget _challengeRow(Challenge challenge, Color? backgroundColour, {String? emojis}) {
+  Widget _challengeRow(
+    Challenge challenge,
+    Color? backgroundColour, {
+    String? emojis,
+  }) {
     return InkWell(
-      onTap: () => context.push(Routes.challenge(level: challenge.level! + 1, sequence: challenge.sequence! + 1)),
+      onTap: () => context.push(
+        Routes.challenge(
+          level: challenge.level! + 1,
+          sequence: challenge.sequence! + 1,
+        ),
+      ),
       child: Container(
         color: backgroundColour,
         child: Padding(
@@ -409,20 +449,26 @@ class _HomeViewState extends State<HomeView> {
           return BlocBuilder<ServerCubit, ServerMeta>(
             builder: (context, meta) {
               Version localVersion = Version.parse(snapshot.data!.version);
-              bool updateAvailable = meta.loaded && localVersion < Version.parse(meta.appCurrentVersion);
-              bool updateNeeded = meta.loaded && localVersion < Version.parse(meta.appMinVersion);
+              bool updateAvailable =
+                  meta.loaded &&
+                  localVersion < Version.parse(meta.appCurrentVersion);
+              bool updateNeeded =
+                  meta.loaded &&
+                  localVersion < Version.parse(meta.appMinVersion);
               return Container(
                 color: updateNeeded
                     ? Colours.invalid.lighten(0.1)
                     : updateAvailable
-                        ? Colours.victory
-                        : null,
+                    ? Colours.victory
+                    : null,
                 child: Row(
                   children: [
                     if (updateAvailable || updateNeeded)
                       Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: Text(updateNeeded ? 'Update required' : 'Update available'),
+                        child: Text(
+                          updateNeeded ? 'Update required' : 'Update available',
+                        ),
                       ),
                     const Spacer(),
                     Padding(

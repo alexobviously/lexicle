@@ -74,13 +74,17 @@ class _GameViewState extends State<GameView> {
       _initTimer();
       game!.stream.map((e) => e.endTime).distinct().listen((_) => _initTimer());
       game!.numRowsStream.listen((_) => _scrollDown());
-      WidgetsBinding.instance.addPostFrameCallback((_) => _scrollDown(const Duration(milliseconds: 750)));
+      WidgetsBinding.instance.addPostFrameCallback(
+        (_) => _scrollDown(const Duration(milliseconds: 750)),
+      );
     }
   }
 
   void _initChallenge() async {
     if (game?.state.challenge == null) return;
-    final result = await BlocProvider.of<ChallengeManager>(context).getChallenge(id: game!.state.challenge!);
+    final result = await BlocProvider.of<ChallengeManager>(
+      context,
+    ).getChallenge(id: game!.state.challenge!);
     if (result.ok) challenge = result.object!;
   }
 
@@ -94,7 +98,11 @@ class _GameViewState extends State<GameView> {
 
   void _setTimeLeft() {
     if (endTime == null) return;
-    if (mounted) setState(() => timeLeft = max(endTime! - DateTime.now().millisecondsSinceEpoch, 0));
+    if (mounted)
+      setState(
+        () =>
+            timeLeft = max(endTime! - DateTime.now().millisecondsSinceEpoch, 0),
+      );
   }
 
   final ScrollController _controller = ScrollController();
@@ -197,12 +205,14 @@ class _GameViewState extends State<GameView> {
                         child: Padding(
                           padding: const EdgeInsets.all(4.0),
                           child: AnimatedContainer(
-                            padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 4.0,
+                            ),
                             duration: const Duration(milliseconds: 2000),
                             color: state.gameFinished
                                 ? state.endReason == EndReasons.solved
-                                    ? baseScheme.correct.withAlpha(100)
-                                    : baseScheme.wrong.withAlpha(150)
+                                      ? baseScheme.correct.withAlpha(100)
+                                      : baseScheme.wrong.withAlpha(150)
                                 : null,
                             child: SingleChildScrollView(
                               controller: _controller,
@@ -219,12 +229,18 @@ class _GameViewState extends State<GameView> {
                                             correct: e.correct,
                                             semiCorrect: e.semiCorrect,
                                             finalised: e.finalised,
-                                            surfaceIntensity: e.solved ? 0.4 : 0.25,
+                                            surfaceIntensity: e.solved
+                                                ? 0.4
+                                                : 0.25,
                                             textStyle: dark
                                                 ? Theme.of(context)
-                                                    .textTheme
-                                                    .headlineMedium!
-                                                    .copyWith(color: Colors.grey.shade200)
+                                                      .textTheme
+                                                      .headlineMedium!
+                                                      .copyWith(
+                                                        color: Colors
+                                                            .grey
+                                                            .shade200,
+                                                      )
                                                 : null,
                                           ),
                                         ),
@@ -237,12 +253,16 @@ class _GameViewState extends State<GameView> {
                                         content: state.word,
                                         valid: !state.invalid,
                                         surfaceIntensity: 0,
-                                        onLongPress: game!.canAct ? _clearInput : null,
+                                        onLongPress: game!.canAct
+                                            ? _clearInput
+                                            : null,
                                         textStyle: dark
                                             ? Theme.of(context)
-                                                .textTheme
-                                                .headlineMedium!
-                                                .copyWith(color: Colors.grey.shade200)
+                                                  .textTheme
+                                                  .headlineMedium!
+                                                  .copyWith(
+                                                    color: Colors.grey.shade200,
+                                                  )
                                             : null,
                                       ),
                                     ),
@@ -280,8 +300,9 @@ class _GameViewState extends State<GameView> {
                                   reason: state.endReason,
                                 ),
                               ),
-                              crossFadeState:
-                                  !state.gameFinished ? CrossFadeState.showFirst : CrossFadeState.showSecond,
+                              crossFadeState: !state.gameFinished
+                                  ? CrossFadeState.showFirst
+                                  : CrossFadeState.showSecond,
                             ),
                           ),
                         ),
@@ -297,47 +318,60 @@ class _GameViewState extends State<GameView> {
   }
 
   Widget _observerBox(BuildContext context, Game game) {
-    return LayoutBuilder(builder: (context, constraints) {
-      return Padding(
-        padding: const EdgeInsets.symmetric(vertical: 4.0),
-        child: SizedBox(
-          width: constraints.maxWidth * 0.95,
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    EntityFutureBuilder<User>(
-                      id: game.player,
-                      store: userStore(),
-                      loadingWidget: const SpinKitCircle(color: Colours.victory, size: 16),
-                      errorWidget: (_) => const Icon(Icons.error),
-                      resultWidget: (u) => Text('Observing ${u.username}'),
-                    ),
-                    EntityFutureBuilder<User>(
-                      id: game.creator,
-                      store: userStore(),
-                      loadingWidget: const SpinKitCircle(color: Colours.victory, size: 16),
-                      errorWidget: (_) => const Icon(Icons.error),
-                      resultWidget: (u) => Text('${u.username}\'s game'),
-                    ),
-                  ],
-                ),
-                Text('${game.guesses.length}', style: Theme.of(context).textTheme.headlineSmall),
-              ],
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return Padding(
+          padding: const EdgeInsets.symmetric(vertical: 4.0),
+          child: SizedBox(
+            width: constraints.maxWidth * 0.95,
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      EntityFutureBuilder<User>(
+                        id: game.player,
+                        store: userStore(),
+                        loadingWidget: const SpinKitCircle(
+                          color: Colours.victory,
+                          size: 16,
+                        ),
+                        errorWidget: (_) => const Icon(Icons.error),
+                        resultWidget: (u) => Text('Observing ${u.username}'),
+                      ),
+                      EntityFutureBuilder<User>(
+                        id: game.creator,
+                        store: userStore(),
+                        loadingWidget: const SpinKitCircle(
+                          color: Colours.victory,
+                          size: 16,
+                        ),
+                        errorWidget: (_) => const Icon(Icons.error),
+                        resultWidget: (u) => Text('${u.username}\'s game'),
+                      ),
+                    ],
+                  ),
+                  Text(
+                    '${game.guesses.length}',
+                    style: Theme.of(context).textTheme.headlineSmall,
+                  ),
+                ],
+              ),
             ),
           ),
-        ),
-      );
-    });
+        );
+      },
+    );
   }
 
   Widget _copyButton(BuildContext context) {
     bool enabled = game!.state.guesses.isNotEmpty;
-    String title = widget.data.title != null ? 'Lexicle: ${widget.data.title!}' : 'Lexicle';
+    String title = widget.data.title != null
+        ? 'Lexicle: ${widget.data.title!}'
+        : 'Lexicle';
     if (challenge != null) {
       String url = (challenge!.level != null && challenge!.sequence != null)
           ? '$lexicleUrl/challenges/${challenge!.level! + 1}/${challenge!.sequence! + 1}'
@@ -350,9 +384,14 @@ class _GameViewState extends State<GameView> {
               Clipboard.setData(
                 ClipboardData(text: '$title\n${game!.state.toEmojis()}'),
               ).then((_) {
+                if (!context.mounted) return;
                 sound().play(Sound.good);
-                ScaffoldMessenger.of(context)
-                    .showSnackBar(const SnackBar(content: Text('Game copied to clipboard'), duration: Duration(seconds: 2)));
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Game copied to clipboard'),
+                    duration: Duration(seconds: 2),
+                  ),
+                );
               });
             }
           : null,
