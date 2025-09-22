@@ -3,6 +3,7 @@ include: package:lints/recommended.yaml
 linter:
   rules:
     prefer_const_constructors: true
+    use_null_aware_elements: true
 
 formatter:
   trailing_commas: preserve

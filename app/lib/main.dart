@@ -36,8 +36,9 @@ void main() async {
 Future<void> loadEnv() async {
   try {
     await dotenv.load(fileName: '.env');
-    if (dotenv.env['SERVER_HOST'] != null)
+    if (dotenv.env['SERVER_HOST'] != null) {
       ApiClient.host = dotenv.env['SERVER_HOST']!;
+    }
   } catch (_) {
     print('.env not loaded, no problem tho');
   }

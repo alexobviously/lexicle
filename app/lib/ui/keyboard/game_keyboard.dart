@@ -97,9 +97,9 @@ class _GameKeyboardState extends State<GameKeyboard> {
       widget.onEnter();
       return;
     }
-    String? _key = event.character?.toLowerCase();
-    if (_key != null && _keys.contains(_key)) {
-      widget.onTap(_key);
+    String? key = event.character?.toLowerCase();
+    if (key != null && _keys.contains(key)) {
+      widget.onTap(key);
     }
   }
 
@@ -113,14 +113,23 @@ class _GameKeyboardState extends State<GameKeyboard> {
         builder: (context, scheme) {
           List<Row> _rows = [];
           for (String r in GameKeyboard.rows) {
-            List<Widget> _widgets = r.split('').map((e) => _key(context, e, colour: getColour(e, scheme))).toList();
+            List<Widget> _widgets = r
+                .split('')
+                .map((e) => _key(context, e, colour: getColour(e, scheme)))
+                .toList();
             if (r == GameKeyboard.rows.last) {
-              _widgets = [_enterKey(context, scheme), ..._widgets, _backspaceKey(context, scheme)];
+              _widgets = [
+                _enterKey(context, scheme),
+                ..._widgets,
+                _backspaceKey(context, scheme),
+              ];
             }
-            _rows.add(Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: _widgets,
-            ));
+            _rows.add(
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: _widgets,
+              ),
+            );
           }
           return Container(
             decoration: const BoxDecoration(

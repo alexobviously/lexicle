@@ -7,31 +7,38 @@ class LocalGameManager extends Cubit<LocalGameManagerState> {
   LocalGameManager() : super(LocalGameManagerState.initial());
 
   void createGame(GameConfig config) {
-    String _answer = dictionary().randomWord(config.wordLength);
-    Mediator _mediator = OfflineMediator(answer: _answer);
+    final answer = dictionary().randomWord(config.wordLength);
+    final mediator = OfflineMediator(answer: answer);
+
     int? endTime = config.timeLimit != null
-        ? DateTime.now().add(Duration(milliseconds: config.timeLimit!)).millisecondsSinceEpoch
+        ? DateTime.now()
+              .add(Duration(milliseconds: config.timeLimit!))
+              .millisecondsSinceEpoch
         : null;
-    GameController _gc = GameController.initial(
+
+    final gc = GameController.initial(
       player: 'player',
       length: config.wordLength,
-      mediator: _mediator,
+      mediator: mediator,
       endTime: endTime,
     );
-    List<GameController> _games = List.from(state.games);
-    _games.add(_gc);
-    emit(state.copyWith(games: _games));
+
+    final games = [...state.games, gc];
+
+    emit(state.copyWith(games: games));
   }
 
   void removeGame(String id) {
     int index = state.games.indexWhere((e) => e.state.id == id);
     if (index == -1) return;
-    List<GameController> _games = List.from(state.games);
-    _games.removeAt(index);
-    emit(state.copyWith(games: _games));
+
+    List<GameController> games = List.from(state.games);
+    games.removeAt(index);
+    emit(state.copyWith(games: games));
   }
 
-  Stream<int> get numGamesStream => stream.map((e) => e.games.length).distinct();
+  Stream<int> get numGamesStream =>
+      stream.map((e) => e.games.length).distinct();
 }
 
 class LocalGameManagerState {
@@ -39,5 +46,6 @@ class LocalGameManagerState {
   LocalGameManagerState({this.games = const []});
   factory LocalGameManagerState.initial() => LocalGameManagerState();
 
-  LocalGameManagerState copyWith({List<GameController>? games}) => LocalGameManagerState(games: games ?? this.games);
+  LocalGameManagerState copyWith({List<GameController>? games}) =>
+      LocalGameManagerState(games: games ?? this.games);
 }

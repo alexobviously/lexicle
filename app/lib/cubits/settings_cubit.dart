@@ -1,6 +1,5 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
-import 'package:word_game/extensions/first_where_extension.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:word_game/app/colours.dart';
 
@@ -19,14 +18,20 @@ class SettingsCubit extends Cubit<Settings> {
     _setBrightness();
     prefs = await SharedPreferences.getInstance();
     String tm = prefs.getString('theme_mode') ?? 'system';
-    ThemeMode _themeMode = ThemeMode.values.firstWhereOrNull((e) => e.name == tm) ?? ThemeMode.system;
-    setThemeMode(_themeMode, false);
-    int _scheme = prefs.getInt('scheme') ?? 0;
-    setScheme(ColourSchemePair.all.asMap()[_scheme] ?? ColourSchemePair.normal, false);
+    ThemeMode themeMode =
+        ThemeMode.values.where((e) => e.name == tm).firstOrNull ??
+        ThemeMode.system;
+    setThemeMode(themeMode, false);
+    int scheme = prefs.getInt('scheme') ?? 0;
+    setScheme(
+      ColourSchemePair.all.asMap()[scheme] ?? ColourSchemePair.normal,
+      false,
+    );
   }
 
   void _setBrightness() {
-    if (themeMode == ThemeMode.system && platformBrightness != state.brightness) {
+    if (themeMode == ThemeMode.system &&
+        platformBrightness != state.brightness) {
       emit(state.copyWith(brightness: platformBrightness));
     }
   }
@@ -38,7 +43,7 @@ class SettingsCubit extends Cubit<Settings> {
     if (mode == ThemeMode.system) {
       _setBrightness();
     } else {
-      Brightness b = (mode == ThemeMode.light) ? Brightness.light : Brightness.dark;
+      final b = (mode == ThemeMode.light) ? Brightness.light : Brightness.dark;
       if (b != state.brightness) {
         emit(state.copyWith(brightness: b));
       }
@@ -54,7 +59,7 @@ class SettingsCubit extends Cubit<Settings> {
       emit(state.copyWith(scheme: scheme));
     }
     if (write) {
-      int idx = ColourSchemePair.all.indexOf(scheme);
+      final idx = ColourSchemePair.all.indexOf(scheme);
       if (idx == -1) return;
       prefs.setInt('scheme', idx);
     }
@@ -68,13 +73,24 @@ class Settings {
 
   ColourScheme get colourScheme => scheme.ofBrightness(brightness);
 
-  Settings({required this.themeMode, required this.brightness, required this.scheme});
-  factory Settings.initial() =>
-      Settings(themeMode: ThemeMode.system, brightness: Brightness.light, scheme: ColourSchemePair.normal);
+  Settings({
+    required this.themeMode,
+    required this.brightness,
+    required this.scheme,
+  });
+  factory Settings.initial() => Settings(
+    themeMode: ThemeMode.system,
+    brightness: Brightness.light,
+    scheme: ColourSchemePair.normal,
+  );
 
-  Settings copyWith({ThemeMode? themeMode, Brightness? brightness, ColourSchemePair? scheme}) => Settings(
-        themeMode: themeMode ?? this.themeMode,
-        brightness: brightness ?? this.brightness,
-        scheme: scheme ?? this.scheme,
-      );
+  Settings copyWith({
+    ThemeMode? themeMode,
+    Brightness? brightness,
+    ColourSchemePair? scheme,
+  }) => Settings(
+    themeMode: themeMode ?? this.themeMode,
+    brightness: brightness ?? this.brightness,
+    scheme: scheme ?? this.scheme,
+  );
 }

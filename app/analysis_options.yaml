@@ -7,6 +7,7 @@ linter:
     library_private_types_in_public_api: false
     no_leading_underscores_for_local_identifiers: true
     prefer_single_quotes: true
+    use_null_aware_elements: true
 
 formatter:
   trailing_commas: preserve

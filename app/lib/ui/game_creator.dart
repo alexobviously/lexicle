@@ -12,7 +12,8 @@ class GameCreator extends StatefulWidget {
   final bool showTimeLimit;
   final double depth;
   final VoidCallback? onCancel;
-  final Function(GameCreationData) onCreate;
+  final Function(GameCreationData data) onCreate;
+
   const GameCreator({
     this.onCancel,
     this.depth = 4,
@@ -94,15 +95,25 @@ class _GameCreatorState extends State<GameCreator> {
             OutlinedButton(
               onPressed: () {
                 HapticFeedback.vibrate();
-                int? _duration;
-                if (duration != null && duration!.inSeconds > 0) _duration = duration!.inMilliseconds;
-                final config = GameConfig(wordLength: length, timeLimit: _duration);
-                widget.onCreate(GameCreationData(
-                  config: config,
-                  title: _titleController.text,
-                ));
+                final config = GameConfig(
+                  wordLength: length,
+                  timeLimit: duration != null && duration!.inSeconds > 0
+                      ? duration!.inMilliseconds
+                      : null,
+                );
+                widget.onCreate(
+                  GameCreationData(
+                    config: config,
+                    title: _titleController.text,
+                  ),
+                );
               },
-              child: Text('Create New Game', style: textTheme.titleLarge!.copyWith(color: Colours.correct.darken(0.4))),
+              child: Text(
+                'Create New Game',
+                style: textTheme.titleLarge!.copyWith(
+                  color: Colours.correct.darken(0.4),
+                ),
+              ),
             ),
           ],
         ),
@@ -112,7 +123,11 @@ class _GameCreatorState extends State<GameCreator> {
 
   String _timeString(Duration d) {
     if (d.inMilliseconds == 0) return 'No limit';
-    return prettyDuration(d, abbreviated: false, tersity: DurationTersity.minute);
+    return prettyDuration(
+      d,
+      abbreviated: false,
+      tersity: DurationTersity.minute,
+    );
   }
 
   DropdownMenuItem<Duration> _menuItem(Duration d) {

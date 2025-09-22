@@ -12,10 +12,7 @@ class HttpUtils {
     TokenData? tokenData,
   }) {
     data ??= {};
-    warnings = List.from(
-      warnings,
-    ); // because the default const value isn't growable
-    String status = 'ok';
+    warnings = [...warnings]; // because the default const value isn't growable
 
     // handle token data
     if (tokenData != null) {
@@ -38,16 +35,13 @@ class HttpUtils {
       }
     }
 
-    if (error != null) {
-      status = 'error';
-      data = {'error': error};
-    }
+    data = {
+      ...data,
+      'status': error == null ? 'ok' : 'error',
+      if (warnings.isNotEmpty) 'warnings': warnings,
+      'error': ?error,
+    };
 
-    if (warnings.isNotEmpty) {
-      data = {'warnings': warnings}..addAll(data);
-    }
-
-    data = {'status': status}..addAll(data);
     final body = const JsonEncoder.withIndent(' ', toEncodable).convert(data);
     return Response.ok(
       body,
@@ -70,7 +64,7 @@ class HttpUtils {
     if (object is Map) {
       // convert maps that aren't Map<String, dynamic>
       return {
-        for (var k in object.keys) '$k': object[k],
+        for (final k in object.keys) '$k': object[k],
       };
     }
     return null;
