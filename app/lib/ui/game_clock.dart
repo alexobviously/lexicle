@@ -25,8 +25,10 @@ class GameClock extends StatelessWidget {
   Widget build(BuildContext context) {
     final duration = Duration(milliseconds: time ?? 0);
 
-    final _icon = Padding(
-      padding: clockSide == ClockSide.left ? const EdgeInsets.only(right: 4.0) : const EdgeInsets.only(left: 4.0),
+    final icon = Padding(
+      padding: clockSide == ClockSide.left
+          ? const EdgeInsets.only(right: 4.0)
+          : const EdgeInsets.only(left: 4.0),
       child: Icon(
         MdiIcons.clockOutline,
         size: iconSize,
@@ -35,22 +37,26 @@ class GameClock extends StatelessWidget {
 
     return Row(
       children: [
-        if (clockSide == ClockSide.left) _icon,
+        if (clockSide == ClockSide.left) icon,
         Text(
           time != null ? _formatTime(duration, fullDetail) : '∞',
           style: textStyle ?? Theme.of(context).textTheme.titleLarge,
         ),
-        if (clockSide == ClockSide.right) _icon,
+        if (clockSide == ClockSide.right) icon,
       ],
     );
   }
 
   String _formatTime(Duration duration, [bool fullDetail = false]) {
-    String _pad(int n) => n.toString().padLeft(2, "0");
+    String pad(int n) => n.toString().padLeft(2, '0');
     String output = '';
-    if (fullDetail || duration.inHours > 0) output = '${_pad(duration.inHours)}:';
-    output = '$output${_pad(duration.inMinutes.remainder(60))}';
-    if (fullDetail || duration.inHours == 0) output = '$output:${_pad(duration.inSeconds.remainder(60))}';
+    if (fullDetail || duration.inHours > 0) {
+      output = '${pad(duration.inHours)}:';
+    }
+    output = '$output${pad(duration.inMinutes.remainder(60))}';
+    if (fullDetail || duration.inHours == 0) {
+      output = '$output:${pad(duration.inSeconds.remainder(60))}';
+    }
     return output;
   }
 }

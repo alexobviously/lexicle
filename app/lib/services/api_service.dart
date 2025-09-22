@@ -9,10 +9,8 @@ class ApiService implements DatabaseService {
   }
 
   @override
-  Future<Result<T>> get<T extends Entity>(String id) async {
-    final _result = await ApiClient.getEntity<T>(id);
-    return _result;
-  }
+  Future<Result<T>> get<T extends Entity>(String id) async =>
+      ApiClient.getEntity<T>(id);
 
   @override
   Future<Result<T>> getByField<T extends Entity>(String field, value) {
@@ -38,15 +36,20 @@ class ApiService implements DatabaseService {
   }
 
   @override
-  Future<Result<Challenge>> getCurrentChallenge(int level, [bool returnFinished = false]) async =>
-      get<Challenge>(level.toString());
+  Future<Result<Challenge>> getCurrentChallenge(
+    int level, [
+    bool returnFinished = false,
+  ]) async => get<Challenge>(level.toString());
 
   @override
-  Future<Result<Challenge>> getChallenge(int level, int sequence) async => ApiClient.getChallenge(level, sequence);
+  Future<Result<Challenge>> getChallenge(int level, int sequence) async =>
+      ApiClient.getChallenge(level, sequence);
 
   @override
-  Future<Result<Game>> getChallengeAttempt(String player, String challenge) async =>
-      ApiClient.getChallengeAttempt(challenge);
+  Future<Result<Game>> getChallengeAttempt(
+    String player,
+    String challenge,
+  ) async => ApiClient.getChallengeAttempt(challenge);
 
   @override
   Future<Result<T>> getOne<T extends Entity>({SelectorBuilder? selector}) {

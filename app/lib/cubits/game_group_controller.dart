@@ -9,7 +9,8 @@ import '../services/service_locator.dart';
 
 class GameGroupController extends Cubit<GameGroupState> {
   bool observing;
-  GameGroupController(GameGroupState initial, {this.observing = false}) : super(initial) {
+  GameGroupController(GameGroupState initial, {this.observing = false})
+    : super(initial) {
     init();
     startTimer(); // hmm
   }
@@ -21,8 +22,11 @@ class GameGroupController extends Cubit<GameGroupState> {
 
   String get id => state.group.id;
   String? get player => auth().userId;
-  Map<String, dynamic> toMap({bool hideAnswers = true}) => state.group.toMap(hideAnswers: hideAnswers);
-  List<String> get unreadyPlayers => state.group.players.where((e) => !state.group.words.containsKey(e)).toList();
+  Map<String, dynamic> toMap({bool hideAnswers = true}) =>
+      state.group.toMap(hideAnswers: hideAnswers);
+  List<String> get unreadyPlayers => state.group.players
+      .where((e) => !state.group.words.containsKey(e))
+      .toList();
 
   void init() {
     finishedSub = stream.map((e) => e.group.finished).distinct().listen((fin) {
@@ -32,7 +36,8 @@ class GameGroupController extends Cubit<GameGroupState> {
     });
   }
 
-  void startTimer() => timer = Timer.periodic(const Duration(milliseconds: 5000), _onTimerEvent);
+  void startTimer() =>
+      timer = Timer.periodic(const Duration(milliseconds: 5000), _onTimerEvent);
 
   void _onTimerEvent(Timer t) {
     refresh();
@@ -54,11 +59,15 @@ class GameGroupController extends Cubit<GameGroupState> {
   bool hasGameController(String gid) => state.games.containsKey(gid);
 
   void _createGameController(String gid) async {
-    final _result = await ApiClient.getEntity<Game>(gid);
-    if (!_result.ok) return; // should we do something here maybe?
+    final result = await ApiClient.getEntity<Game>(gid);
+    if (!result.ok) return; // should we do something here maybe?
+
     final gc = observing
-        ? ObserverGameController(_result.object!)
-        : GameController(_result.object!, OnlineMediator(gameId: gid, wordLength: _result.object!.length));
+        ? ObserverGameController(result.object!)
+        : GameController(
+            result.object!,
+            OnlineMediator(gameId: gid, wordLength: result.object!.length),
+          );
     emit(state.copyWith(games: Map.from(state.games)..[gid] = gc));
   }
 
@@ -74,18 +83,27 @@ class GameGroupController extends Cubit<GameGroupState> {
 
   Result<bool> get canStart {
     if (player != state.group.creator) return Result.error(Errors.unauthorised);
-    if (state.group.state > GroupState.lobby) return Result.error(Errors.groupStarted);
-    if (state.group.players.length < 2) return Result.error(Errors.notEnoughPlayers);
+
+    if (state.group.state > GroupState.lobby) {
+      return Result.error(Errors.groupStarted);
+    }
+
+    if (state.group.players.length < 2) {
+      return Result.error(Errors.notEnoughPlayers);
+    }
+
     if (unreadyPlayers.isNotEmpty) {
       return Result.error(Errors.playersNotReady, unreadyPlayers);
     }
+
     return Result.ok(true);
   }
 
   void refresh() async {
-    final _result = await ApiClient.getGroup(id);
-    if (_result.ok && !isClosed) {
-      emit(state.copyWith(group: _result.object!));
+    final result = await ApiClient.getGroup(id);
+
+    if (result.ok && !isClosed) {
+      emit(state.copyWith(group: result.object!));
       _checkGames();
     }
   }
@@ -96,9 +114,10 @@ class GameGroupController extends Cubit<GameGroupState> {
   }
 
   Future<bool> start() async {
-    final _result = await ApiClient.startGroup(id);
-    if (_result.ok) {
-      emit(state.copyWith(group: _result.object!));
+    final result = await ApiClient.startGroup(id);
+
+    if (result.ok) {
+      emit(state.copyWith(group: result.object!));
       _checkGames();
       return true;
     }
@@ -107,21 +126,41 @@ class GameGroupController extends Cubit<GameGroupState> {
 
   Future<Result<GameGroup>> setWord(String word) async {
     if (player == null) return Result.error(Errors.unauthorised);
-    if (state.group.state > GroupState.lobby) return Result.error(Errors.groupStarted);
-    if (!state.group.players.contains(player)) return Result.error(Errors.notInGroup);
-    if (word.length != state.group.config.wordLength) return Result.error(Errors.invalidWord);
-    if (!dictionary().isValidWord(word)) return Result.error(Errors.invalidWord);
-    final _result = await ApiClient.setWord(id, player!, word);
-    if (_result.ok) {
-      emit(state.copyWith(group: _result.object!));
+
+    if (state.group.state > GroupState.lobby) {
+      return Result.error(Errors.groupStarted);
     }
-    return _result;
+
+    if (!state.group.players.contains(player)) {
+      return Result.error(Errors.notInGroup);
+    }
+
+    if (word.length != state.group.config.wordLength) {
+      return Result.error(Errors.invalidWord);
+    }
+
+    if (!dictionary().isValidWord(word)) {
+      return Result.error(Errors.invalidWord);
+    }
+
+    final result = await ApiClient.setWord(id, player!, word);
+    if (result.ok) {
+      emit(state.copyWith(group: result.object!));
+    }
+
+    return result;
   }
 
   Future<Result<GameGroup>> kickPlayer(String player) async {
-    if (state.group.state > GroupState.lobby) return Result.error(Errors.groupStarted);
-    if (state.group.creator != auth().userId) return Result.error(Errors.unauthorised);
-    if (!state.group.players.contains(player)) return Result.error(Errors.notInGroup);
+    if (state.group.state > GroupState.lobby) {
+      return Result.error(Errors.groupStarted);
+    }
+    if (state.group.creator != auth().userId) {
+      return Result.error(Errors.unauthorised);
+    }
+    if (!state.group.players.contains(player)) {
+      return Result.error(Errors.notInGroup);
+    }
     final result = await ApiClient.kickPlayer(state.group.id, player);
     if (result.ok) {
       emit(state.copyWith(group: result.object!));
@@ -135,7 +174,7 @@ class GameGroupState {
   final GameGroup group;
   final Map<String, BaseGameController> games;
 
-  GameGroupState({
+  const GameGroupState({
     this.loading = false,
     required this.group,
     this.games = const {},
@@ -145,10 +184,9 @@ class GameGroupState {
     bool? loading,
     GameGroup? group,
     Map<String, BaseGameController>? games,
-  }) =>
-      GameGroupState(
-        loading: loading ?? this.loading,
-        group: group ?? this.group,
-        games: games ?? this.games,
-      );
+  }) => GameGroupState(
+    loading: loading ?? this.loading,
+    group: group ?? this.group,
+    games: games ?? this.games,
+  );
 }
